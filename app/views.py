@@ -13,5 +13,5 @@ def index():
 def callback():
     if request.method == 'POST':
         js = request.get_json()
-        print(js['to'])
+        print(js)
         return 'test'
