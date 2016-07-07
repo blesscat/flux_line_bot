@@ -1,4 +1,5 @@
 from flask import render_template, request, jsonify
+import requests
 from app import app
 
 
@@ -11,5 +12,6 @@ def index():
 @app.route("/callback", methods=['POST'])
 def callback():
     if request.method == 'POST':
-        print(request.get_json())
+        js = request.get_json()
+        print(js['to'])
         return 'test'
