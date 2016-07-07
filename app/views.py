@@ -1,5 +1,7 @@
+# -*- coding: utf8 -*-
 from flask import render_template, request, jsonify
 import requests
+import json
 from app import app
 
 
@@ -9,9 +11,14 @@ def index():
         return render_template('main.html')
 
 
-@app.route("/callback", methods=['POST'])
+@app.route("/callback", methods=['GET', 'POST'])
 def callback():
     if request.method == 'POST':
+        js = request.get_json()
+        print(js['result'][0]['content']['from'])
+        return 'ok'
+
+    if request.method == 'GET':
         url = 'https://trialbot-api.line.me/v1/events'
         headers = {
                    'Content-Type': 'application/json; charset=UTF-8',
@@ -29,9 +36,6 @@ def callback():
                     'text': u'寶寶不說'
                     }
                }
-        js = request.get_json()
-        print(type(js))
-        print(len(js['result']))
 
 	r = requests.post(url, data=json.dumps(data), headers=headers)
 	return json.dumps(r.json(), indent=4)
