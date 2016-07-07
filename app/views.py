@@ -42,7 +42,7 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message =  get_message(js)
-        message = '{}{},{}'.format('豬毛', message, '，但是豬毛不說')
+        message = '%s%s,%s' % ('豬毛', message, '，但是豬毛不說')
         return 'ok'
 
     if request.method == 'GET':
