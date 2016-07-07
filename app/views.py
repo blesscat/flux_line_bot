@@ -42,8 +42,10 @@ def callback():
         js = request.get_json()
         _id, message =  get_message(js)
         message = '{}{},{}'.format('豬毛', message, '，但是豬毛不說')
+        send_message(_id, message)
         return 'ok'
 
     if request.method == 'GET':
-        re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], 'test')
+        message = '{}{}{}'.format('豬毛', '123', '，但是豬毛不說')
+        re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
         return re
