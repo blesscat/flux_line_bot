@@ -14,7 +14,7 @@ def index():
 @app.route("/callback", methods=['GET', 'POST'])
 def callback():
     def get_message(json):
-        _id, message = json['result'][0]['content']['from'], json['result'][0]['content']['text']
+        _id, message = [json['result'][0]['content']['from']], json['result'][0]['content']['text']
         return _id, message
 
     def send_message(to_user, content):
@@ -42,7 +42,7 @@ def callback():
         js = request.get_json()
         _id, message =  get_message(js)
         message = '{}{},{}'.format('豬毛', message, '，但是豬毛不說')
-        send_message([_id], message)
+        send_message(_id, message)
         return 'ok'
 
     if request.method == 'GET':
