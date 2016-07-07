@@ -14,5 +14,5 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         print(type(js))
-        print(type(js['result']))
+        print(len(js['result']))
         return 'test'
