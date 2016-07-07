@@ -41,7 +41,7 @@ def callback():
 
     if request.method == 'POST':
         js = request.get_json()
-        send_messa([get_id(js)], 'test')
+        send_message([get_id(js)], 'test')
         return 'ok'
 
     if request.method == 'GET':
