@@ -13,9 +13,12 @@ def index():
 
 @app.route("/callback", methods=['GET', 'POST'])
 def callback():
+    def get_id(result):
+        return result['result'][0]['content']['from']
+
     if request.method == 'POST':
         js = request.get_json()
-        print(js['result'][0]['content']['from'])
+        print('id:', get_id(js))
         return 'ok'
 
     if request.method == 'GET':
