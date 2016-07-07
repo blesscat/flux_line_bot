@@ -17,12 +17,7 @@ def callback():
         _id = json['result'][0]['content']['from']
         return _id
 
-    if request.method == 'POST':
-        js = request.get_json()
-        print('id:', get_id(js))
-        return 'ok'
-
-    if request.method == 'GET':
+    def send_message(to_user, content):
         url = 'https://trialbot-api.line.me/v1/events'
         headers = {
                    'Content-Type': 'application/json; charset=UTF-8',
@@ -31,15 +26,24 @@ def callback():
                    'X-Line-Trusted-User-With-ACL': 'u3425f8daf2f07f3a9d723f5232f50f63'
                   }
         data = {
-                'to': ['u96e32e17ebdedd21c1f84bbbfd7de08c'],
+                'to': to_user,
                 'toChannel': 1383378250,
                 'eventType': '138311608800106203',
                 'content': {
                     'contentType': 1,
                     'toType': 1,
-                    'text': u'寶寶不說'
+                    'text': content
                     }
                }
 
 	r = requests.post(url, data=json.dumps(data), headers=headers)
 	return json.dumps(r.json(), indent=4)
+
+    if request.method == 'POST':
+        js = request.get_json()
+        send_messa([get_id(js)], 'test')
+        return 'ok'
+
+    if request.method == 'GET':
+        re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], 'test')
+        return re
