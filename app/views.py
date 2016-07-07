@@ -13,9 +13,9 @@ def index():
 
 @app.route("/callback", methods=['GET', 'POST'])
 def callback():
-    def get_id(json):
-        _id = json['result'][0]['content']['from']
-        return _id
+    def get_message(json):
+        _id, message = json['result'][0]['content']['from'], json['result'][0]['content']['text']
+        return _id, message
 
     def send_message(to_user, content):
         url = 'https://trialbot-api.line.me/v1/events'
@@ -41,7 +41,8 @@ def callback():
 
     if request.method == 'POST':
         js = request.get_json()
-        send_message([get_id(js)], 'test')
+        _id, message =  get_message(js)
+        send_message(_id, u'豬毛' + message + '，但是豬毛不說')
         return 'ok'
 
     if request.method == 'GET':
