@@ -8,7 +8,7 @@ def index():
         return render_template('main.html')
 
 
-@app.route("/", methods=['POST'])
+@app.route("/callback", methods=['POST'])
 def callback():
     if request.method == 'POST':
         print(request.get_json())
