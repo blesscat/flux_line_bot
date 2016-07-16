@@ -1,9 +1,8 @@
 # -*- coding: utf8 -*-
 from flask import render_template, request, jsonify
-# from flux import FLUX
 import requests
 import json
-from app import app
+from app import app, flux
 
 
 @app.route("/", methods=['GET'])
@@ -48,6 +47,11 @@ def callback():
         return 'ok'
 
     if request.method == 'GET':
+        print('12345')
+        flux1 = flux.FLUX(("122.116.80.243", 1901))
+        flux1.poke()
+        print(flux1.status)
+
         message = '{}{}{}'.format('豬毛', '123', '，但是豬毛不說')
-        re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
-        return re
+        # re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
+        return '11'
