@@ -5,9 +5,9 @@ import struct
 from uuid import UUID
 from io import BytesIO
 
-from app.fluxclient.encryptor import KeyObject
-from app.fluxclient.upnp.device import Device
-from app.fluxclient.upnp.misc import validate_identify
+from fluxclient.encryptor import KeyObject
+from fluxclient.upnp.device import Device
+from fluxclient.upnp.misc import validate_identify
 
 
 class FLUX(object):
@@ -71,4 +71,5 @@ class FLUX(object):
 if __name__ == "__main__":
     flux = FLUX(("122.116.80.243", 1901))
     flux.poke()
+    print(flux.status)
 
