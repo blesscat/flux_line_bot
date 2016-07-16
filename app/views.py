@@ -53,7 +53,7 @@ def callback():
                 send_message(_id, message)
                 return 'post'
             else:
-                if status in message:
+                if 'status' in message:
                     Flux = flux.FLUX(("122.116.80.243", 1901))
                     Flux.poke()
                     Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
