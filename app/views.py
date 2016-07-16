@@ -2,7 +2,7 @@
 from flask import render_template, request, jsonify
 import requests
 import json
-from app import app, flux
+from app import app
 
 
 @app.route("/", methods=['GET'])

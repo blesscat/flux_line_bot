@@ -1,8 +1,5 @@
 import os
 # import mimetypes
-from fluxclient.encryptor import KeyObject
-from fluxclient.upnp.device import Device
-from fluxclient.upnp.misc import validate_identify
 
 from flask import Flask
 # from flask.ext.login import LoginManager
