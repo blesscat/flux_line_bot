@@ -5,7 +5,7 @@ import struct
 from uuid import UUID
 from io import BytesIO
 
-from fluxclient.encryptor import KeyObject
+from app.fluxclient.encryptor import KeyObject
 from fluxclient.upnp.device import Device
 from fluxclient.upnp.misc import validate_identify
 
