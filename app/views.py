@@ -47,11 +47,10 @@ def callback():
         return 'ok'
 
     if request.method == 'GET':
-        print('12345')
         flux1 = flux.FLUX(("122.116.80.243", 1901))
         flux1.poke()
         print(flux1.status)
 
         message = '{}{}{}'.format('豬毛', '123', '，但是豬毛不說')
         # re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
-        return '11'
+        return 'flux1.status'
