@@ -48,10 +48,20 @@ def callback():
         js = request.get_json()
         _id, message =  get_message(js)
         if _id == ['u96e32e17ebdedd21c1f84bbbfd7de08c']:
-            print(message)
-            print(type(message))
-            print(len(message))
+            if not message[:4] == 'Flux':
+                message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
+                send_message(_id, message)
+                return 'post'
+            else:
+                if status in message:
+                    Flux = flux.FLUX(("122.116.80.243", 1901))
+                    Flux.poke()
+                    Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
 
+                    message = '親，目前狀態:{}\n目前進度:{}'.format(
+                                Flux.status['st_label'], Flux.status['st_prog'])
+                    send_message(_id, message)
+                    return 'ok'
         else:
             message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
             send_message(_id, message)
