@@ -6,8 +6,8 @@ from uuid import UUID
 from io import BytesIO
 
 from app.fluxclient.encryptor import KeyObject
-from fluxclient.upnp.device import Device
-from fluxclient.upnp.misc import validate_identify
+from app.fluxclient.upnp.device import Device
+from app.fluxclient.upnp.misc import validate_identify
 
 
 class FLUX(object):
