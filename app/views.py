@@ -1,8 +1,14 @@
 # -*- coding: utf8 -*-
-from flask import render_template, request, jsonify
+import os
+import sys
 import requests
 import json
+from flask import render_template, request, jsonify
 from app import app
+
+sys.path.insert(0, os.path.abspath('..'))
+
+import flux
 
 
 @app.route("/", methods=['GET'])
@@ -41,19 +47,17 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message =  get_message(js)
-        print(_id)
-        message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
-        send_message(_id, message)
-        return 'ok'
+        if _id == ['u96e32e17ebdedd21c1f84bbbfd7de08c']:
+            print(message)
+            print(type(message))
+            print(len(message))
+
+        else:
+            message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
+            send_message(_id, message)
+            return 'ok'
 
     if request.method == 'GET':
-        import os
-        import sys
-
-        sys.path.insert(0, os.path.abspath('..'))
-
-        import flux
-        
         Flux = flux.FLUX(("122.116.80.243", 1901))
         Flux.poke()
 
