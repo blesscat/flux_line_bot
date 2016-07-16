@@ -6,7 +6,7 @@ import socket
 import struct
 import json
 
-from fluxclient.utils.version import StrictVersion
+from app.fluxclient.utils.version import StrictVersion
 from .abstract_backend import (UpnpAbstractBackend, TimeoutError, AuthError,
                                NotSupportError, UpnpError)
 
