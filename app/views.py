@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 from flask import render_template, request, jsonify
+# from flux import FLUX
 import requests
 import json
 from app import app
@@ -41,7 +42,8 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message =  get_message(js)
-        message = '{}{},{}'.format('豬毛', message, '，但是豬毛不說')
+        print(_id)
+        message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
         send_message(_id, message)
         return 'ok'
 
