@@ -10,6 +10,10 @@ sys.path.insert(0, os.path.abspath('..'))
 
 import flux
 
+status_set = {'status',
+              '狀態',
+              '狀況',}
+
 
 @app.route("/", methods=['GET'])
 def index():
@@ -53,12 +57,12 @@ def callback():
                 send_message(_id, message)
                 return 'post'
             else:
-                if 'status' in message:
+                if bool({status for status in status_set if status in message}):
                     Flux = flux.FLUX(("122.116.80.243", 1901))
                     Flux.poke()
                     Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
 
-                    message = '親，目前狀態:{}\n目前進度:{}'.format(
+                    message = '喵～～\n目前狀態:{}\n目前進度:{}'.format(
                                 Flux.status['st_label'], Flux.status['st_prog'])
                     send_message(_id, message)
                     return 'ok'
