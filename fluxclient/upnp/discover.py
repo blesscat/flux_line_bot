@@ -33,8 +33,8 @@ import select
 import socket
 import struct
 
-from app.fluxclient.utils.version import StrictVersion
-from app.fluxclient.encryptor import KeyObject
+from fluxclient.utils.version import StrictVersion
+from fluxclient.encryptor import KeyObject
 from .device import Device
 from .misc import validate_identify
 

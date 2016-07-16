@@ -1,8 +1,8 @@
 
 import logging
 
-from app.fluxclient.utils.version import StrictVersion
-from app.fluxclient.upnp.discover import UpnpDiscover
+from fluxclient.utils.version import StrictVersion
+from fluxclient.upnp.discover import UpnpDiscover
 from .abstract_backend import UpnpError, UpnpException, NotSupportError
 from .udp1_backend import UpnpUdp1Backend
 from .ssl1_backend import UpnpSSL1Backend

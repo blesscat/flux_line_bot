@@ -3,9 +3,9 @@ from uuid import UUID
 from time import time
 import warnings
 
-from app.fluxclient.utils.version import StrictVersion
-from app.fluxclient.encryptor import KeyObject
-from app.fluxclient.robot import FluxCamera, FluxRobot
+from fluxclient.utils.version import StrictVersion
+from fluxclient.encryptor import KeyObject
+from fluxclient.robot import FluxCamera, FluxRobot
 
 __all__ = ["Device"]
 
