@@ -57,17 +57,17 @@ def callback():
 
         import flux
 
-        payload = struct.pack("<4sBB16s", b"FLUX", 1, 0, UUID(int=0).bytes)
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind(('', 0))
-        sock.sendto(payload, ("122.116.80.243", 1901))
-        buf, endpoint = sock.recvfrom(4096)
-        print(buf, endpoint)
-        print(os.getcwd())
+        # payload = struct.pack("<4sBB16s", b"FLUX", 1, 0, UUID(int=0).bytes)
+        # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # sock.bind(('', 0))
+        # sock.sendto(payload, ("122.116.80.243", 1901))
+        # buf, endpoint = sock.recvfrom(4096)
+        # print(buf, endpoint)
+        # print(os.getcwd())
         
-        #flux1 = flux.FLUX(("122.116.80.243", 1901))
-        #flux1.poke()
-        #print(flux1.status)
+        flux1 = flux.FLUX(("122.116.80.243", 1901))
+        flux1.poke()
+        print(flux1.status)
 
         message = '{}{}{}'.format('豬毛', '123', '，但是豬毛不說')
         # re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
