@@ -57,6 +57,6 @@ def callback():
         Flux = flux.FLUX(("122.116.80.243", 1901))
         Flux.poke()
 
-        message = str(flux.status)
+        message = str(Flux.status)
         re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
         return re
