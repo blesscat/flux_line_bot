@@ -63,7 +63,7 @@ def test():
 def list_files():
     if request.method == 'GET':
         client_key = get_or_create_default_key("./sdk_connection.pem")
-        robot = FluxRobot(("192.168.30.131", 23811), client_key)
+        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
         result = robot.list_files("/SD")
         return str(result)
 
