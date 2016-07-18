@@ -21,7 +21,6 @@ a device status update. A callback contains two positional arguments, first \
 is `UpnpDiscover` instance and second is :class:`fluxclient.upnp.device.Device` instance which it found or \
 been updated.
 """
-import pdb
 
 from weakref import proxy
 from uuid import UUID
@@ -70,7 +69,9 @@ class UpnpDiscover(object):
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         mreq = struct.pack("4sl", socket.inet_aton(mcst_ipaddr),
                           socket.INADDR_ANY)
-        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP,
+                            mreq)
+
         if platform.system() == "Windows":
             self.sock.bind(("", mcst_port))
         else:
@@ -98,7 +99,6 @@ class UpnpDiscover(object):
            return False
         else:
             return True
-        
 
     def discover(self, callback, lookup_callback=None, timeout=float("INF")):
         """
@@ -190,7 +190,7 @@ has been found or the computer recived a new status from a device.
 
 class Version1Helper(object):
     def __init__(self, server):
-        self.server = server
+        self.server = proxy(server)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM,
                                   socket.IPPROTO_UDP)
         self.sock.bind(('', 0))
@@ -225,8 +225,8 @@ class Version1Helper(object):
         sn = bsn.decode("ascii")
 
         uuid = UUID(bytes=uuid_bytes)
-        # if not self.server.source_filter(uuid, endpoint):
-        #     return
+        if not self.server.source_filter(uuid, endpoint):
+            return
 
         f = BytesIO(payload[34:])
         masterkey_doc = f.read(l_master_pkey)
@@ -239,34 +239,34 @@ class Version1Helper(object):
         master_pkey = KeyObject.load_keyobj(masterkey_doc)
         uuid = UUID(bytes=uuid_bytes)
 
-        # if self.need_touch(uuid, master_ts):
-        #     self.server.add_master_key(uuid, sn, master_pkey, 1)
-        #     payload = struct.pack("<4sBB16s", b"FLUX", MULTICAST_VERSION,
-        #                           2, uuid.bytes)
-        #     try:
-        #         self.sock.sendto(payload, endpoint)
-        #     except Exception:
-        #         logger.exception("Error while poke %s", endpoint)
-        # else:
-        try:
-            stbuf = f.read(64)
-            st_ts, st_id, st_prog, st_head, st_err = \
-                struct.unpack("dif16s32s", stbuf)
+        if self.need_touch(uuid, master_ts):
+            self.server.add_master_key(uuid, sn, master_pkey, 1)
+            payload = struct.pack("<4sBB16s", b"FLUX", MULTICAST_VERSION,
+                                  2, uuid.bytes)
+            try:
+                self.sock.sendto(payload, endpoint)
+            except Exception:
+                logger.exception("Error while poke %s", endpoint)
+        else:
+            try:
+                stbuf = f.read(64)
+                st_ts, st_id, st_prog, st_head, st_err = \
+                    struct.unpack("dif16s32s", stbuf)
 
-            head_module = st_head.decode("ascii",
-                                         "ignore").strip("\x00")
-            error_label = st_err.decode("ascii",
-                                        "ignore").strip("\x00")
-            device = self.server.devices[uuid]
-            device.update_status(st_id=st_id, st_ts=st_ts, st_prog=st_prog,
-                                 head_module=head_module,
-                                 error_label=error_label)
+                head_module = st_head.decode("ascii",
+                                             "ignore").strip("\x00")
+                error_label = st_err.decode("ascii",
+                                            "ignore").strip("\x00")
+                device = self.server.devices[uuid]
+                device.update_status(st_id=st_id, st_ts=st_ts, st_prog=st_prog,
+                                     head_module=head_module,
+                                     error_label=error_label)
 
-            return uuid
-        except Exception:
-            basic_info = self.server.devices[uuid]
-            if basic_info.version > StrictVersion("0.13a"):
-                logger.exception("Unpack status failed")
+                return uuid
+            except Exception:
+                basic_info = self.server.devices[uuid]
+                if basic_info.version > StrictVersion("0.13a"):
+                    logger.exception("Unpack status failed")
 
     def handle_touch(self, endpoint, payload):
         f = BytesIO(payload)
@@ -274,9 +274,9 @@ class Version1Helper(object):
         buuid, master_ts, l1, l2 = struct.unpack("<16sfHH", f.read(24))
         uuid = UUID(bytes=buuid)
 
-        #if not self.server.source_filter(uuid, endpoint):
-        #    # Ingore this uuid
-        #    return
+        if not self.server.source_filter(uuid, endpoint):
+            # Ingore this uuid
+            return
 
         device = self.server.devices[uuid]
 

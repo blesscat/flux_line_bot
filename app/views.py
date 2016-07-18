@@ -8,17 +8,26 @@ from app import app
 
 sys.path.insert(0, os.path.abspath('..'))
 
-import flux
+from flux import FLUX
 
 status_set = {'status',
               '狀態',
-              '狀況',}
+              '狀況',
+              '進度'}
 
 
 @app.route("/", methods=['GET'])
 def index():
     if request.method == 'GET':
         return render_template('main.html')
+
+
+@app.route("/add_rsa", methods=['GET'])
+def add_rsa():
+    if request.method == 'GET':
+        Flux = FLUX(("122.116.80.243", 1901))
+        result = Flux.add_rsa()
+        return result
 
 
 @app.route("/callback", methods=['GET', 'POST'])
@@ -58,8 +67,7 @@ def callback():
                 return 'post'
             else:
                 if bool({status for status in status_set if status in message}):
-                    Flux = flux.FLUX(("122.116.80.243", 1901))
-                    Flux.poke()
+                    Flux = FLUX(("122.116.80.243", 1901))
                     Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
 
                     message = '喵～～\n目前狀態:{}\n目前進度:{}'.format(
@@ -72,8 +80,7 @@ def callback():
             return 'ok'
 
     if request.method == 'GET':
-        Flux = flux.FLUX(("122.116.80.243", 1901))
-        Flux.poke()
+        Flux = FLUX(("122.116.80.243", 1901))
 
         message = str(Flux.status)
         re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
