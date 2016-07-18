@@ -34,6 +34,8 @@ def gcode_2_fcode():
     if options.head_type is not None:
         ext_metadata['HEAD_TYPE'] = str(options.head_type)
 
+    print(ext_metadata)
+
     with open(options.input, "r") as in_f:
         conv = GcodeToFcode(ext_metadata=ext_metadata)
 

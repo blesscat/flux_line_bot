@@ -17,6 +17,8 @@ status_set = {'status',
               '狀況',
               '進度'}
 
+FLUX_ipaddr = "122.116.80.243"
+
 
 @app.route("/", methods=['GET'])
 def index():
@@ -28,15 +30,15 @@ def index():
 def test():
     if request.method == 'GET':
         client_key = get_or_create_default_key("./sdk_connection.pem")
-        robot = FluxRobot(("122.116.80.243", 23811), client_key)
+        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
         print(robot.list_files('/SD'))
-        return str(robot.list_files('/SD'))
+        return str(robot.play_info())
 
 
 @app.route("/add_rsa", methods=['GET'])
 def add_rsa():
     if request.method == 'GET':
-        Flux = FLUX(("122.116.80.243", 1901))
+        Flux = FLUX((FLUX_ipaddr, 1901))
         result = Flux.add_rsa()
         return result
 
@@ -78,7 +80,7 @@ def callback():
                 return 'post'
             else:
                 if bool({status for status in status_set if status in message}):
-                    Flux = FLUX(("122.116.80.243", 1901))
+                    Flux = FLUX((FLUX_ipaddr, 1901))
                     Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
 
                     message = '喵～～\n目前狀態:{}\n目前進度:{}'.format(
@@ -91,7 +93,7 @@ def callback():
             return 'ok'
 
     if request.method == 'GET':
-        Flux = FLUX(("122.116.80.243", 1901))
+        Flux = FLUX((FLUX_ipaddr, 1901))
 
         message = str(Flux.status)
         re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
