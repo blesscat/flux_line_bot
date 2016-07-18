@@ -3,7 +3,7 @@ import os
 import sys
 import requests
 import json
-from flask import render_template, request, jsonify
+from flask import render_template, request #, jsonify
 from app import app
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -59,6 +59,14 @@ def test():
         return str(ls)
 
 
+@app.route("/list_files", methods=['GET'])
+def list_files():
+    if request.method == 'GET':
+        client_key = get_or_create_default_key("./sdk_connection.pem")
+        robot = FluxRobot(("192.168.30.131", 23811), client_key)
+        result = robot.list_files("/SD")
+        return str(result)
+
 
 @app.route("/add_rsa", methods=['GET'])
 def add_rsa():
@@ -70,7 +78,6 @@ def add_rsa():
 
 @app.route("/callback", methods=['GET', 'POST'])
 def callback():
-
     if request.method == 'POST':
         js = request.get_json()
         _id, message =  get_message(js)
