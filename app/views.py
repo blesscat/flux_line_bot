@@ -54,8 +54,9 @@ def index():
 def test():
     if request.method == 'GET':
         os.system("flux_g2f -i tset.gcode -o test.fc")
-        os.system("ls")
-        return"ok"
+        ls = os.prpen("ls")
+        print(ls)
+        return str(ls)
 
 
 
