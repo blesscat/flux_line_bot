@@ -4,7 +4,6 @@ Cython==0.24
 decorator==4.0.10
 ecdsa==0.13
 Flask==0.11.1
--e git+https://git.heroku.com/bless-line-bot-test.git@d0d38f70b5222af20b4c27348b4802fced4bcc6d#egg=fluxclient
 gunicorn==19.6.0
 ipython==5.0.0
 ipython-genutils==0.1.0
