@@ -12,11 +12,19 @@ from flux import FLUX
 from fluxclient.robot import FluxRobot
 from fluxclient.commands.misc import get_or_create_default_key
 
+list_files_set = {'list',
+                  '檔案'}
 status_set = {'status',
               '狀態',
               '狀況',
               '進度'}
 FLUX_ipaddr = "122.116.80.243"
+
+def list_files():
+    client_key = get_or_create_default_key("./sdk_connection.pem")
+    robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
+    result = robot.list_files("/SD")
+    return str(result)
 
 def get_message(json):
     _id, message = [json['result'][0]['content']['from']], json['result'][0]['content']['text']
@@ -59,15 +67,6 @@ def test():
         return str(ls)
 
 
-@app.route("/list_files", methods=['GET'])
-def list_files():
-    if request.method == 'GET':
-        client_key = get_or_create_default_key("./sdk_connection.pem")
-        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
-        result = robot.list_files("/SD")
-        return str(result)
-
-
 @app.route("/add_rsa", methods=['GET'])
 def add_rsa():
     if request.method == 'GET':
@@ -93,6 +92,11 @@ def callback():
 
                     message = '喵～～\n目前狀態:{}\n目前進度:{}'.format(
                                 Flux.status['st_label'], Flux.status['st_prog'])
+                    send_message(_id, message)
+                    return 'ok'
+
+                elif bool({command for command in list_files_set if command in message}):
+                    message = list_files()
                     send_message(_id, message)
                     return 'ok'
         else:
