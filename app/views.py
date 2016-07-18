@@ -11,7 +11,6 @@ sys.path.insert(0, os.path.abspath('..'))
 from flux import FLUX
 from fluxclient.robot import FluxRobot
 from fluxclient.commands.misc import get_or_create_default_key
-from fluxclient.utils._utils import Tools
 
 status_set = {'status',
               '狀態',
@@ -54,10 +53,10 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     if request.method == 'GET':
-        client_key = get_or_create_default_key("./sdk_connection.pem")
-        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
-        print(robot.list_files('/SD'))
-        return str(robot.play_info())
+        os.system("flux_g2f -i tset.gcode -o test.fc")
+        os.system("ls")
+        return"ok"
+
 
 
 @app.route("/add_rsa", methods=['GET'])
