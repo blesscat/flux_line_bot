@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
-python setup.py develop
+python setup.py install
 gunicorn run:app
