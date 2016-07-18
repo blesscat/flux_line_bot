@@ -1,4 +1,6 @@
 #!/bin/bash
 set -e
+python setup.py install
 python setup.py develop
+python setup.py build_ext
 gunicorn run:app
