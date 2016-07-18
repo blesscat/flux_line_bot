@@ -9,6 +9,8 @@ from app import app
 sys.path.insert(0, os.path.abspath('..'))
 
 from flux import FLUX
+from fluxclient.robot import FluxRobot
+from fluxclient.commands.misc import get_or_create_default_key
 
 status_set = {'status',
               '狀態',
@@ -20,6 +22,15 @@ status_set = {'status',
 def index():
     if request.method == 'GET':
         return render_template('main.html')
+
+
+@app.route("/test", methods=['GET'])
+def test():
+    if request.method == 'GET':
+        client_key = get_or_create_default_key("./sdk_connection.pem")
+        robot = FluxRobot(("122.116.80.243", 23811), client_key)
+        print(robot.list_files('/SD'))
+        return str(robot.list_files('/SD'))
 
 
 @app.route("/add_rsa", methods=['GET'])
