@@ -1,0 +1,2 @@
+$(window).on("load", function(){
+}

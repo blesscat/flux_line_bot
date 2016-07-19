@@ -1,0 +1,24 @@
+Metadata-Version: 1.1
+Name: fluxclient
+Version: 0.9b4
+Summary: ?
+Home-page: https://flux3dp.com/
+Author: FLUX Inc. Development Team
+Author-email: cerberus@flux3dp.com
+License: AGPLv3
+Description: 
+        FLUX Delta user side operating interface
+Keywords: FLUX
+Platform: Linux
+Platform: Mac OSX
+Platform: Windows
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: C
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Cython
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
