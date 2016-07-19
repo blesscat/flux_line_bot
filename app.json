@@ -1,0 +1,11 @@
+{
+  "name": "FLUX Line Bot",
+  "description": "control the FLUX 3dp via Line command",
+  "repository": "https://github.com/blesscat/flux_line_bot",
+  "keywords": ["Line", "Python", "static", "FLUX"],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
