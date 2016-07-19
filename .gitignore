@@ -4,3 +4,4 @@ doc
 tests
 .env
 *.so
+sdk_connection.pem

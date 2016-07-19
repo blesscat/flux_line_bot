@@ -25,6 +25,16 @@ def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
     return _bool
 
+def robot()
+    client_key = get_or_create_default_key("./sdk_connection.pem")
+    robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
+    return(robot)
+
+def get_status():
+    flux = robot()
+    result = flux.report_play() 
+    return str(result)
+
 def list_files():
     client_key = get_or_create_default_key("./sdk_connection.pem")
     robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
@@ -93,7 +103,7 @@ def callback():
         js = request.get_json()
         _id, message =  get_message(js)
         if not message[:4] == 'Flux':
-            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(os.environ['name'], message)
+            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(os.environ['name'], message,)
             send_message(_id, message)
             return 'post'
         else:
@@ -106,8 +116,13 @@ def callback():
                 send_message(_id, message)
                 return 'ok'
 
-            elif isin(message, list_files):
+            if isin(message, list_files):
                 payload = list_files()
+                send_message(_id, payload)
+                return 'ok'
+
+            if message == 'test':
+                payload = get_status()
                 send_message(_id, payload)
                 return 'ok'
 
