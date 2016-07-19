@@ -2,3 +2,5 @@ line_st
 *.pyc
 doc
 tests
+.env
+*.so

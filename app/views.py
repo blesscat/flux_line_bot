@@ -3,7 +3,8 @@ import os
 import sys
 import requests
 import json
-from flask import render_template, request #, jsonify
+import socket
+from flask import render_template, request
 from app import app
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -18,8 +19,7 @@ status_set = {'status',
               '狀態',
               '狀況',
               '進度'}
-FLUX_ipaddr = "122.116.80.243"
-
+FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 
 def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
@@ -39,9 +39,9 @@ def send_message(to_user, content):
     url = 'https://trialbot-api.line.me/v1/events'
     headers = {
                'Content-Type': 'application/json; charset=UTF-8',
-               'X-Line-ChannelID': '1473077665',
-               'X-Line-ChannelSecret': '8582629c37b18605491087172be06e5e',
-               'X-Line-Trusted-User-With-ACL': 'u3425f8daf2f07f3a9d723f5232f50f63'
+               'X-Line-ChannelID': os.environ['ChannelID'],
+               'X-Line-ChannelSecret': os.environ['ChannelSecret'],
+               'X-Line-Trusted-User-With-ACL': os.environ['MID']
               }
     data = {
             'to': to_user,
@@ -66,6 +66,7 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     if request.method == 'GET':
+        print(type(os.environ['test12']))
         return str(os.environ['test12'])
 
 
@@ -91,29 +92,24 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message =  get_message(js)
-        if _id == ['u96e32e17ebdedd21c1f84bbbfd7de08c']:
-            if not message[:4] == 'Flux':
-                message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
-                send_message(_id, message)
-                return 'post'
-            else:
-                if isin(message, status_set):
-                    Flux = FLUX((FLUX_ipaddr, 1901))
-                    Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
-
-                    message = '喵～～\n目前狀態:{}\n目前進度:{}'.format(
-                                Flux.status['st_label'], Flux.status['st_prog'])
-                    send_message(_id, message)
-                    return 'ok'
-
-                elif isin(message, list_files):
-                    payload = list_files()
-                    send_message(_id, payload)
-                    return 'ok'
-        else:
+        if not message[:4] == 'Flux':
             message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
             send_message(_id, message)
-            return 'ok'
+            return 'post'
+        else:
+            if isin(message, status_set):
+                Flux = FLUX((FLUX_ipaddr, 1901))
+                Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
+
+                message = '喵～～\n目前狀態:{}\n目前進度:{}'.format(
+                            Flux.status['st_label'], Flux.status['st_prog'])
+                send_message(_id, message)
+                return 'ok'
+
+            elif isin(message, list_files):
+                payload = list_files()
+                send_message(_id, payload)
+                return 'ok'
 
     if request.method == 'GET':
         Flux = FLUX((FLUX_ipaddr, 1901))
