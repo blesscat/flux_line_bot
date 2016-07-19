@@ -25,7 +25,7 @@ def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
     return _bool
 
-def robot()
+def robot():
     client_key = get_or_create_default_key("./sdk_connection.pem")
     robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     return(robot)
