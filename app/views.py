@@ -116,7 +116,7 @@ def callback():
                 send_message(_id, message)
                 return 'ok'
 
-            if isin(message, list_files):
+            if isin(message, list_files_set):
                 payload = list_files()
                 send_message(_id, payload)
                 return 'ok'
