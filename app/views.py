@@ -93,7 +93,7 @@ def callback():
         js = request.get_json()
         _id, message =  get_message(js)
         if not message[:4] == 'Flux':
-            message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')
+            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(os.environ['name'], message)
             send_message(_id, message)
             return 'post'
         else:
