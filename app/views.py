@@ -13,6 +13,8 @@ from flux import FLUX
 from fluxclient.robot import FluxRobot
 from fluxclient.commands.misc import get_or_create_default_key
 
+test_set = {'test'}
+
 list_files_set = {'list',
                   '檔案'}
 status_set = {'status',
@@ -121,7 +123,7 @@ def callback():
                 send_message(_id, payload)
                 return 'ok'
 
-            if message == 'test':
+            if isin(message, test_set):
                 payload = get_status()
                 send_message(_id, payload)
                 return 'ok'
