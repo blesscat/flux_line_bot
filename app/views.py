@@ -20,6 +20,11 @@ status_set = {'status',
               '進度'}
 FLUX_ipaddr = "122.116.80.243"
 
+
+def isin(message, message_set):
+    _bool = bool({status for status in message_set if status in message})
+    return _bool
+
 def list_files():
     client_key = get_or_create_default_key("./sdk_connection.pem")
     robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
@@ -61,6 +66,12 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     if request.method == 'GET':
+        return str(os.environ['test12'])
+
+
+@app.route("/g2ftest", methods=['GET'])
+def g2ftest():
+    if request.method == 'GET':
         os.system("flux_g2f -i tset.gcode -o test.fc")
         ls = os.popen("ls")
         print(ls)
@@ -86,7 +97,7 @@ def callback():
                 send_message(_id, message)
                 return 'post'
             else:
-                if bool({status for status in status_set if status in message}):
+                if isin(message, status_set):
                     Flux = FLUX((FLUX_ipaddr, 1901))
                     Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
 
@@ -95,9 +106,9 @@ def callback():
                     send_message(_id, message)
                     return 'ok'
 
-                elif bool({command for command in list_files_set if command in message}):
-                    message = list_files()
-                    send_message(_id, message)
+                elif isin(message, list_files):
+                    payload = list_files()
+                    send_message(_id, payload)
                     return 'ok'
         else:
             message = '{}{}{}'.format('豬毛', message, '，但是豬毛不說')

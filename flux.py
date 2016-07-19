@@ -143,8 +143,6 @@ class FLUX(object):
 
 if __name__ == "__main__":
     flux = FLUX(("122.116.80.243", 1901))
-    pdb.set_trace()
-    print(vars(flux))
     print(vars(flux.device))
     print(flux.status)
     
