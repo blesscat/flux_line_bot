@@ -177,7 +177,7 @@ def callback():
 
             if isin(message, abort_list):
                 try:
-                    Flux.about_play()
+                    Flux.abort_play()
                     message = '{}\n已經暫停囉'.format(MANTRA)
                     send_message(_id, message)
                 except:
