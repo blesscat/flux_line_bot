@@ -134,6 +134,16 @@ def callback():
             return 'post'
         else:
             Flux = robot()
+            if Flux.report_play()['st_label'] == 'IDLE':
+                message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
+                send_message(_id, message)
+                return 'ok' 
+
+            if Flux.report_play()['st_label'] == 'COMPLETED':
+                message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
+                send_message(_id, message)
+                return 'ok' 
+
             label, prog, error, leftTime = get_flux_status(Flux)
 
             if isin(message, status_set):
@@ -143,7 +153,7 @@ def callback():
 
             if isin(message, start_list):
                 try:
-                    message = '{}\n 開始功能還沒做喔～～'.format(MANTRA)
+                    message = '{}\n開始功能還沒做喔～～'.format(MANTRA)
                     send_message(_id, message)
                 except:
                     pass
