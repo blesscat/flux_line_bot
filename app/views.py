@@ -52,7 +52,7 @@ def robot():
 
 def get_flux_status(robot):
     payload = robot.report_play()
-    timeCost = math.floor(robot.play_info()[0]['TIME_COST'])
+    timeCost = math.floor(float(robot.play_info()[0]['TIME_COST']))
     prog = format(payload['prog'], '.2%')
     label = payload['st_label']
     error = payload['error']
