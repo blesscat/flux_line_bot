@@ -53,7 +53,7 @@ def robot():
 def get_flux_status(robot):
     payload = robot.report_play()
     timeCost = math.floor(float(robot.play_info()[0]['TIME_COST']))
-    prog = float(format(payload['prog'], '.2%'))
+    prog = float(payload['prog'])
     label = payload['st_label']
     error = payload['error']
 
@@ -64,6 +64,7 @@ def get_flux_status(robot):
     interval = interval - hours * secPerHours
     mins = math.floor(interval/secPerMins)
     leftTime = '{} hours {} mins'.format(hours, mins)
+    prog = format(prog, '.2%')
 
     return label, prog, error, leftTime
 
