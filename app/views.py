@@ -177,11 +177,11 @@ def callback():
 
             if isin(message, abort_list):
                 try:
-                    Flux.resume_play()
+                    Flux.about_play()
                     message = '{}\n已經暫停囉'.format(MANTRA)
                     send_message(_id, message)
                 except:
-                    message = '{}\n無法暫停，可能早就已經停止了呢'.format(MANTRA)
+                    message = '{}\n無法停止，可能早就已經停止了呢'.format(MANTRA)
                     send_message(_id, message)
 
             if isin(message, list_files_set):
