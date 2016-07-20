@@ -4,6 +4,7 @@ import sys
 import requests
 import json
 import socket
+import math
 from flask import render_template, request
 from app import app
 
@@ -13,15 +14,32 @@ from flux import FLUX
 from fluxclient.robot import FluxRobot
 from fluxclient.commands.misc import get_or_create_default_key
 
-test_set = {'test'}
+start_list = {'start',
+              '開始'}
+
+pause_list = {'pause',
+              '暫停'}
+
+resume_list = {'resume',
+               '繼續'}
+
+abort_list = {'about',
+              'stop',
+              'STOP',
+              '停止',
+              '結束'}
 
 list_files_set = {'list',
                   '檔案'}
+
 status_set = {'status',
               '狀態',
               '狀況',
               '進度'}
+
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
+MANTRA = os.environ['mantra']
+NAME = os.environ['name']
 
 def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
@@ -30,18 +48,24 @@ def isin(message, message_set):
 def robot():
     client_key = get_or_create_default_key("./sdk_connection.pem")
     robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
-    return(robot)
+    return robot
 
-def get_status():
-    flux = robot()
-    result = flux.report_play() 
-    return str(result)
+def get_flux_status(robot):
+    payload = robot.report_play()
+    timeCost = math.floor(robot.play_info()[0]['TIME_COST'])
+    prog = format(payload['prog'], '.2%')
+    label = payload['st_label']
+    error = payload['error']
 
-def list_files():
-    client_key = get_or_create_default_key("./sdk_connection.pem")
-    robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
-    result = robot.list_files("/SD")
-    return str(result)
+    interval = timeCost * (1 - prog)
+    secPerMins = 60
+    secPerHours = secPerMins * 60
+    hours = math.floor(interval/secPerHours)
+    interval = interval - hours * secPerHours
+    mins = math.floor(interval/secPerMins)
+    leftTime = '{} hours {} mins'.format(hours, mins)
+
+    return label, prog, error, leftTime
 
 def get_message(json):
     _id, message = [json['result'][0]['content']['from']], json['result'][0]['content']['text']
@@ -105,28 +129,57 @@ def callback():
         js = request.get_json()
         _id, message =  get_message(js)
         if not message[:4] == 'Flux':
-            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(os.environ['name'], message,)
+            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message,)
             send_message(_id, message)
             return 'post'
         else:
-            if isin(message, status_set):
-                Flux = FLUX((FLUX_ipaddr, 1901))
-                Flux.status['st_prog'] = format(Flux.status['st_prog'], '.2%')
+            Flux = robot()
+            label, prog, error, leftTime = get_flux_status(Flux)
 
-                message = '喵～～\n目前狀態:{}\n目前進度:{}'.format(
-                            Flux.status['st_label'], Flux.status['st_prog'])
+            if isin(message, status_set):
+                message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間:{}'.format(
+                            MANTRA, label, prog, leftTime)
                 send_message(_id, message)
-                return 'ok'
+
+            if isin(message, start_list):
+                try:
+                    message = '{}\n 開始功能還沒做喔～～'.format(MANTRA)
+                    send_message(_id, message)
+                except:
+                    pass
+            if isin(message, pause_list):
+                try:
+                    Flux.pause_play()
+                    message = '{}\n已經暫停了喔'.format(MANTRA)
+                    send_message(_id, message)
+                except:
+                    message = '{}\n無法暫停，可能已經停止了'.format(MANTRA)
+                    send_message(_id, message)
+            if isin(message, resume_list):
+                try:
+                    Flux.resume_play()
+                    message = '{}\n已經繼續在印了呢'.format(MANTRA)
+                    send_message(_id, message)
+                except:
+                    message = '{}\n無法繼續，可能已經停止了'.format(MANTRA)
+                    send_message(_id, message)
+
+            if isin(message, abort_list):
+                try:
+                    Flux.resume_play()
+                    message = '{}\n已經暫停囉'.format(MANTRA)
+                    send_message(_id, message)
+                except:
+                    message = '{}\n無法暫停，可能早就已經停止了呢'.format(MANTRA)
+                    send_message(_id, message)
 
             if isin(message, list_files_set):
-                payload = list_files()
-                send_message(_id, payload)
-                return 'ok'
+                _list = str(Flux.list_files('/SD'))
+                message = '{}'.format(_list)
+                send_message(_id, message)
 
-            if isin(message, test_set):
-                payload = get_status()
-                send_message(_id, payload)
-                return 'ok'
+            Flux.close()
+            return 'ok'
 
     if request.method == 'GET':
         Flux = FLUX((FLUX_ipaddr, 1901))
