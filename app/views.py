@@ -11,31 +11,38 @@ from app import app
 sys.path.insert(0, os.path.abspath('..'))
 
 from flux import FLUX
-from fluxclient.robot import FluxRobot
+from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
 
 start_list = {'start',
+              'START',
               '開始'}
 
 pause_list = {'pause',
+              'PAUSE',
               '暫停'}
 
 resume_list = {'resume',
+               'RESUME',
                '繼續'}
 
 abort_list = {'abort',
+              'ABORT',
               'stop',
               'STOP',
               '停止',
               '結束'}
 
 list_files_set = {'list',
+                  'LIST',
                   '檔案'}
 
 status_set = {'status',
+              'STATUS',
               '狀態',
               '狀況',
               '進度'}
+
 
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
@@ -49,7 +56,11 @@ def isin(message, message_set):
 
 def robot():
     client_key = get_or_create_default_key("./sdk_connection.pem")
-    robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
+    try:
+        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
+    except errors.RobotSessionError:
+        add_rsa()
+        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     return robot
 
 
@@ -59,15 +70,18 @@ def get_flux_status(robot):
     prog = float(payload['prog'])
     label = payload['st_label']
     error = payload['error']
-
-    interval = timeCost * (1 - prog)
-    secPerMins = 60
-    secPerHours = secPerMins * 60
-    hours = math.floor(interval/secPerHours)
-    interval = interval - hours * secPerHours
-    mins = math.floor(interval/secPerMins)
-    leftTime = '{} hours {} mins'.format(hours, mins)
-    prog = format(prog, '.2%')
+    try:
+        interval = timeCost * (1 - prog)
+        secPerMins = 60
+        secPerHours = secPerMins * 60
+        hours = math.floor(interval/secPerHours)
+        interval = interval - hours * secPerHours
+        mins = math.floor(interval/secPerMins)
+        leftTime = '{} hours {} mins'.format(hours, mins)
+        prog = format(prog, '.2%')
+    except ValueError:
+        prog = 'unknow'
+        leftTime = 'FLUX不告訴我啦！'
 
     return label, prog, error, leftTime
 
@@ -75,6 +89,12 @@ def get_flux_status(robot):
 def get_message(json):
     _id, message = [json['result'][0]['content']['from']], json['result'][0]['content']['text']
     return _id, message
+
+
+def add_rsa():
+    Flux = FLUX((FLUX_ipaddr, 1901))
+    result = Flux.add_rsa()
+    return result
 
 
 def send_message(to_user, content):
@@ -121,86 +141,77 @@ def g2ftest():
         return str(ls)
 
 
-@app.route("/add_rsa", methods=['GET'])
-def add_rsa():
-    if request.method == 'GET':
-        Flux = FLUX((FLUX_ipaddr, 1901))
-        result = Flux.add_rsa()
-        return result
-
-
-@app.route("/callback", methods=['GET', 'POST'])
+@app.route("/callback", methods=['POST'])
 def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message = get_message(js)
-        if not message[:4] == 'Flux':
-            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message,)
+        if message == '罐罐':
+            message = '{0}要吃罐罐！！{0}要吃罐罐！！'.format(NAME)
             send_message(_id, message)
-            return 'post'
+            return 'ok'
+
+        if not message[:4].lower() == 'flux':
+            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
+            send_message(_id, message)
+            return 'ok'
         else:
             Flux = robot()
             if Flux.report_play()['st_label'] == 'IDLE':
                 message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
                 send_message(_id, message)
-                return 'ok'
+                return 'ok' 
 
             if Flux.report_play()['st_label'] == 'COMPLETED':
                 message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
                 send_message(_id, message)
-                return 'ok'
+                return 'ok' 
 
             label, prog, error, leftTime = get_flux_status(Flux)
 
             if isin(message, status_set):
-                message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間:{}'.format(
+                message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
                             MANTRA, label, prog, leftTime)
-                send_message(_id, message)
 
-            if isin(message, start_list):
+            elif isin(message, start_list):
                 try:
                     message = '{}\n開始功能還沒做喔～～'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     pass
-            if isin(message, pause_list):
+            elif isin(message, pause_list):
                 try:
                     Flux.pause_play()
                     message = '{}\n已經暫停了喔'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     message = '{}\n無法暫停，可能已經停止了'.format(MANTRA)
-                    send_message(_id, message)
-            if isin(message, resume_list):
+            elif isin(message, resume_list):
                 try:
                     Flux.resume_play()
                     message = '{}\n已經繼續在印了呢'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     message = '{}\n無法繼續，可能已經停止了'.format(MANTRA)
-                    send_message(_id, message)
 
-            if isin(message, abort_list):
+            elif isin(message, abort_list):
                 try:
                     Flux.abort_play()
                     message = '{}\n已經停止囉'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     message = '{}\n無法停止，可能早就已經停止了呢'.format(MANTRA)
-                    send_message(_id, message)
 
-            if isin(message, list_files_set):
+            elif isin(message, list_files_set):
                 _list = str(Flux.list_files('/SD'))
                 message = '{}'.format(_list)
-                send_message(_id, message)
 
+            else :
+                message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[4:])
+
+            send_message(_id, message)
             Flux.close()
             return 'ok'
 
-    if request.method == 'GET':
-        Flux = FLUX((FLUX_ipaddr, 1901))
+    # if request.method == 'GET':
+    #     Flux = FLUX((FLUX_ipaddr, 1901))
 
-        message = str(Flux.status)
-        re = send_message(_id, message)
-        # re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
-        return re
+    #     message = str(Flux.status)
+    #     re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
+    #     return re

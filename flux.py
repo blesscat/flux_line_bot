@@ -1,5 +1,5 @@
-import pdb
 import os
+
 import socket
 import struct
 from time import time
@@ -36,7 +36,7 @@ class FLUX(object):
             if magic_num != b"FLUX":
             # Bad magic number
                 return
-
+            
             self.handle_message(endpoint, buf[6:])
 
 
@@ -129,7 +129,7 @@ class FLUX(object):
                 print("Slave key signuture error (V1)")
         else:
             print("Master key signuture error (V1)")
-
+    
     def add_rsa(self):
         my_rsakey = get_or_create_default_key("./sdk_connection.pem")
         upnp_task = self.device.manage_device(my_rsakey)
