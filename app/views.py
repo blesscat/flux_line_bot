@@ -201,6 +201,6 @@ def callback():
         Flux = FLUX((FLUX_ipaddr, 1901))
 
         message = str(Flux.status)
-        re = send_message([_id], message)
+        re = send_message(_id, message)
         # re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
         return re
