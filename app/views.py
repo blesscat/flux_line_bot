@@ -203,7 +203,7 @@ def callback():
                 message = '{}'.format(_list)
 
             else :
-                message = '{}\n{}不知道是什麼啦！'.format(MANTRA, NAME)
+                message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message)
 
             send_message(_id, message)
             Flux.close()
