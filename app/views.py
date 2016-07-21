@@ -37,6 +37,7 @@ status_set = {'status',
               '狀況',
               '進度'}
 
+
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
@@ -52,8 +53,7 @@ def robot():
     try:
         robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     except errors.RobotSessionError:
-        result = add_rsa()
-        print(result)
+        add_rsa()
         robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     return robot
 
@@ -74,7 +74,8 @@ def get_flux_status(robot):
         leftTime = '{} hours {} mins'.format(hours, mins)
         prog = format(prog, '.2%')
     except ValueError:
-        leftTime = prog = 'unknow'
+        prog = 'unknow'
+        leftTime = 'FLUX不告訴我啦！'
 
     return label, prog, error, leftTime
 
@@ -139,8 +140,13 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message = get_message(js)
-        if not message[:4] == 'Flux':
-            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message,)
+        if message == '罐罐':
+            message = '{0}要吃罐罐！！{0}要吃罐罐！！'.format(NAME)
+            send_message(_id, message)
+            return 'ok'
+
+        if not message[:4].lower() == 'flux':
+            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
             send_message(_id, message)
             return 'ok'
         else:
@@ -172,27 +178,24 @@ def callback():
                 try:
                     Flux.pause_play()
                     message = '{}\n已經暫停了喔'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     message = '{}\n無法暫停，可能已經停止了'.format(MANTRA)
-                    send_message(_id, message)
+                send_message(_id, message)
             if isin(message, resume_list):
                 try:
                     Flux.resume_play()
                     message = '{}\n已經繼續在印了呢'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     message = '{}\n無法繼續，可能已經停止了'.format(MANTRA)
-                    send_message(_id, message)
+                send_message(_id, message)
 
             if isin(message, abort_list):
                 try:
                     Flux.abort_play()
                     message = '{}\n已經停止囉'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     message = '{}\n無法停止，可能早就已經停止了呢'.format(MANTRA)
-                    send_message(_id, message)
+                send_message(_id, message)
 
             if isin(message, list_files_set):
                 _list = str(Flux.list_files('/SD'))

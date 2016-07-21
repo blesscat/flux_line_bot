@@ -1,4 +1,5 @@
-import pdb
+import os
+
 import socket
 import struct
 from time import time
@@ -133,17 +134,10 @@ class FLUX(object):
         my_rsakey = get_or_create_default_key("./sdk_connection.pem")
         upnp_task = self.device.manage_device(my_rsakey)
         try:
-            upnp_task.authorize_with_password("dxi013") #It's the same password you entered in FLUX Studio's configuration page.
+            upnp_task.authorize_with_password(os.environ['password']) #It's the same password you entered in FLUX Studio's configuration page.
             upnp_task.add_trust("my_public_key", my_rsakey.public_key_pem.decode())
             print("Authorized")
             return "Authorized"
         except UpnpError as e:
             error_code = "Authorization failed: %s" % e
             return error_code
-
-if __name__ == "__main__":
-    flux = FLUX(("122.116.80.243", 1901))
-    print(vars(flux.device))
-    print(flux.status)
-    
-
