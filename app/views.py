@@ -41,14 +41,17 @@ FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 
+
 def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
     return _bool
+
 
 def robot():
     client_key = get_or_create_default_key("./sdk_connection.pem")
     robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     return robot
+
 
 def get_flux_status(robot):
     payload = robot.report_play()
@@ -68,9 +71,11 @@ def get_flux_status(robot):
 
     return label, prog, error, leftTime
 
+
 def get_message(json):
     _id, message = [json['result'][0]['content']['from']], json['result'][0]['content']['text']
     return _id, message
+
 
 def send_message(to_user, content):
     url = 'https://trialbot-api.line.me/v1/events'
@@ -128,7 +133,7 @@ def add_rsa():
 def callback():
     if request.method == 'POST':
         js = request.get_json()
-        _id, message =  get_message(js)
+        _id, message = get_message(js)
         if not message[:4] == 'Flux':
             message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message,)
             send_message(_id, message)
@@ -138,12 +143,12 @@ def callback():
             if Flux.report_play()['st_label'] == 'IDLE':
                 message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
                 send_message(_id, message)
-                return 'ok' 
+                return 'ok'
 
             if Flux.report_play()['st_label'] == 'COMPLETED':
                 message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
                 send_message(_id, message)
-                return 'ok' 
+                return 'ok'
 
             label, prog, error, leftTime = get_flux_status(Flux)
 
@@ -196,5 +201,6 @@ def callback():
         Flux = FLUX((FLUX_ipaddr, 1901))
 
         message = str(Flux.status)
-        re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
+        re = send_message([_id], message)
+        # re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
         return re
