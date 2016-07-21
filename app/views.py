@@ -11,7 +11,7 @@ from app import app
 sys.path.insert(0, os.path.abspath('..'))
 
 from flux import FLUX
-from fluxclient.robot import FluxRobot
+from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
 
 start_list = {'start',
@@ -23,7 +23,7 @@ pause_list = {'pause',
 resume_list = {'resume',
                '繼續'}
 
-abort_list = {'about',
+abort_list = {'abort',
               'stop',
               'STOP',
               '停止',
@@ -41,14 +41,22 @@ FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 
+
 def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
     return _bool
 
+
 def robot():
     client_key = get_or_create_default_key("./sdk_connection.pem")
-    robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
+    try:
+        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
+    except errors.RobotSessionError:
+        result = add_rsa()
+        print(result)
+        robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     return robot
+
 
 def get_flux_status(robot):
     payload = robot.report_play()
@@ -56,21 +64,31 @@ def get_flux_status(robot):
     prog = float(payload['prog'])
     label = payload['st_label']
     error = payload['error']
-
-    interval = timeCost * (1 - prog)
-    secPerMins = 60
-    secPerHours = secPerMins * 60
-    hours = math.floor(interval/secPerHours)
-    interval = interval - hours * secPerHours
-    mins = math.floor(interval/secPerMins)
-    leftTime = '{} hours {} mins'.format(hours, mins)
-    prog = format(prog, '.2%')
+    try:
+        interval = timeCost * (1 - prog)
+        secPerMins = 60
+        secPerHours = secPerMins * 60
+        hours = math.floor(interval/secPerHours)
+        interval = interval - hours * secPerHours
+        mins = math.floor(interval/secPerMins)
+        leftTime = '{} hours {} mins'.format(hours, mins)
+        prog = format(prog, '.2%')
+    except ValueError:
+        leftTime = prog = 'unknow'
 
     return label, prog, error, leftTime
+
 
 def get_message(json):
     _id, message = [json['result'][0]['content']['from']], json['result'][0]['content']['text']
     return _id, message
+
+
+def add_rsa():
+    Flux = FLUX((FLUX_ipaddr, 1901))
+    result = Flux.add_rsa()
+    return result
+
 
 def send_message(to_user, content):
     url = 'https://trialbot-api.line.me/v1/events'
@@ -116,23 +134,15 @@ def g2ftest():
         return str(ls)
 
 
-@app.route("/add_rsa", methods=['GET'])
-def add_rsa():
-    if request.method == 'GET':
-        Flux = FLUX((FLUX_ipaddr, 1901))
-        result = Flux.add_rsa()
-        return result
-
-
-@app.route("/callback", methods=['GET', 'POST'])
+@app.route("/callback", methods=['POST'])
 def callback():
     if request.method == 'POST':
         js = request.get_json()
-        _id, message =  get_message(js)
+        _id, message = get_message(js)
         if not message[:4] == 'Flux':
             message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message,)
             send_message(_id, message)
-            return 'post'
+            return 'ok'
         else:
             Flux = robot()
             if Flux.report_play()['st_label'] == 'IDLE':
@@ -148,7 +158,7 @@ def callback():
             label, prog, error, leftTime = get_flux_status(Flux)
 
             if isin(message, status_set):
-                message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間:{}'.format(
+                message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
                             MANTRA, label, prog, leftTime)
                 send_message(_id, message)
 
@@ -178,7 +188,7 @@ def callback():
             if isin(message, abort_list):
                 try:
                     Flux.abort_play()
-                    message = '{}\n已經暫停囉'.format(MANTRA)
+                    message = '{}\n已經停止囉'.format(MANTRA)
                     send_message(_id, message)
                 except:
                     message = '{}\n無法停止，可能早就已經停止了呢'.format(MANTRA)
@@ -192,9 +202,9 @@ def callback():
             Flux.close()
             return 'ok'
 
-    if request.method == 'GET':
-        Flux = FLUX((FLUX_ipaddr, 1901))
+    # if request.method == 'GET':
+    #     Flux = FLUX((FLUX_ipaddr, 1901))
 
-        message = str(Flux.status)
-        re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
-        return re
+    #     message = str(Flux.status)
+    #     re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
+    #     return re
