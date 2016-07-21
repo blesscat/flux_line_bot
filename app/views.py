@@ -15,24 +15,30 @@ from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
 
 start_list = {'start',
+              'START',
               '開始'}
 
 pause_list = {'pause',
+              'PAUSE',
               '暫停'}
 
 resume_list = {'resume',
+               'RESUME',
                '繼續'}
 
 abort_list = {'abort',
+              'ABORT',
               'stop',
               'STOP',
               '停止',
               '結束'}
 
 list_files_set = {'list',
+                  'LIST',
                   '檔案'}
 
 status_set = {'status',
+              'STATUS',
               '狀態',
               '狀況',
               '進度'}
@@ -166,42 +172,40 @@ def callback():
             if isin(message, status_set):
                 message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
                             MANTRA, label, prog, leftTime)
-                send_message(_id, message)
 
-            if isin(message, start_list):
+            elif isin(message, start_list):
                 try:
                     message = '{}\n開始功能還沒做喔～～'.format(MANTRA)
-                    send_message(_id, message)
                 except:
                     pass
-            if isin(message, pause_list):
+            elif isin(message, pause_list):
                 try:
                     Flux.pause_play()
                     message = '{}\n已經暫停了喔'.format(MANTRA)
                 except:
                     message = '{}\n無法暫停，可能已經停止了'.format(MANTRA)
-                send_message(_id, message)
-            if isin(message, resume_list):
+            elif isin(message, resume_list):
                 try:
                     Flux.resume_play()
                     message = '{}\n已經繼續在印了呢'.format(MANTRA)
                 except:
                     message = '{}\n無法繼續，可能已經停止了'.format(MANTRA)
-                send_message(_id, message)
 
-            if isin(message, abort_list):
+            elif isin(message, abort_list):
                 try:
                     Flux.abort_play()
                     message = '{}\n已經停止囉'.format(MANTRA)
                 except:
                     message = '{}\n無法停止，可能早就已經停止了呢'.format(MANTRA)
-                send_message(_id, message)
 
-            if isin(message, list_files_set):
+            elif isin(message, list_files_set):
                 _list = str(Flux.list_files('/SD'))
                 message = '{}'.format(_list)
-                send_message(_id, message)
 
+            else :
+                message = '{}\n{}不知道是什麼啦！'.format(MANTRA, NAME)
+
+            send_message(_id, message)
             Flux.close()
             return 'ok'
 
