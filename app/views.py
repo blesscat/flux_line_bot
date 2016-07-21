@@ -23,7 +23,7 @@ pause_list = {'pause',
 resume_list = {'resume',
                '繼續'}
 
-abort_list = {'about',
+abort_list = {'abort',
               'stop',
               'STOP',
               '停止',
