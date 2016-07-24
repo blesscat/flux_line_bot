@@ -5,3 +5,6 @@ tests
 .env
 *.so
 sdk_connection.pem
+*.o
+delta.py
+robot.py
