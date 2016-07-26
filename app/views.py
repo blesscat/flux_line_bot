@@ -210,7 +210,7 @@ def callback():
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
             send_message(_id, message)
             time.sleep(5)
-            message = '{}\n我能幫你做的事情如下喔\n{}'.format(MANTRA, NAME, FLUX_COMMANDS)
+            message = '{}\n{}能幫你做的事情如下喔\n{}'.format(MANTRA, NAME, FLUX_COMMANDS)
             send_message(_id, message)
             return 'ok'
         
