@@ -145,6 +145,7 @@ def g2ftest():
 def callback():
     if request.method == 'POST':
         js = request.get_json()
+        print(js)
         _id, message = get_message(js)
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
