@@ -147,43 +147,38 @@ def callback():
         js = request.get_json()
         _id, message = get_message(js)
         if message == '罐罐':
-            message = '{0}要吃罐罐！！{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
+            message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
             send_message(_id, message)
             return 'ok'
 
-        if not message[:4].lower() == 'flux':
+        if not message[:5].lower() == 'flux ':
             message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
             send_message(_id, message)
             return 'ok'
         else:
             Flux = robot()
-            if Flux.report_play()['st_label'] == 'IDLE':
-                message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
-                send_message(_id, message)
-                return 'ok' 
-
-            if Flux.report_play()['st_label'] == 'COMPLETED':
-                message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
-                send_message(_id, message)
-                return 'ok' 
 
             label, prog, error, leftTime = get_flux_status(Flux)
 
             if isin(message, status_set):
-                message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
-                            MANTRA, label, prog, leftTime)
+                if Flux.report_play()['st_label'] == 'IDLE':
+                    message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
+                elif Flux.report_play()['st_label'] == 'COMPLETED':
+                    message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
+                else:  
+                    message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
+                               MANTRA, label, prog, leftTime)
 
             elif isin(message, start_list):
-                try:
-                    message = '{}\n開始功能還沒做喔～～'.format(MANTRA)
-                except:
-                    pass
+                    message = '{}\n開始功能還沒完成喔～～'.format(MANTRA)
+
             elif isin(message, pause_list):
                 try:
                     Flux.pause_play()
                     message = '{}\n已經暫停了喔'.format(MANTRA)
                 except:
                     message = '{}\n無法暫停，可能已經停止了'.format(MANTRA)
+
             elif isin(message, resume_list):
                 try:
                     Flux.resume_play()
@@ -203,15 +198,8 @@ def callback():
                 message = '{}'.format(_list)
 
             else :
-                message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[4:])
+                message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
 
             send_message(_id, message)
             Flux.close()
             return 'ok'
-
-    # if request.method == 'GET':
-    #     Flux = FLUX((FLUX_ipaddr, 1901))
-
-    #     message = str(Flux.status)
-    #     re = send_message(['u96e32e17ebdedd21c1f84bbbfd7de08c'], message)
-    #     return re
