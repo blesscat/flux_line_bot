@@ -37,7 +37,8 @@ list_files_set = {'list',
                   'LIST',
                   '檔案'}
 
-status_set = {'status',
+status_set = {'200',
+              'status',
               'STATUS',
               '狀態',
               '狀況',
@@ -97,6 +98,17 @@ def add_rsa():
     return result
 
 
+def isin_status(Flux):
+    if Flux.report_play()['st_label'] == 'IDLE':
+        message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
+    elif Flux.report_play()['st_label'] == 'COMPLETED':
+        message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
+    else:  
+        label, prog, error, leftTime = get_flux_status(Flux)
+        message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
+                   MANTRA, label, prog, leftTime)
+    return message
+
 def send_message(to_user, content):
     url = 'https://trialbot-api.line.me/v1/events'
     headers = {
@@ -151,24 +163,13 @@ def callback():
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
             send_message(_id, message)
             return 'ok'
-
-        if not message[:5].lower() == 'flux ':
-            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
-            send_message(_id, message)
-            return 'ok'
-        else:
+        
+        magic_id = message[:5].lower()
+        if magic_id == 'flux ' or magic_id == '8763 ':
             Flux = robot()
 
-            label, prog, error, leftTime = get_flux_status(Flux)
-
             if isin(message, status_set):
-                if Flux.report_play()['st_label'] == 'IDLE':
-                    message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
-                elif Flux.report_play()['st_label'] == 'COMPLETED':
-                    message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
-                else:  
-                    message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
-                               MANTRA, label, prog, leftTime)
+                message = isin_status(Flux)
 
             elif isin(message, start_list):
                     message = '{}\n開始功能還沒完成喔～～'.format(MANTRA)
@@ -203,4 +204,9 @@ def callback():
 
             send_message(_id, message)
             Flux.close()
+            return 'ok'
+
+        else:
+            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
+            send_message(_id, message)
             return 'ok'
