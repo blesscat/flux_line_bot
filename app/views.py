@@ -194,7 +194,7 @@ def callback():
                     message = '{}\n無法停止，可能早就已經停止了呢'.format(MANTRA)
 
             elif isin(message, list_files_set):
-                _list = str(Flux.list_files('/SD'))
+                _list = str(Flux.list_files('/SD/Recent'))
                 message = '{}'.format(_list)
 
             else :
