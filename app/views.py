@@ -242,6 +242,7 @@ def callback():
             send_message(_id, message)
             Flux.close()
             return 'ok'
+
  
         else:
             message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
