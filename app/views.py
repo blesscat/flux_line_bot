@@ -113,14 +113,18 @@ def add_rsa():
 
 
 def isin_status(Flux):
-    if Flux.report_play()['st_label'] == 'IDLE':
-        message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
-    elif Flux.report_play()['st_label'] == 'COMPLETED':
-        message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
-    else:  
+    status = Flux.report_play()['st_label']
+    if status == 'RUNNING':  
         label, prog, error, leftTime = get_flux_status(Flux)
         message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
                    MANTRA, label, prog, leftTime)
+    elif status == 'IDLE':
+        message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
+    elif status == 'COMPLETED':
+        message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
+    else:       
+        message = '{}\n目前狀態{}'.format(MANTRA, status)
+
     return message
 
 
@@ -243,7 +247,6 @@ def callback():
             Flux.close()
             return 'ok'
 
- 
         else:
             message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
             send_message(_id, message)
