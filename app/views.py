@@ -211,16 +211,16 @@ def send_picture(_id):
    return json.dumps(r.json(), indent=4)
 
 
-app.route("/", methods=['GET'])
+@app.route("/", methods=['GET'])
 def index():
    if request.method == 'GET':
        return render_template('main.html')
 
 
-app.route("/upload_file", methods=['GET'])
+@app.route("/upload_file", methods=['GET'])
 def upload_file():
    if request.method == 'GET':
-       os.system("pyhton setup.py install")
+       os.system("python setup.py install")
        return 'main.html'
 
 
