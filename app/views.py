@@ -64,6 +64,9 @@ FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 
+PICTURE = "https://4.bp.blogspot.com/-v1BgHwzoVeo/V709k2CmubI/" + \
+          "AAAAAAAAI_Q/qfmZHxOhrwAfzOAUAJtHe-WPmSKNL3wIwCPcB/s1600/picture.jpg"
+
 def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
     return _bool
@@ -185,7 +188,7 @@ def send_message(_id, message):
    r = requests.post(url, data=json.dumps(data), headers=headers)
    return json.dumps(r.json(), indent=4)
 
-def send_picture(_id, _url):
+def send_picture(_id):
    url = 'https://trialbot-api.line.me/v1/events'
    headers = {
               'Content-Type': 'application/json; charset=UTF-8',
@@ -200,8 +203,8 @@ def send_picture(_id, _url):
            'content': {
                'contentType': 2,
                'toType': 1,
-               "originalContentUrl": _url,
-               "previewImageUrl": _url
+               "originalContentUrl": PICTURE,
+               "previewImageUrl": PICTURE
                }
           }
    r = requests.post(url, data=json.dumps(data), headers=headers)
@@ -234,12 +237,9 @@ def g2ftest():
 def callback():
     if request.method == 'POST':
         js = request.get_json()
-        print(js)
         _id, message, contentType = get_message(js)
-        print(_id, message)
         if contentType != 1:
-            send_picture(_id, "https://bless-line-bot-test.herokuapp.com:443/static/images/picture.jpg")
-            print(send_picture)
+            send_picture(_id)
             return "ok"
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
