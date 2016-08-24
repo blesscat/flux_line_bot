@@ -1,27 +1,101 @@
 body {
+    background: #4E5869;
     margin: 0;
-    padding: 20px;
+    padding: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #FFF;
+    background-color: #f2f7fa;
+    //background-image: url("../images/background.jpg");
     background-position:left bottom;
     background-repeat: no-repeat;
     background-size: 100% auto;
     overflow-x: hidden;
-    height :100vh;
 }
-div p{
-  font-size: 200%;
-  background-color: rgba(255, 255, 255, 0.6);
-  border: 2px solid #E3E3E3;
-  margin-top: 10px;
-  max-width: 500px;
+
+hr {
+  height: 2px;
+  border-width: 0;
+  color: gray;
+  background-color: gray;
+}
+
+#bannerInfo{
+  position: absolute;
+  bottom: 5%;
+  right: 4px;
+  font-size: 120%;
+  color: #666666;
+}
+
+#bannerInfo img{
+  width: 20px;
+  position: relative;
+  top: 5px;
+
+}
+#logout:hover{
+  color:red;
+  cursor: pointer;
+}
+
+#middleFrame{
+  position: relative;
+}
+#sidebar{
+  width: 220px;
+  position: absolute;
+  overflow-y: hidden;
+  height: 100%;
+}
+#sidebar:hover{
+overflow: auto;
+}
+
+.errMsg{
+  margin-left: 10px;
+  color:red;
+}
+.btn{
+    margin-top: 30px;
+    margin-right: 5px;
+    background-color: #2A568F;
+    color: #FFF;
+    border: 2px outset #FFF;
+    height: 25px;
+    width: 50px;
+}
+
+
+#banner {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    background-image: url("../images/Header.svg")
+}
+
+#mainpage {
+  z-index: 10;
+  height: 100%;
+  vertical-align: top;
+  position: relative;
+  left: 220px;
+  border-left-style: solid;
+  border-left-color: #E3E3E3;
+  border-left-width: thin;
+  max-width: calc(100% - 220px);
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  overflow-y: auto;
+}
+form div {
+  padding: 10px;
 }
 
 .subTopic {
 	font-weight: bold;
 	text-decoration: none;
 	color: #FFF;
-	background-color: #09C;
+	//background-color: #09C;
+	background-color: #134b8d;
 	padding-top: 10px;
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
@@ -33,7 +107,6 @@ div p{
 	margin-bottom: 5px;
 	padding-left: 10px;
 	padding-right: 10px;
-  font-size: 200%;
 }
 
 .hori_table_frame {
@@ -41,8 +114,6 @@ div p{
   border-top:1px dashed #CCC;
 	color: #333;
   border-collapse: collapse;
-  margin-top: 10px;
-  font-size: 150%;
 }
 .hori_table_frame tr td {
 	background-color: rgba(255, 255, 255, 0.7);
@@ -57,4 +128,335 @@ div p{
   border-right:1px solid #CCC;
   border-bottom:1px dashed #CCC;
 	color: #000;
+}
+
+.verti_table_frame {
+  width: 600px;
+  border-top:1px solid #CCC;
+	color: #333;
+	font-weight: lighter;
+	vertical-align: middle;
+  border-collapse: collapse;
+}
+.verti_table_frame tbody tr td {
+	background-color: rgba(255, 255, 255, 0.7);
+  border-bottom:1px dashed #D6D6D6;
+  height: 30px;
+}
+.verti_table_frame tbody tr td:first-child {
+  padding-left: 10px;
+}
+.verti_table_frame thead {
+	background-color: rgba(225, 231, 232, 0.7);
+  border-bottom:1px solid #CCC;
+	padding-right: 5px;
+	color: #000;
+	text-align: left;
+}
+.verti_table_frame thead tr th:first-child {
+  padding-left: 10px;
+}
+
+/*  side menu */
+nav {
+  top: 0px;
+  margin: 0px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: left;
+  box-sizing: padding-box;
+  z-index:20;
+}
+
+nav ul{
+    margin: 0;
+    padding: 0;
+
+}
+nav ul li{
+    list-style-type: none;
+}
+.subnav{
+  width:100%;
+  display: none;
+}
+.T-menu_current {
+  font-size:80%;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-indent: 40px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  color: #06F;
+  border-bottom-width: 1px;
+  border-bottom-style: dotted;
+  border-bottom-color: #E3E3E3;
+  background-color: #FFF;
+  margin-top: 0px;
+}
+.T-menu {
+  font-size:80%;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-indent: 40px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  color: black;
+  border-bottom-width: 1px;
+  border-bottom-style: dotted;
+  border-bottom-color: #E3E3E3;
+  background-color: #FFF;
+  margin-top: 0px;
+  cursor: pointer;
+}
+.T-menu:hover {
+	color: #F30;
+	text-decoration: none;
+}
+
+.sub-menu_current {
+    font-size:80%;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-indent: 38px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    color: #000;
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
+    border-bottom-color: #E3E3E3;
+    background-color: #E3E3E3;
+    margin-top: 0px;
+}
+
+.sub-menu, .sub-menu:link, .sub-menu:visited{
+    font-size:80%;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-indent: 38px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
+    border-bottom-color: #E3E3E3;
+    background-color: #FFF;
+    margin-top: 0px;
+    cursor: pointer;
+}
+.sub-menu:hover{
+    font-size: 90%;
+    color: #03C;
+    border-bottom-style: double;
+    border-bottom-color: #03C;
+}
+.sub-menu:active{
+    color: #F30;
+    font-size: 100%;
+    border-bottom-style: dotted;
+    border-bottom-color: #EA5514;
+}
+
+.menu_current {
+    //background-color: #09F;
+    background-color: #124B8D;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-indent: 20px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    color: #FFF;
+    font-weight: bold;
+    border-bottom-color: #66FFFF;
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+}
+
+
+.menu, .menu:link, .menu:visited{
+    background-color: #CCDDDC;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 20px;
+    display: inline-block;
+    color: #333333;
+    cursor: pointer;
+    border-bottom-color: #FFFFFF;
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+
+}
+.menu:hover{
+    text-decoration: none;
+    //background-color: #1D2088;
+    background-color: #729bcb;
+    color: white;
+    border-bottom-color: #0066FF;
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+}
+.menu:active{
+    background-color: #EA5514;
+    font-size: 110%;
+    border-bottom-color: #FFFFFF;
+    border-bottom-style: solid;
+    border-bottom-width: thin;
+}
+
+#menu-toggle {
+    width: 30px;
+    height: 30px;
+    display: none;
+    background: #CCDDDC;
+    text-decoration: none;
+    color:black;
+    text-align: center;
+    line-height: 30px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 900px) {
+  body {
+    font-size: 90%;
+  }
+  .hori_table_frame {
+    width: 400px;
+  }
+  #sidebar {
+    width: 180px;
+  }
+  #mainpage {
+    left: 180px;
+    max-width: calc(100% - 180px);
+  }
+  #bannerInfo{
+  }
+  #bannerInfo img{
+    width: 15px;
+  }
+}
+@media only screen and (max-width: 550px) {
+    #menu-toggle {
+        display: block;
+    }
+    #mainpage{
+        top: 0px;
+        left: 0px;
+        max-width: 100%;
+        border-left-style: none;
+    }
+    #sidebar{
+      top:30px;
+      height: 400px;
+      display: none;
+      position: absolute;
+    }
+}
+/* end side menu */
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.footer {
+    background-color: #2A568F;
+    height: 20px;
+    font-family: Arial;
+    color: #E8E8E8;
+    font-size: 70%;
+    text-align: right;
+    padding-top: 20px;
+    padding-bottom: 2px;
+    border-top-color: #CCC;
+    border-top-style: solid;
+    border-top-width: thin;
+    position:absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/*
+ * Let's target IE to respect aspect ratios and sizes for img tags containing SVG files
+ *
+ * [1] IE9
+ * [2] IE10+
+ */
+/* 1 */
+.ie9 img[src*=".svg"] {
+  width: 100%;
+}
+/* 2 */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  img[src*=".svg"] {
+    width: 100%;
+  }
 }

@@ -9,8 +9,16 @@ from flask import Flask
 
 app = Flask(__name__)
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 app.config['SRF_ENABLED'] = True
 app.config['SECRET_KEY'] = 'blesscat-Web-Console-SecretKey'
+
+app.config['FC_UPLOAD_FOLDER'] = basedir
+app.config['FC_ALLOWED_EXTENSIONS'] = set(['fc'])
+print(app.config['FC_UPLOAD_FOLDER'])
+
+app.debug = True
 # ===================LoginManager=====================================================
 # login_manager = LoginManager()
 # login_manager.init_app(app)

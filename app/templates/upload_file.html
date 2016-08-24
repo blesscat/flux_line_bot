@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <link href='/static/css/style.css' rel='stylesheet' />
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery.mask.js"></script>
+  </head>
+  <body>
+    <form enctype="multipart/form-data">
+      <div id="mainform">
+        <div class="subTopic">Firmware update </div>
+        <table class="hori_table_frame">
+          <tr>
+            <td>Fc File:</td>
+            <td><input name="file" type="file" /></td>
+        </table>
+          <progress value="0" style="width: 400px"></progress>
+          <br />
+          <input type="button" value="Upload" class="btn"/>
+          <p class='errMsg'></p>
+      </div>
+    </form>
+  </body>
+</html>
+
+<script>
+$(document).ready(function(){
+  $("body").css('cursor', 'default');
+  $("#mainpage").css({"background-image":"none",
+                      "background-color":"transparent"});
+});
+
+$(':file').change(function(){
+    var file = this.files[0];
+    var name = file.name;
+    var size = file.size;
+    var type = file.type;
+    //Your validation
+});
+$(':button').click(function(){
+    var formData = new FormData($('form')[0]);
+    $.ajax({
+        url: "{{ url_for('upload_file') }}",  //Server script to process data
+        type: 'POST',
+        xhr: function() {  // Custom XMLHttpRequest
+            var myXhr = $.ajaxSettings.xhr();
+            if(myXhr.upload){ // Check if upload property exists
+                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+            }
+            return myXhr;
+        },
+        //Ajax events
+        // beforeSend: beforeSendHandler,
+        success: function(payload) {
+              console.log('ok');
+          if (payload == "empty") {
+            $(".errMsg").text("File cannot be empty.");
+          } else if (payload == "check file fail") {
+            $(".errMsg").text("Checksum Fail, Please upload again.");
+          } else if (payload == "not allowed") {
+            $(".errMsg").text("File is not allowed.");
+          } else if (payload == "success") {
+              console.log('ok');
+          }
+        },
+        // error: errorHandler,
+        // Form data
+        data: formData,
+        //Options to tell jQuery not to process data or worry about content-type.
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+});
+
+function progressHandlingFunction(e){
+    if(e.lengthComputable){
+        $('progress').attr({value:e.loaded,max:e.total});
+    }
+}
+</script>

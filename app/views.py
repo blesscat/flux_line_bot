@@ -7,6 +7,7 @@ import socket
 import math
 import time
 from flask import render_template, request
+from werkzeug import secure_filename
 from app import app
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -50,7 +51,7 @@ abort_set = {'240',
              '停止',
              '結束'}
 
-FLUX_COMMANDS=""
+FLUX_COMMANDS = ""
 flux_command_list = ["110 - status",
                      "120 - list_files",
                      "210 - start",
@@ -67,9 +68,25 @@ NAME = os.environ['name']
 PICTURE = "https://4.bp.blogspot.com/-v1BgHwzoVeo/V709k2CmubI/" + \
           "AAAAAAAAI_Q/qfmZHxOhrwAfzOAUAJtHe-WPmSKNL3wIwCPcB/s1600/picture.jpg"
 
+
+def allowed_file(filename, allowed_file):
+    if allowed_file is "fc":
+        allowed_extensions = app.config['FC_ALLOWED_EXTENSIONS']
+    else:
+        allowed_extensions = set([])
+    bool_allow = '.' in filename and \
+                 filename.rsplit('.', 1)[1] in allowed_extensions
+    return bool_allow
+
+
 def isin(message, message_set):
     _bool = bool({status for status in message_set if status in message})
     return _bool
+
+
+def upload_callback(robot_connection, sent, size):
+    print('sent: {}'.format(sent))
+    print('size: {}'.format(size))
 
 
 def robot():
@@ -105,7 +122,7 @@ def get_flux_status(robot):
 
 
 def get_message(json):
-    _id = [json['result'][0]['content']['from']] 
+    _id = [json['result'][0]['content']['from']]
     message = json['result'][0]['content']['text']
     contentType = json['result'][0]['content']['contentType']
 
@@ -120,15 +137,15 @@ def add_rsa():
 
 def isin_status(Flux):
     status = Flux.report_play()['st_label']
-    if status == 'RUNNING':  
+    if status == 'RUNNING':
         label, prog, error, leftTime = get_flux_status(Flux)
-        message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
-                   MANTRA, label, prog, leftTime)
+        message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}\n{}'.format(
+                   MANTRA, label, prog, leftTime, error)
     elif status == 'IDLE':
         message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
     elif status == 'COMPLETED':
         message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
-    else:       
+    else:
         message = '{}\n目前狀態{}'.format(MANTRA, status)
 
     return message
@@ -168,70 +185,82 @@ def isin_list_files(Flux):
 
 
 def send_message(_id, message):
-   url = 'https://trialbot-api.line.me/v1/events'
-   headers = {
-              'Content-Type': 'application/json; charset=UTF-8',
-              'X-Line-ChannelID': os.environ['ChannelID'],
-              'X-Line-ChannelSecret': os.environ['ChannelSecret'],
-              'X-Line-Trusted-User-With-ACL': os.environ['MID']
-             }
-   data = {
-           'to': _id,
-           'toChannel': 1383378250,
-           'eventType': '138311608800106203',
-           'content': {
-               'contentType': 1,
-               'toType': 1,
-               'text': message
-               }
-          }
-   r = requests.post(url, data=json.dumps(data), headers=headers)
-   return json.dumps(r.json(), indent=4)
+    url = 'https://trialbot-api.line.me/v1/events'
+    headers = {
+               'Content-Type': 'application/json; charset=UTF-8',
+               'X-Line-ChannelID': os.environ['ChannelID'],
+               'X-Line-ChannelSecret': os.environ['ChannelSecret'],
+               'X-Line-Trusted-User-With-ACL': os.environ['MID']
+              }
+    data = {
+            'to': _id,
+            'toChannel': 1383378250,
+            'eventType': '138311608800106203',
+            'content': {
+                'contentType': 1,
+                'toType': 1,
+                'text': message
+                }
+           }
+    r = requests.post(url, data=json.dumps(data), headers=headers)
+    return json.dumps(r.json(), indent=4)
+
 
 def send_picture(_id):
-   url = 'https://trialbot-api.line.me/v1/events'
-   headers = {
-              'Content-Type': 'application/json; charset=UTF-8',
-              'X-Line-ChannelID': os.environ['ChannelID'],
-              'X-Line-ChannelSecret': os.environ['ChannelSecret'],
-              'X-Line-Trusted-User-With-ACL': os.environ['MID']
-             }
-   data = {
-           'to': _id,
-           'toChannel': 1383378250,
-           'eventType': '138311608800106203',
-           'content': {
-               'contentType': 2,
-               'toType': 1,
-               "originalContentUrl": PICTURE,
-               "previewImageUrl": PICTURE
-               }
-          }
-   r = requests.post(url, data=json.dumps(data), headers=headers)
-   return json.dumps(r.json(), indent=4)
+    url = 'https://trialbot-api.line.me/v1/events'
+    headers = {
+               'Content-Type': 'application/json; charset=UTF-8',
+               'X-Line-ChannelID': os.environ['ChannelID'],
+               'X-Line-ChannelSecret': os.environ['ChannelSecret'],
+               'X-Line-Trusted-User-With-ACL': os.environ['MID']
+              }
+    data = {
+            'to': _id,
+            'toChannel': 1383378250,
+            'eventType': '138311608800106203',
+            'content': {
+                'contentType': 2,
+                'toType': 1,
+                "originalContentUrl": PICTURE,
+                "previewImageUrl": PICTURE
+                }
+           }
+    r = requests.post(url, data=json.dumps(data), headers=headers)
+    return json.dumps(r.json(), indent=4)
 
 
 @app.route("/", methods=['GET'])
 def index():
-   if request.method == 'GET':
-       return render_template('main.html')
+    if request.method == 'GET':
+        return render_template('main.html')
 
 
-@app.route("/upload_file", methods=['GET'])
+@app.route("/upload_file", methods=['GET', 'POST'])
 def upload_file():
-   if request.method == 'GET':
-       os.system("python setup.py install")
-       os.system("python setup.py develop")
-       os.system('flux_g2f -i DD001.gcode -o DD001.fc')
-       return 'main.html'
+    if request.method == 'GET':
+        return render_template('upload_file.html')
+    if request.method == 'POST':
+        file = request.files['file']
+        print(file)
+        if file.filename == '':
+            return "empty"
+        if file and allowed_file(file.filename, 'fc'):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['FC_UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            Flux = robot()
+            Flux.upload_file(file_path, '/SD/webUpload.fc', process_callback=upload_callback)
+            return 'success'
+        else:
+            return "not allowed"
 
 
-@app.route("/g2f", methods=['GET'])
+@app.route("/ls", methods=['GET'])
 def g2f():
-   if request.method == 'GET':
-       os.system('flux_g2f -i DD001.gcode -o DD001.fc')
-       os.system('ls')
-       return 'g2f'
+    if request.method == 'GET':
+        os.system('ls')
+        return 'g2f'
 
 
 @app.route("/callback", methods=['POST'])
@@ -249,32 +278,32 @@ def callback():
             message = '{}\n{}能做的工作如下喔!\n{}'.format(MANTRA, NAME, FLUX_COMMANDS)
             send_message(_id, message)
             return 'ok'
-        
+
         magic_id = message[:5].lower()
         if magic_id == 'flux ' or magic_id == '8763 ':
             Flux = robot()
- 
+
             if isin(message, status_set):
                 message = isin_status(Flux)
- 
+
             elif isin(message, list_files_set):
                 message = isin_list_files(Flux)
 
             elif isin(message, start_set):
                 message = '{}\n開始功能還沒完成喔～～'.format(MANTRA)
- 
+
             elif isin(message, pause_set):
                 message = isin_pause(Flux)
- 
+
             elif isin(message, resume_set):
                 message = isin_resume(Flux)
- 
+
             elif isin(message, abort_set):
                 message = isin_abort(Flux)
- 
-            else :
+
+            else:
                 message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
- 
+
             send_message(_id, message)
             Flux.close()
             return 'ok'
