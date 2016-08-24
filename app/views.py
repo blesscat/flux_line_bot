@@ -238,7 +238,8 @@ def callback():
         _id, message, contentType = get_message(js)
         print(_id, message)
         if contentType != 1:
-            send_picture(_id, "https://bless-line-bot-test.herokuapp.com:443/static/image/picture.jpg")
+            send_picture(_id, "https://bless-line-bot-test.herokuapp.com:443/static/images/picture.jpg")
+            print(send_picture)
             return "ok"
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
