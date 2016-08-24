@@ -198,7 +198,7 @@ def send_picture(_id, _url):
            'toChannel': 1383378250,
            'eventType': '138311608800106203',
            'content': {
-               'contentType': 1,
+               'contentType': 2,
                'toType': 1,
                "originalContentUrl": _url,
                "previewImageUrl": _url
