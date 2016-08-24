@@ -224,6 +224,14 @@ def upload_file():
        return 'main.html'
 
 
+@app.route("/g2f", methods=['GET'])
+def g2f():
+   if request.method == 'GET':
+       os.system('flux_g2f -i DD001.gcode -o DD001.fc')
+       os.system('ls')
+       return 'g2f'
+
+
 @app.route("/callback", methods=['POST'])
 def callback():
     if request.method == 'POST':
