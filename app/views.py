@@ -52,11 +52,11 @@ abort_set = {'240',
 
 FLUX_COMMANDS=""
 flux_command_list = ["110 - status",
-                "120 - list_files",
-                "210 - start",
-                "220 - pause",
-                "230 - resume",
-                "240 - abort"]
+                     "120 - list_files",
+                     "210 - start",
+                     "220 - pause",
+                     "230 - resume",
+                     "240 - abort"]
 for command in flux_command_list:
     FLUX_COMMANDS += command + '\n'
 
@@ -183,7 +183,7 @@ def send_message(to_user, content):
    return json.dumps(r.json(), indent=4)
 
 
-#app.route("/", methods=['GET'])
+app.route("/", methods=['GET'])
 def index():
    if request.method == 'GET':
        return render_template('main.html')
@@ -209,6 +209,7 @@ def g2ftest():
 def callback():
     if request.method == 'POST':
         js = request.get_json()
+        print(js)
         _id, message = get_message(js)
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
