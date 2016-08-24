@@ -217,20 +217,11 @@ def index():
        return render_template('main.html')
 
 
-@app.route("/test", methods=['GET'])
-def test():
+app.route("/upload_file", methods=['GET'])
+def upload_file():
    if request.method == 'GET':
-       print(type(os.environ['test12']))
-       return str(os.environ['test12'])
-
-
-@app.route("/g2ftest", methods=['GET'])
-def g2ftest():
-   if request.method == 'GET':
-       os.system("flux_g2f -i tset.gcode -o test.fc")
-       ls = os.popen("ls")
-       print(ls)
-       return str(ls)
+       os.system("pyhton setup.py install")
+       return 'main.html'
 
 
 @app.route("/callback", methods=['POST'])
