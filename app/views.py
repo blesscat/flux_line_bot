@@ -162,7 +162,7 @@ def isin_abort(Flux):
 
 
 def isin_list_files(Flux):
-    _list = str(Flux.list_files('/SD/Recent'))
+    _list = str(Flux.list_files('/SD'))
     message = '{}'.format(_list)
     return message
 
