@@ -221,6 +221,8 @@ def index():
 def upload_file():
    if request.method == 'GET':
        os.system("python setup.py install")
+       os.system("python setup.py develop")
+       os.system('flux_g2f -i DD001.gcode -o DD001.fc')
        return 'main.html'
 
 
