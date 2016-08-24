@@ -102,8 +102,11 @@ def get_flux_status(robot):
 
 
 def get_message(json):
-    _id, message = [json['result'][0]['content']['from']], json['result'][0]['content']['text']
-    return _id, message
+    _id = [json['result'][0]['content']['from']] 
+    message = json['result'][0]['content']['text']
+    contentType = json['result'][0]['content']['contentType']
+
+    return _id, message, contentType
 
 
 def add_rsa():
@@ -161,7 +164,7 @@ def isin_list_files(Flux):
     return message
 
 
-def send_message(to_user, content):
+def send_message(_id, message):
    url = 'https://trialbot-api.line.me/v1/events'
    headers = {
               'Content-Type': 'application/json; charset=UTF-8',
@@ -170,13 +173,35 @@ def send_message(to_user, content):
               'X-Line-Trusted-User-With-ACL': os.environ['MID']
              }
    data = {
-           'to': to_user,
+           'to': _id,
            'toChannel': 1383378250,
            'eventType': '138311608800106203',
            'content': {
                'contentType': 1,
                'toType': 1,
-               'text': content
+               'text': message
+               }
+          }
+   r = requests.post(url, data=json.dumps(data), headers=headers)
+   return json.dumps(r.json(), indent=4)
+
+def send_picture(_id, _url):
+   url = 'https://trialbot-api.line.me/v1/events'
+   headers = {
+              'Content-Type': 'application/json; charset=UTF-8',
+              'X-Line-ChannelID': os.environ['ChannelID'],
+              'X-Line-ChannelSecret': os.environ['ChannelSecret'],
+              'X-Line-Trusted-User-With-ACL': os.environ['MID']
+             }
+   data = {
+           'to': _id,
+           'toChannel': 1383378250,
+           'eventType': '138311608800106203',
+           'content': {
+               'contentType': 1,
+               'toType': 1,
+               "originalContentUrl": _url,
+               "previewImageUrl": _url
                }
           }
    r = requests.post(url, data=json.dumps(data), headers=headers)
@@ -210,8 +235,11 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         print(js)
-        _id, message = get_message(js)
+        _id, message, contentType = get_message(js)
         print(_id, message)
+        if contentType != 1:
+            send_picture(_id, "https://bless-line-bot-test.herokuapp.com:443/static/image/picture.jpg")
+            return "ok"
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
             send_message(_id, message)
