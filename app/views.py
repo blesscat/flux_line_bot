@@ -211,6 +211,7 @@ def callback():
         js = request.get_json()
         print(js)
         _id, message = get_message(js)
+        print(_id, message)
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
             send_message(_id, message)
