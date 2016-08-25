@@ -74,8 +74,7 @@ for command in flux_command_list:
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
-LINEID = os.environ.get('lineID', 'test')
-print(LINEID)
+LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 
 PICTURE = "https://4.bp.blogspot.com/-v1BgHwzoVeo/V709k2CmubI/" + \
@@ -320,15 +319,13 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message, contentType = get_message(js)
-        print(type(_id))
-        print(_id)
         if contentType != 1:
             send_picture(_id)
             return "ok"
 
-        if str(_id) != LINEID:
+        if _id[0] != LINEID:
             message = '{}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
-                                                        MANTRA, NAME, str(_id))
+                                                        MANTRA, NAME, _id[0])
             send_message(_id, message)
             return "ok"
 
