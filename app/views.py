@@ -319,9 +319,11 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message, contentType = get_message(js)
-        if _id != LINEID:
+        print(type(_id))
+        print(_id)
+        if str(_id) != LINEID:
             message = '{0}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
-                                                            MANTRA, NAME, _id)
+                                                        MANTRA, NAME, str(_id))
             send_message(_id, message)
             return "ok"
         if contentType != 1:
