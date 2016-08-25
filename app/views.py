@@ -294,7 +294,7 @@ def upload_file():
                 file.save(file_path)
                 try:
                     Flux = robot()
-                except socket.timeout:
+                except:
                     return 'FLUX connection temporarily not available.'
                 Flux.upload_file(file_path, '/SD/Recent/webUpload.fc',
                                  process_callback=upload_callback)
