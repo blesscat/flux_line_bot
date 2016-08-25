@@ -13,6 +13,7 @@ class InitBackend(object):
     def __init__(self, endpoint, blocking=True):
         logger.info("Initlize connection to %s", endpoint)
         self.sock = socket.socket()
+        self.sock.settimeout(20)
 
         if not blocking:
             self.sock.setblocking(False)

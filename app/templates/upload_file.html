@@ -11,8 +11,12 @@
         <div class="subTopic">Firmware update </div>
         <table class="hori_table_frame">
           <tr>
+            <td>password:</td>
+            <td><input type="password" name="password" /></td>
+          <tr>
             <td>Fc File:</td>
             <td><input name="file" type="file" /></td>
+          </tr>
         </table>
           <progress value="0" style="width: 400px"></progress>
           <br />
@@ -38,29 +42,31 @@ $(':file').change(function(){
     //Your validation
 });
 $(':button').click(function(){
-    var formData = new FormData($('form')[0]);
-    $.ajax({
+  $(".errMsg").text("");
+  var password = $("form").find("[name='password']").val();
+  $.post("upload_file", {password}, function(result) {
+    if (result != "passed") {
+     $(".errMsg").text(result);
+    } else {
+      var formData = new FormData($('form')[0]);
+      $.ajax({
         url: "{{ url_for('upload_file') }}",  //Server script to process data
         type: 'POST',
         xhr: function() {  // Custom XMLHttpRequest
-            var myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload){ // Check if upload property exists
-                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-            }
-            return myXhr;
+           var myXhr = $.ajaxSettings.xhr();
+           if(myXhr.upload){ // Check if upload property exists
+               myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+           }
+           return myXhr;
         },
         //Ajax events
         // beforeSend: beforeSendHandler,
         success: function(payload) {
-              console.log('ok');
-          if (payload == "empty") {
-            $(".errMsg").text("File cannot be empty.");
-          } else if (payload == "check file fail") {
-            $(".errMsg").text("Checksum Fail, Please upload again.");
-          } else if (payload == "not allowed") {
-            $(".errMsg").text("File is not allowed.");
-          } else if (payload == "success") {
-              console.log('ok');
+          console.log(payload);
+          if (payload == "success") {
+            $(".errMsg").text("OK.");
+          } else {
+            $(".errMsg").text(payload);
           }
         },
         // error: errorHandler,
@@ -70,7 +76,9 @@ $(':button').click(function(){
         cache: false,
         contentType: false,
         processData: false
-    });
+      });
+    }
+  })
 });
 
 function progressHandlingFunction(e){

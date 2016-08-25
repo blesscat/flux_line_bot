@@ -33,6 +33,14 @@ start_set = {'210',
              'START',
              '開始'}
 
+web_set = {'211',
+           'web',
+           'WEB'}
+
+fs_set = {'212',
+          'fs',
+          'FS'}
+
 pause_set = {'220',
              'pause',
              'PAUSE',
@@ -55,6 +63,8 @@ FLUX_COMMANDS = ""
 flux_command_list = ["110 - status",
                      "120 - list_files",
                      "210 - start",
+                     "211 - web",
+                     "212 - fs",
                      "220 - pause",
                      "230 - resume",
                      "240 - abort"]
@@ -64,6 +74,8 @@ for command in flux_command_list:
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
+LINEID = os.environ.get('lineID', '')
+os.environ['passed'] = "False"
 
 PICTURE = "https://4.bp.blogspot.com/-v1BgHwzoVeo/V709k2CmubI/" + \
           "AAAAAAAAI_Q/qfmZHxOhrwAfzOAUAJtHe-WPmSKNL3wIwCPcB/s1600/picture.jpg"
@@ -136,18 +148,46 @@ def add_rsa():
 
 
 def isin_status(Flux):
-    status = Flux.report_play()['st_label']
+    report = Flux.report_play()
+    status = report['st_label']
+    error = report['error']
     if status == 'RUNNING':
         label, prog, error, leftTime = get_flux_status(Flux)
-        message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}\n{}'.format(
-                   MANTRA, label, prog, leftTime, error)
+        message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
+                   MANTRA, label, prog, leftTime)
     elif status == 'IDLE':
         message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
     elif status == 'COMPLETED':
         message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
+    elif status == 'WAITING_HEAD':
+        message = '{}\nFLUX正在校正中呢，等他一下喔～'.format(MANTRA)
+    elif status == 'PAUSING':
+        message = '{}\nFLUX停止了！\n停止的原因是: {}'.format(MANTRA, error)
+    elif status == 'PAUSED':
+        message = '{}\nFLUX已經停止。\n停止的原因是: {}'.format(MANTRA, error)
     else:
         message = '{}\n目前狀態{}'.format(MANTRA, status)
 
+    return message
+
+
+def isin_web(Flux):
+    try:
+        Flux.select_file('/SD/Recent/webUpload.fc')
+        Flux.start_play()
+        message = '{}\n開始印上次網頁上傳的檔案了～'.format(MANTRA)
+    except:
+        message = '{}\n無法開始，可能已經開始了\n或需要先停止任務喔'.format(MANTRA)
+    return message
+
+
+def isin_fs(Flux):
+    try:
+        Flux.select_file('/SD/Recent/recent-1.fc')
+        Flux.start_play()
+        message = '{}\n開始印上次FLUX STUDIO匯入的檔案了～'.format(MANTRA)
+    except:
+        message = '{}\n無法開始，可能已經開始了\n或需要先停止任務喔'.format(MANTRA)
     return message
 
 
@@ -163,7 +203,7 @@ def isin_pause(Flux):
 def isin_resume(Flux):
     try:
         Flux.resume_play()
-        message = '{}\n已經繼續在印了呢'.format(MANTRA)
+        message = '{}\n已經繼續啟動了呢'.format(MANTRA)
     except:
         message = '{}\n無法繼續，可能已經停止了'.format(MANTRA)
     return message
@@ -239,28 +279,39 @@ def index():
 def upload_file():
     if request.method == 'GET':
         return render_template('upload_file.html')
+
     if request.method == 'POST':
-        file = request.files['file']
-        print(file)
-        if file.filename == '':
-            return "empty"
-        if file and allowed_file(file.filename, 'fc'):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['FC_UPLOAD_FOLDER'], filename)
-            file.save(file_path)
+        if bool(request.files):
+            if os.environ['passed'] != "True":
+                return "Methods is not allowed."
+            file = request.files['file']
+            if file.filename == '':
+                return "File cannot be empty."
+            if file and allowed_file(file.filename, 'fc'):
+                filename = secure_filename(file.filename)
+                file_path = os.path.join(app.config['FC_UPLOAD_FOLDER'],
+                                         filename)
+                file.save(file_path)
+                try:
+                    Flux = robot()
+                except socket.timeout:
+                    return 'FLUX connection temporarily not available.'
+                Flux.upload_file(file_path, '/SD/Recent/webUpload.fc',
+                                 process_callback=upload_callback)
+                Flux.select_file('/SD/Recent/webUpload.fc')
+                Flux.start_play()
+                Flux.close()
+                os.environ['passed'] = "False"
+                return 'success'
+            else:
+                return "File type must is fc."
 
-            Flux = robot()
-            Flux.upload_file(file_path, '/SD/webUpload.fc', process_callback=upload_callback)
-            return 'success'
-        else:
-            return "not allowed"
-
-
-@app.route("/ls", methods=['GET'])
-def g2f():
-    if request.method == 'GET':
-        os.system('ls')
-        return 'g2f'
+        elif bool(request.form):
+            password = request.form['password']
+            if password != os.environ['password']:
+                return "password is different from FLUX's."
+            os.environ['passed'] = "True"
+            return 'passed'
 
 
 @app.route("/callback", methods=['POST'])
@@ -268,6 +319,11 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message, contentType = get_message(js)
+        if _id != LINEID:
+            message = '{0}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
+                                                            MANTRA, NAME, _id)
+            send_message(_id, message)
+            return "ok"
         if contentType != 1:
             send_picture(_id)
             return "ok"
@@ -281,7 +337,12 @@ def callback():
 
         magic_id = message[:5].lower()
         if magic_id == 'flux ' or magic_id == '8763 ':
-            Flux = robot()
+            try:
+                Flux = robot()
+            except socket.timeout:
+                message = '{}\n{}找不到FLUX喔～'.format(MANTRA, NAME)
+                send_message(_id, message)
+                return 'ok'
 
             if isin(message, status_set):
                 message = isin_status(Flux)
@@ -290,7 +351,13 @@ def callback():
                 message = isin_list_files(Flux)
 
             elif isin(message, start_set):
-                message = '{}\n開始功能還沒完成喔～～'.format(MANTRA)
+                message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
+
+            elif isin(message, web_set):
+                message = isin_web(Flux)
+
+            elif isin(message, fs_set):
+                message = isin_fs(Flux)
 
             elif isin(message, pause_set):
                 message = isin_pause(Flux)
