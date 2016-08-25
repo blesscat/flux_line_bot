@@ -28,18 +28,18 @@ list_files_set = {'120',
                   'LIST',
                   '檔案'}
 
+web_set = {'211',
+           'start web',
+           'START WEB'}
+
+fs_set = {'212',
+          'start fs',
+          'START FS'}
+
 start_set = {'210',
              'start',
              'START',
              '開始'}
-
-web_set = {'211',
-           'web',
-           'WEB'}
-
-fs_set = {'212',
-          'fs',
-          'FS'}
 
 pause_set = {'220',
              'pause',
@@ -74,7 +74,8 @@ for command in flux_command_list:
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
-LINEID = os.environ.get('lineID', '')
+LINEID = os.environ.get('lineID', 'test')
+print(LINEID)
 os.environ['passed'] = "False"
 
 PICTURE = "https://4.bp.blogspot.com/-v1BgHwzoVeo/V709k2CmubI/" + \
@@ -325,11 +326,11 @@ def callback():
             send_picture(_id)
             return "ok"
 
-    #    if str(_id) != LINEID:
-    #        message = '{}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
-    #                                                    MANTRA, NAME, str(_id))
-    #        send_message(_id, message)
-    #        return "ok"
+        if str(_id) != LINEID:
+            message = '{}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
+                                                        MANTRA, NAME, str(_id))
+            send_message(_id, message)
+            return "ok"
 
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
@@ -354,14 +355,14 @@ def callback():
             elif isin(message, list_files_set):
                 message = isin_list_files(Flux)
 
-            elif isin(message, start_set):
-                message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
-
             elif isin(message, web_set):
                 message = isin_web(Flux)
 
             elif isin(message, fs_set):
                 message = isin_fs(Flux)
+
+            elif isin(message, start_set):
+                message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
 
             elif isin(message, pause_set):
                 message = isin_pause(Flux)
