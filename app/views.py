@@ -324,7 +324,7 @@ def callback():
             return "ok"
 
         if _id[0] != LINEID:
-            message = '{}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
+            message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
                                                         MANTRA, NAME, _id[0])
             send_message(_id, message)
             return "ok"
