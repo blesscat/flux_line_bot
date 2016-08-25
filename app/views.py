@@ -321,14 +321,16 @@ def callback():
         _id, message, contentType = get_message(js)
         print(type(_id))
         print(_id)
-        if str(_id) != LINEID:
-            message = '{0}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
-                                                        MANTRA, NAME, str(_id))
-            send_message(_id, message)
-            return "ok"
         if contentType != 1:
             send_picture(_id)
             return "ok"
+
+    #    if str(_id) != LINEID:
+    #        message = '{}\n請先在Heroku網頁新增{}的ID喔\n{}'.format(
+    #                                                    MANTRA, NAME, str(_id))
+    #        send_message(_id, message)
+    #        return "ok"
+
         if message == '罐罐':
             message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
             send_message(_id, message)
