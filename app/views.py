@@ -341,7 +341,7 @@ def callback():
         if magic_id == 'flux ' or magic_id == '8763 ':
             try:
                 Flux = robot()
-            except socket.timeout:
+            except:
                 message = '{}\n{}找不到FLUX喔～'.format(MANTRA, NAME)
                 send_message(_id, message)
                 return 'ok'
