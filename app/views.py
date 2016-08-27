@@ -308,16 +308,6 @@ def index():
         return render_template('main.html')
 
 
-@app.route("/dog", methods=['GET'])
-def dog():
-    if request.method == 'GET':
-        global DOG
-        DOG = watchdog.watchdog()
-        DOG.start()
-        result = DOG.isAlive()
-        return str(result)
-
-
 @app.route("/dog_status", methods=['GET'])
 def dog_status():
     if request.method == 'GET':
