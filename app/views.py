@@ -292,7 +292,14 @@ def index():
 def watchdog():
     if request.method == 'GET':
         result = DOG.isAlive()
-        return result
+        return str(result)
+
+
+@app.route("/thread", methods=['GET'])
+def thread():
+    if request.method == 'GET':
+        result = threading.activeCount()
+        return str(result)
 
 
 @app.route("/upload_file", methods=['GET', 'POST'])
