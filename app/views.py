@@ -7,6 +7,7 @@ import socket
 import math
 import time
 import threading
+import buildin
 from flask import render_template, request
 from werkzeug import secure_filename
 from app import app, line, watchdog
@@ -187,8 +188,8 @@ def isin_status(Flux):
 
 
 def isin_watchdogOn(Flux):
-    if not DOG.monitor:
-        DOG.monitor = True
+    if not builtins.dog.monitor:
+        builtins.dog.monitor = True
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     else:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
@@ -196,8 +197,8 @@ def isin_watchdogOn(Flux):
 
 
 def isin_watchdogOff(Flux):
-    if DOG.monitor:
-        DOG.monitor = False
+    if buildin.dog.monitor:
+        buildin.dog.monitor = False
         message = '{}\n{}不再監測FLUX工作了...好累'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -205,7 +206,7 @@ def isin_watchdogOff(Flux):
 
 
 def isin_watchdog(Flux):
-    if DOG.monitor:
+    if buildin.dog.monitor:
         message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -288,9 +289,7 @@ def index():
 @app.route("/dog", methods=['GET'])
 def dog():
     if request.method == 'GET':
-        DOG = watchdog.watchdog()
-        DOG.start()
-        result = DOG.isAlive()
+        result = buildin.dog.monitor
         return str(result)
 
 

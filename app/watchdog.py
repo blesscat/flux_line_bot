@@ -21,26 +21,26 @@ class watchdog(threading.Thread):
         self.flux_is_running = False
         self.request_count = 0
 
-    def run(self):
-        while self.monitor:
-            try:
-                self.monitor_flux_status()
-            except:
-                continue
-            self.make_heroku_wakeup()
-            time.sleep(1)
-
 #    def run(self):
-#        while True:
-#            if self.monitor:
-#                try:
-#                    self.monitor_flux_status()
-#                except:
-#                    continue
-#                self.make_heroku_wakeup()
-#            else:
-#                pass
+#        while self.monitor:
+#            try:
+#                self.monitor_flux_status()
+#            except:
+#                continue
+#            self.make_heroku_wakeup()
 #            time.sleep(1)
+
+    def run(self):
+        while True:
+            if self.monitor:
+                try:
+                    self.monitor_flux_status()
+                except:
+                    continue
+                self.make_heroku_wakeup()
+            else:
+                pass
+            time.sleep(1)
 
     def monitor_flux_status(self):
         self.Flux = FLUX((os.environ['FLUX_ipaddr'], 1901))
