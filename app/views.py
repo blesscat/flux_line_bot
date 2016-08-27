@@ -85,9 +85,6 @@ flux_command_list = ["110 - status",
                      "230 - resume",
                      "240 - abort"]
 
-DOG = watchdog.watchdog()
-DOG.start()
-DOG.monitor = True
 
 for command in flux_command_list:
     FLUX_COMMANDS += command + '\n'
@@ -288,9 +285,11 @@ def index():
         return render_template('main.html')
 
 
-@app.route("/watchdog", methods=['GET'])
-def watchdog():
+@app.route("/dog", methods=['GET'])
+def dog():
     if request.method == 'GET':
+        DOG = watchdog.watchdog()
+        DOG.start()
         result = DOG.isAlive()
         return str(result)
 

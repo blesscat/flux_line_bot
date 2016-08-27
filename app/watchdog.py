@@ -17,12 +17,11 @@ class watchdog(threading.Thread):
     def __init__(self):
         super(watchdog, self).__init__()
         self.daemon = True
-        self.monitor = False
+        self.monitor = True
         self.flux_is_running = False
         self.request_count = 0
 
     def run(self):
-        time.sleep(10)
         while self.monitor:
             try:
                 self.monitor_flux_status()
