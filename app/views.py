@@ -188,17 +188,32 @@ def isin_status(Flux):
     return message
 
 
+def poke_watchdog_status():
+    loop = 5
+    for i in range(loop):
+        try:
+            dog_status = DOG.isAlive()
+            break
+        except NameError:
+            if i == loop-1:
+                dog_status = False
+    return dog_status
+
 def isin_watchdogOn(Flux):
-    if not DOG.monitor:
-        DOG.monitor = True
-        message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
-    else:
+    dog_status = poke_watchdog_status()
+    if dog_status:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
+    else:
+        global DOG
+        DOG = watchdog.watchdog()
+        DOG.start()
+        message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     return message
 
 
 def isin_watchdogOff(Flux):
-    if DOG.monitor:
+    dog_status = poke_watchdog_status()
+    if dog_status:
         DOG.monitor = False
         message = '{}\n{}不再監測FLUX工作了...好累'.format(MANTRA, NAME)
     else:
@@ -207,7 +222,8 @@ def isin_watchdogOff(Flux):
 
 
 def isin_watchdog(Flux):
-    if DOG.monitor:
+    dog_status = poke_watchdog_status()
+    if dog_status:
         message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
