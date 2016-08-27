@@ -7,7 +7,6 @@ import socket
 import math
 import time
 import threading
-import builtins
 from flask import render_template, request
 from werkzeug import secure_filename
 from app import app, line, watchdog
@@ -188,8 +187,8 @@ def isin_status(Flux):
 
 
 def isin_watchdogOn(Flux):
-    if not builtins.dog.monitor:
-        builtins.dog.monitor = True
+    if not DOG.monitor:
+        DOG.monitor = True
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     else:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
@@ -197,8 +196,8 @@ def isin_watchdogOn(Flux):
 
 
 def isin_watchdogOff(Flux):
-    if builtins.dog.monitor:
-        builtins.dog.monitor = False
+    if DOG.monitor:
+        DOG.monitor = False
         message = '{}\n{}不再監測FLUX工作了...好累'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -206,7 +205,7 @@ def isin_watchdogOff(Flux):
 
 
 def isin_watchdog(Flux):
-    if builtins.dog.monitor:
+    if DOG.monitor:
         message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -289,7 +288,16 @@ def index():
 @app.route("/dog", methods=['GET'])
 def dog():
     if request.method == 'GET':
-        result = builtins.dog.monitor
+        global DOG
+        DOG = watchdog.watchdog()
+        result = DOG.isAlive()
+        return str(result)
+
+
+@app.route("/dog_status", methods=['GET'])
+def dog_status():
+    if request.method == 'GET':
+        result = DOG.isAlive()
         return str(result)
 
 
