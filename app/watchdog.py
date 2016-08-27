@@ -4,6 +4,7 @@ import time
 import os
 import pdb
 import requests
+import socket
 from app import line
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -32,7 +33,8 @@ class watchdog(threading.Thread):
 
 
     def monitor_flux_status(self):
-        self.Flux = FLUX((os.environ['FLUX_ipaddr'], 1901))
+        FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
+        self.Flux = FLUX((FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
         self.error = self.Flux.status.get('error_label', '')
         if self.status == 'ST_RUNNING':

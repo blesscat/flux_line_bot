@@ -37,12 +37,12 @@ watchdog_set = {'130',
                 'watchdog'}
 
 web_set = {'211',
-           'start web',
-           'START WEB'}
+           'startweb',
+           'STARTWEB'}
 
 fs_set = {'212',
-          'start fs',
-          'START FS'}
+          'startfs',
+          'STARTFS'}
 
 start_set = {'210',
              'start',
@@ -76,12 +76,16 @@ quit_set = {'250',
 FLUX_COMMANDS = ""
 flux_command_list = ["110 - status",
                      "120 - list_files",
+                     "130 - watchdog",
+                     "131 - watchdogon",
+                     "132 - watchdogoff",
                      "210 - start",
-                     "211 - web",
-                     "212 - fs",
+                     "211 - startweb",
+                     "212 - startfs",
                      "220 - pause",
                      "230 - resume",
-                     "240 - abort"]
+                     "240 - abort",
+                     "250 - quit"]
 
 
 for command in flux_command_list:
@@ -116,6 +120,7 @@ def upload_callback(robot_connection, sent, size):
 
 
 def robot():
+    FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
     client_key = get_or_create_default_key("./sdk_connection.pem")
     try:
         robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
@@ -212,7 +217,7 @@ def isin_watchdogOff(Flux):
     dog_status = poke_watchdog_status()
     if dog_status:
         DOG.monitor = False
-        message = '{}\n{}不再監測FLUX工作了...好累'.format(MANTRA, NAME)
+        message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
     return message
@@ -258,14 +263,16 @@ def isin_pause(Flux):
 
 def isin_resume(Flux):
     try:
+        loop = 20
         Flux.resume_play()
-        for i in range(20):
+        for i in range(loop):
             time.sleep(1)
             if Flux.report_play()['st_label'] == 'RUNNING':
+                message = '{}\n已經繼續啟動了呢'.format(MANTRA)
                 break
             else:
-                raise OSError
-            message = '{}\n已經繼續啟動了呢'.format(MANTRA)
+                if i == loop-1:
+                    raise OSError
     except:
         message = '{}\n無法繼續，可能已經停止了\n或者請確認機台狀態喔'.format(MANTRA)
     return message
