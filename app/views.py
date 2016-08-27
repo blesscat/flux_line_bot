@@ -194,6 +194,7 @@ def poke_watchdog_status():
     loop = 10
     for i in range(loop):
         try:
+            time.sleep(1)
             dog_status = DOG.isAlive()
             break
         except NameError:
