@@ -291,7 +291,8 @@ def index():
 @app.route("/watchdog", methods=['GET'])
 def watchdog():
     if request.method == 'GET':
-            return 'ok'
+        result = DOG.isAlive()
+        return result
 
 
 @app.route("/upload_file", methods=['GET', 'POST'])
