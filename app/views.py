@@ -191,7 +191,7 @@ def isin_status(Flux):
 
 
 def poke_watchdog_status():
-    loop = 10
+    loop = 5
     for i in range(loop):
         try:
             time.sleep(1)
