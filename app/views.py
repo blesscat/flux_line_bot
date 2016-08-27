@@ -86,8 +86,8 @@ flux_command_list = ["110 - status",
                      "240 - abort"]
 
 DOG = watchdog.watchdog()
-#DOG.start()
-#DOG.monitor = True
+DOG.start()
+DOG.monitor = True
 
 for command in flux_command_list:
     FLUX_COMMANDS += command + '\n'
