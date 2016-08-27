@@ -22,6 +22,7 @@ class watchdog(threading.Thread):
         self.request_count = 0
 
     def run(self):
+        time.sleep(10)
         while self.monitor:
             try:
                 self.monitor_flux_status()
