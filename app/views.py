@@ -392,58 +392,58 @@ def callback():
             return 'ok'
 
         magic_id = message[:5].lower()
-        if magic_id == 'flux ' or magic_id == '8763 ':
-            try:
-                Flux = robot()
-            except:
-                message = '{}\n{}找不到FLUX喔～'.format(MANTRA, NAME)
-                line.send_message(_id, message)
-                return 'ok'
-
-            if isin(message, watchdogOn_set):
-                message = isin_watchdogOn(Flux)
-
-            elif isin(message, watchdogOff_set):
-                message = isin_watchdogOff(Flux)
-
-            elif isin(message, watchdog_set):
-                message = isin_watchdog(Flux)
-
-            elif isin(message, status_set):
-                message = isin_status(Flux)
-
-            elif isin(message, list_files_set):
-                message = isin_list_files(Flux)
-
-            elif isin(message, web_set):
-                message = isin_web(Flux)
-
-            elif isin(message, fs_set):
-                message = isin_fs(Flux)
-
-            elif isin(message, start_set):
-                message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
-
-            elif isin(message, pause_set):
-                message = isin_pause(Flux)
-
-            elif isin(message, resume_set):
-                message = isin_resume(Flux)
-
-            elif isin(message, abort_set):
-                message = isin_abort(Flux)
-
-            elif isin(message, quit_set):
-                message = isin_quit(Flux)
-
-            else:
-                message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
-
-            line.send_message(_id, message)
-            Flux.close()
-            return 'ok'
-
-        else:
+        if magic_id != 'flux ' or magic_id != '8763 ':
             message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
             line.send_message(_id, message)
             return 'ok'
+
+        try:
+            Flux = robot()
+        except:
+            message = '{}\n{}找不到FLUX喔～'.format(MANTRA, NAME)
+            line.send_message(_id, message)
+            return 'ok'
+
+        if isin(message, watchdogOn_set):
+            message = isin_watchdogOn(Flux)
+
+        elif isin(message, watchdogOff_set):
+            message = isin_watchdogOff(Flux)
+
+        elif isin(message, watchdog_set):
+            message = isin_watchdog(Flux)
+
+        elif isin(message, status_set):
+            message = isin_status(Flux)
+
+        elif isin(message, list_files_set):
+            message = isin_list_files(Flux)
+
+        elif isin(message, web_set):
+            message = isin_web(Flux)
+
+        elif isin(message, fs_set):
+            message = isin_fs(Flux)
+
+        elif isin(message, start_set):
+            message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
+
+        elif isin(message, pause_set):
+            message = isin_pause(Flux)
+
+        elif isin(message, resume_set):
+            message = isin_resume(Flux)
+
+        elif isin(message, abort_set):
+            message = isin_abort(Flux)
+
+        elif isin(message, quit_set):
+            message = isin_quit(Flux)
+
+        else:
+            message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
+
+        line.send_message(_id, message)
+        Flux.close()
+        return 'ok'
+
