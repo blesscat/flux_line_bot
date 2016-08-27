@@ -1,8 +1,8 @@
 import threading
 import sys
 import time
-import pdb
 import os
+import pdb
 import requests
 from app import line
 
@@ -30,17 +30,6 @@ class watchdog(threading.Thread):
             self.make_heroku_wakeup()
             time.sleep(1)
 
-#    def run(self):
-#        while True:
-#            if self.monitor:
-#                try:
-#                    self.monitor_flux_status()
-#                except:
-#                    continue
-#                self.make_heroku_wakeup()
-#            else:
-#                pass
-#            time.sleep(1)
 
     def monitor_flux_status(self):
         self.Flux = FLUX((os.environ['FLUX_ipaddr'], 1901))
@@ -91,9 +80,9 @@ class watchdog(threading.Thread):
     def status(self):
         return self.monitor
 
-# if __name__ == '__main__':
-#     dog = watchdog()
-#     dog.start()
-#     pdb.set_trace()
-#     print('last')
+if __name__ == '__main__':
+    dog = watchdog()
+    dog.start()
+    pdb.set_trace()
+    print('last')
 

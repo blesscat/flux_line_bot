@@ -1,13 +1,10 @@
 # -*- coding: utf8 -*-
 import os
 import sys
-import requests
-import json
 import socket
 import math
 import time
 import threading
-import builtins
 from flask import render_template, request
 from werkzeug import secure_filename
 from app import app, line, watchdog
@@ -286,9 +283,9 @@ def isin_abort(Flux):
 def isin_quit(Flux):
     try:
         Flux.quit_play()
-        message = '{}\n已經中止任務囉'.format(MANTRA)
+        message = '{}\n已經終止任務囉'.format(MANTRA)
     except:
-        message = '{}\n無法停止，可能早就已經中止了呢'.format(MANTRA)
+        message = '{}\n無法終止，可能早就已經終止了呢'.format(MANTRA)
     return message
 
 
