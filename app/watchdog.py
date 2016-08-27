@@ -49,7 +49,7 @@ class watchdog(threading.Thread):
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
                 self.flux_is_running = True
-                message = '{}\nFLUX開始工作了喔～～~~~'.format(MANTRA)
+                message = '{}\nFLUX開始工作了喔～～'.format(MANTRA)
                 line.send_message(_id, message)
 
         elif self.status == 'none':
