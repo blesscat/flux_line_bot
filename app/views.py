@@ -290,6 +290,7 @@ def dog():
     if request.method == 'GET':
         global DOG
         DOG = watchdog.watchdog()
+        DOG.start()
         result = DOG.isAlive()
         return str(result)
 
