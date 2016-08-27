@@ -62,7 +62,6 @@ $(':button').click(function(){
         //Ajax events
         // beforeSend: beforeSendHandler,
         success: function(payload) {
-          console.log(payload);
           if (payload == "success") {
             $(".errMsg").text("OK.");
           } else {

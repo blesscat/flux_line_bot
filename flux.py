@@ -2,7 +2,8 @@ import os
 
 import socket
 import struct
-from time import time
+import pdb
+from time import time, sleep
 
 from uuid import UUID
 from io import BytesIO
@@ -19,6 +20,7 @@ class FLUX(object):
     def __init__(self, device_ipaddr):
         self.device_ipaddr = device_ipaddr
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.settimeout(5)
         self.sock.bind(('', 0))
         self.serial = ''
         self.uuid = ''
@@ -28,10 +30,10 @@ class FLUX(object):
     def poke(self):
         self.payload = struct.pack("<4sBB16s", b"FLUX", 1, 0, UUID(int=0).bytes)
         self.sock.sendto(self.payload, self.device_ipaddr)
-        buf, endpoint = self.sock.recvfrom(4096)
-        if len(buf) < 8:
-            return False
         try:
+            buf, endpoint = self.sock.recvfrom(4096)
+            if len(buf) < 8:
+                return False
             magic_num, proto_ver, action_id = struct.unpack("4sBB", buf[:6])
             if magic_num != b"FLUX":
             # Bad magic number
@@ -48,6 +50,8 @@ class FLUX(object):
 
             self.status = self.device.status
 
+        except socket.timeout:
+            return False
         except struct.error:
             print("Payload error: %s", repr(buf))
 
@@ -141,3 +145,11 @@ class FLUX(object):
         except UpnpError as e:
             error_code = "Authorization failed: %s" % e
             return error_code
+        
+if __name__ == "__main__":
+    while True:
+        Flux = FLUX(("0.0.0.0", 1901))
+        print(Flux.status)
+        sleep(1)
+
+

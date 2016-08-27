@@ -1,6 +1,5 @@
 import os
 # import mimetypes
-
 from flask import Flask
 # from flask.ext.login import LoginManager
 # from flask.ext.sqlalchemy import SQLAlchemy
@@ -16,9 +15,9 @@ app.config['SECRET_KEY'] = 'blesscat-Web-Console-SecretKey'
 
 app.config['FC_UPLOAD_FOLDER'] = basedir
 app.config['FC_ALLOWED_EXTENSIONS'] = set(['fc'])
-print(app.config['FC_UPLOAD_FOLDER'])
 
 app.debug = True
+
 # ===================LoginManager=====================================================
 # login_manager = LoginManager()
 # login_manager.init_app(app)

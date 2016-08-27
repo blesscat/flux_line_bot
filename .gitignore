@@ -1,0 +1,8 @@
+.gitingore
+*.pyc
+robot.py
+*.o
+delta.py
+.env
+line_st
+*.so
