@@ -69,10 +69,10 @@ abort_set = {'240',
              'STOP',
              '停止'}
 
-quit_set = {'250'
-            'quit'
-            'QUIT'
-            '終止'
+quit_set = {'250',
+            'quit',
+            'QUIT',
+            '終止',
             '結束'}
 
 
