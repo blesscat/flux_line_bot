@@ -191,10 +191,10 @@ def isin_status(Flux):
 
 
 def poke_watchdog_status():
-    loop = 50
+    loop = 10
     for i in range(loop):
         try:
-            time.sleep(0.2)
+            time.sleep(1)
             dog_status = app.config['DOG'].isAlive()
             break
         except KeyError:
