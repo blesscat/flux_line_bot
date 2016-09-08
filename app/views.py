@@ -5,7 +5,7 @@ import socket
 import math
 import time
 import threading
-from flask import render_template, request, g
+from flask import render_template, request
 from werkzeug import secure_filename
 from app import app, line, watchdog
 
@@ -97,7 +97,6 @@ NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 os.environ['init_watchdog'] = "False"
-g.dog = watchdog.watchdog()
 
 
 def allowed_file(filename, allowed_file):
@@ -196,7 +195,7 @@ def poke_watchdog_status():
     for i in range(loop):
         try:
             time.sleep(0.2)
-            dog_status = g.dog.isAlive()
+            dog_status = app.config['DOG'].isAlive()
             break
         except NameError:
             if i == loop-1:
@@ -208,9 +207,8 @@ def isin_watchdogOn(Flux):
     if dog_status:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
     else:
-        # g.dog = watchdog.watchdog()
-        g.dog.start()
-        app.config['DOG_STATUS'] = True
+        app.config['DOG'] = watchdog.watchdog()
+        app.config['DOG'].start()
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     return message
 
@@ -218,8 +216,7 @@ def isin_watchdogOn(Flux):
 def isin_watchdogOff(Flux):
     dog_status = poke_watchdog_status()
     if dog_status:
-        g.dog.monitor = False
-        app.config['DOG_STATUS'] = False
+        app.config['DOG'].monitor = False
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -307,6 +304,7 @@ def isin_list_files(Flux):
 
 # @app.before_first_request
 # def init_the_watchdog():
+#     app.config['DOG'] = watchdog.watchdog()
 #     global bulitins.dog
 #     bulitins.dog = watchdog.watchdog()
 #     bulitins.dog.start() 
@@ -321,8 +319,7 @@ def index():
 @app.route("/dog_status", methods=['GET'])
 def dog_status():
     if request.method == 'GET':
-        # result = builtins.dog.isAlive()
-        result = app.config['DOG_STATUS']
+        result = app.config['DOG'].isAlive()
         return str(result)
 
 
