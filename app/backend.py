@@ -28,6 +28,11 @@ class load_filament_backend(threading.Thread):
         def callback(robot_connection, status, temp):
             pass
         main.load_filament(process_callback=callback)
+        for i in range(20):
+            main.quit()
+            print(i)
+            time.sleep(1)
+
         # except:
         #     for i in range(20):
         #         try:
