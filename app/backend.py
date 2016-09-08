@@ -23,10 +23,9 @@ class load_filament_backend(threading.Thread):
     def run(self):
         main = self.Flux.maintain()
         # try:
-        message = '{}\nFLUX加溫中～～'.format(MANTRA)
-        line.send_message(_id, message)
         def callback(robot_connection, status, temp):
-            pass
+            message = '{}\nFLUX加溫中{}～～'.format(MANTRA, temp)
+            line.send_message(_id, message)
         main.load_filament(process_callback=callback)
         for i in range(20):
             main.quit()
