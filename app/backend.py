@@ -10,7 +10,7 @@ from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
 
 
-class load_filament_backend(threading.thread):
+class load_filament_backend(threading.Thread):
     def __init__(self, Flux):
         super(load_filament_backend, self).__init__()
         self.Flux = Flux
