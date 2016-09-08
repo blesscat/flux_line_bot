@@ -88,7 +88,6 @@ flux_command_list = ["110 - status",
                      "250 - quit"]
 
 
-DOG = watchdog.watchdog()
 
 
 for command in flux_command_list:
@@ -307,7 +306,9 @@ def isin_list_files(Flux):
 
 @app.before_first_request
 def init_the_watchdog():
-   DOG.start() 
+    global DOG
+    DOG = watchdog.watchdog()
+    DOG.start() 
 
 
 @app.route("/", methods=['GET'])
