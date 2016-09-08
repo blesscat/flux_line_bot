@@ -26,11 +26,10 @@ class load_filament_backend(threading.Thread):
             message = '{}\nFLUX加溫中～～'.format(MANTRA)
             line.send_message(_id, message)
             def callback(robot_connection, status, temp):
-                print(status)
-                print(temp)
+                pass
             main.load_filament(process_callback=callback)
         except:
-            for i in range(30):
+            for i in range(20):
                 try:
                     message = '{}\nFLUX{}'.format(MANTRA, i)
                     line.send_message(_id, message)
