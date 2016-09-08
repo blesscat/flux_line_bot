@@ -19,11 +19,13 @@ class load_filament_backend(threading.Thread):
         main = self.Flux.maintain()
         try:
             def callback(robot_connection, status, temp):
-                pass
+                print(status)
+                print(temp)
             main.load_filament(process_callback=callback)
         except:
             for i in range(30):
                 try:
+                    print(i)
                     main.quit()
                     time.sleep(1)
                 except:
