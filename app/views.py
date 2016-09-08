@@ -316,7 +316,12 @@ def isin_quit(Flux):
 
 def isin_load_filament(Flux):
     maintain = Flux.maintain()
-    maintain.load_filament(process_callback=upload_callback)
+    try:
+        maintain.load_filament(process_callback=upload_callback)
+    except:
+        while True:
+            maintain.quit()
+            time.sleep(1)
 
 
 def isin_list_files(Flux):
