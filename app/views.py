@@ -75,6 +75,8 @@ quit_set = {'250',
 
 load_filament_set = {'260'}
 
+unload_filament_set = {'261'}
+
 FLUX_COMMANDS = ""
 flux_command_list = ["110 - status",
                      "120 - list_files",
@@ -318,6 +320,9 @@ def isin_load_filament(Flux):
     maintain = backend.load_filament_backend(Flux)
     maintain.start()
 
+def isin_unload_filament(Flux):
+    maintain = backend.unload_filament_backend(Flux)
+    maintain.start()
 
 def isin_list_files(Flux):
     _list = str(Flux.list_files('/SD'))
@@ -475,6 +480,9 @@ def callback():
 
             elif isin(message, load_filament_set):
                 message = isin_load_filament(Flux)
+
+            elif isin(message, unload_filament_set):
+                message = isin_unload_filament(Flux)
 
             else:
                 message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
