@@ -192,15 +192,17 @@ def isin_status(Flux):
 
 
 def poke_watchdog_status():
-    loop = 3
+    loop = 4
     for i in range(loop):
         try:
-            time.sleep(1)
+            time.sleep(0.5)
             dog_status = app.config['DOG'].isAlive()
             if dog_status:
                 break
         except KeyError:
-            r = requests.post(os.environ['WEB_URL'] + '/dog_status', json={'password': os.environ['password']})
+            web = os.environ['WEB_URL'] + '/dog_status'
+            json = {'password': os.environ['password']}
+            r = requests.post(web, json=json)
             if r._content != b'None':
                 dog_status = True if r._content ==b'True' else False
                 break
@@ -226,7 +228,12 @@ def isin_watchdogOff(Flux):
             app.config['DOG'].monitor = False
             del app.config['DOG']
         except:
-            requests.get(os.environ['WEB_URL'] + '/dogoff')
+            web = os.environ['WEB_URL'] + '/dogoff'
+            json = {'password': os.environ['password']}
+            r = requests.post(web, json=json)
+            if r._content == b'None':
+                return 'please try again'
+
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -330,21 +337,23 @@ def index():
 def dog_status():
     if request.method == 'POST':
         if request.json['password'] == os.environ['password']:
-            print('pass')
             try:
                 result = app.config['DOG'].isAlive()
             except KeyError:
                 result = None
-                pass
             return str(result)
 
 
-@app.route("/dogoff", methods=['GET'])
+@app.route("/dogoff", methods=['POST'])
 def dogoff():
-    if request.method == 'GET':
-        app.config['DOG'].monitor = False
-        del app.config['DOG']
-        return 'ok'
+    if request.method == 'POST':
+        if request.json['password'] == os.environ['password']:
+            try:
+                app.config['DOG'].monitor = False
+                del app.config['DOG']
+            except KeyError:
+                result = None
+            return str(result)
 
 
 @app.route("/thread", methods=['GET'])

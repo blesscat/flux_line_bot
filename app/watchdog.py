@@ -59,7 +59,8 @@ class watchdog(threading.Thread):
             elif self.error == '':
                 message = '{}\nFLUX暫停囉～'.format(MANTRA)
 
-        elif self.status == 'ST_COMPLETED' or self.status == 'ST_IDLE':
+        elif self.status == 'ST_COMPLETED' or self.status == 'ST_IDLE' or \
+                        self.status == 'ST_COMPLETEING':
             message = '{}\n工作已經完成了喔!'.format(MANTRA)
         
         else:
@@ -69,7 +70,7 @@ class watchdog(threading.Thread):
 
     def make_heroku_wakeup(self):
         self.request_count += 1
-        if self.request_count >= 300:
+        if self.request_count >= 200:
             requests.get(os.environ['WEB_URL'])
             self.request_count = 0
 
