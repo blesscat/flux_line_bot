@@ -8,7 +8,7 @@ import threading
 import requests
 from flask import render_template, request
 from werkzeug import secure_filename
-from app import app, line, watchdog
+from app import app, line, watchdog, backend
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -315,13 +315,8 @@ def isin_quit(Flux):
 
 
 def isin_load_filament(Flux):
-    maintain = Flux.maintain()
-    try:
-        maintain.load_filament(process_callback=upload_callback)
-    except:
-        while True:
-            maintain.quit()
-            time.sleep(1)
+    maintain = backend.load_filament_backend(Flux)
+    maintain.start()
 
 
 def isin_list_files(Flux):
