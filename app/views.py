@@ -329,10 +329,7 @@ def index():
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
     if request.method == 'POST':
-        print(request.get_json())
-        print(request.json['password'])
-        print(os.environ['password'])
-        if request.data == os.environ['password']:
+        if request.json['password'] == os.environ['password']:
             print('pass')
             try:
                 result = app.config['DOG'].isAlive()
