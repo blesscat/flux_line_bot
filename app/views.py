@@ -329,6 +329,8 @@ def index():
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
     if request.method == 'POST':
+        print(request.data)
+        print(os.environ['password'])
         if str(request.data) == os.environ['password']:
             print('pass')
             try:
