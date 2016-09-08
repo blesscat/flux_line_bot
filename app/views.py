@@ -315,7 +315,7 @@ def isin_quit(Flux):
 
 
 def isin_load_filament(Flux):
-    maintain = robot.maintain()
+    maintain = Flux.maintain()
     maintain.load_filament(process_callback=upload_callback)
 
 
