@@ -22,7 +22,10 @@ class load_filament_backend(threading.Thread):
                 pass
             main.load_filament(process_callback=callback)
         except:
-            while True:
-                main.quit()
-                time.sleep(1)
+            for i in range(30):
+                try:
+                    main.quit()
+                    time.sleep(1)
+                except:
+                    pass
 
