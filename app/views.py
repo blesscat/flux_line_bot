@@ -319,18 +319,10 @@ def isin_list_files(Flux):
     return message
 
 
-# @app.before_first_request
-# def init_the_watchdog():
-#     app.config['DOG'] = watchdog.watchdog()
-#     global bulitins.dog
-#     bulitins.dog = watchdog.watchdog()
-#     bulitins.dog.start() 
-
-
 @app.route("/", methods=['GET'])
 def index():
     if request.method == 'GET':
-        return render_template('main.html')
+        return 'main'
 
 
 @app.route("/dog_status", methods=['POST'])

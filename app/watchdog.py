@@ -70,8 +70,12 @@ class watchdog(threading.Thread):
 
     def make_heroku_wakeup(self):
         self.request_count += 1
-        if self.request_count >= 200:
-            requests.get(os.environ['WEB_URL'])
+        if self.request_count >= 300:
+            while True:
+                r = requests.get(os.environ['WEB_URL'])
+                time.sleep(1)
+                if r._content == b'main':
+                    break
             self.request_count = 0
 
     def _start(self):
