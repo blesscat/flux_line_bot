@@ -191,7 +191,7 @@ def isin_status(Flux):
 
 
 def poke_watchdog_status():
-    loop = 20
+    loop = 5
     for i in range(loop):
         try:
             time.sleep(1)
@@ -200,6 +200,7 @@ def poke_watchdog_status():
             break
         except KeyError:
             print('KeyError')
+            request.get(os.environ['WEB_URL'] + '/dog_status')
             if i == loop-1:
                 dog_status = False
     return dog_status
