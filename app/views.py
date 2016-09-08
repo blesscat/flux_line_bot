@@ -5,6 +5,7 @@ import socket
 import math
 import time
 import threading
+import requests
 from flask import render_template, request
 from werkzeug import secure_filename
 from app import app, line, watchdog
@@ -200,7 +201,7 @@ def poke_watchdog_status():
             break
         except KeyError:
             print('KeyError')
-            request.get(os.environ['WEB_URL'] + '/dog_status')
+            requests.get(os.environ['WEB_URL'] + '/dog_status')
             if i == loop-1:
                 dog_status = False
     return dog_status
