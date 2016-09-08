@@ -192,7 +192,7 @@ def isin_status(Flux):
 
 
 def poke_watchdog_status():
-    loop = 5
+    loop = 3
     for i in range(loop):
         try:
             time.sleep(1)
@@ -200,7 +200,7 @@ def poke_watchdog_status():
             if dog_status:
                 break
         except KeyError:
-            r = requests.get(os.environ['WEB_URL'] + '/dog_status')
+            r = requests.post(os.environ['WEB_URL'] + '/dog_status', data=os.environ['password'])
             if r._content != b'None':
                 dog_status = True if r._content ==b'True' else False
                 break
@@ -326,9 +326,10 @@ def index():
         return render_template('main.html')
 
 
-@app.route("/dog_status", methods=['GET'])
+@app.route("/dog_status", methods=['POST'])
 def dog_status():
-    if request.method == 'GET':
+    if request.method == 'POST':
+        print(request.data)
         try:
             result = app.config['DOG'].isAlive()
         except KeyError:
