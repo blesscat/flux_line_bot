@@ -222,7 +222,10 @@ def isin_watchdogOn(Flux):
 def isin_watchdogOff(Flux):
     dog_status = poke_watchdog_status()
     if dog_status:
-        app.config['DOG'].monitor = False
+        try:
+            app.config['DOG'].monitor = False
+        except:
+            requests.get(os.environ['WEB_URL'] + '/dogoff')
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -331,6 +334,13 @@ def dog_status():
             result = None
             pass
         return str(result)
+
+
+@app.route("/dogoff", methods=['GET'])
+def dogoff():
+    if request.method == 'GET':
+        app.config['DOG'].monitor = False
+        return 'ok'
 
 
 @app.route("/thread", methods=['GET'])
