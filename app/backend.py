@@ -23,8 +23,8 @@ class load_filament_backend(threading.Thread):
     def run(self):
         main = self.Flux.maintain()
         # try:
-        #     message = '{}\nFLUX加溫中～～'.format(MANTRA)
-        #     line.send_message(_id, message)
+        message = '{}\nFLUX加溫中～～'.format(MANTRA)
+        line.send_message(_id, message)
         def callback(robot_connection, status, temp):
             pass
         main.load_filament(process_callback=callback)

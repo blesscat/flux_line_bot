@@ -307,7 +307,7 @@ def isin_abort(Flux):
 
 def isin_quit(Flux):
     try:
-        Flux.quit_play()
+        Flux.kick()
         message = '{}\n已經終止任務囉'.format(MANTRA)
     except:
         message = '{}\n無法終止，可能早就已經終止了呢'.format(MANTRA)
