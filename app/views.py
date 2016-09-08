@@ -194,11 +194,16 @@ def isin_status(Flux):
 def poke_watchdog_status():
     loop = 5
     for i in range(loop):
-        time.sleep(1)
-        r = requests.get(os.environ['WEB_URL'] + '/dog_status')
-        dog_status = True if r._content == b'True' else False
-        if dog_status:
-            break
+        try:
+            time.sleep(1)
+            dog_status = app.config['DOG'].isAlive()
+            r = requests.get(os.environ['WEB_URL'] + '/dog_status')
+            dog_status = True if r._content == b'True' else False
+            if dog_status:
+                break
+        except KeyError:
+            if i == loop-1:
+                dog_status = False
     return dog_status
 
 def isin_watchdogOn(Flux):
