@@ -201,8 +201,8 @@ def poke_watchdog_status():
             break
         except KeyError:
             print('KeyError')
-            a = requests.get(os.environ['WEB_URL'] + '/dog_status')
-            print(a)
+            r = requests.get(os.environ['WEB_URL'] + '/dog_status')
+            print(vars(r))
             if i == loop-1:
                 dog_status = False
     return dog_status
