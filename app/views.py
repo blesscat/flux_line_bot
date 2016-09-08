@@ -5,8 +5,7 @@ import socket
 import math
 import time
 import threading
-import builtins
-from flask import render_template, request
+from flask import render_template, request, g
 from werkzeug import secure_filename
 from app import app, line, watchdog
 
@@ -98,7 +97,7 @@ NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 os.environ['init_watchdog'] = "False"
-builtins.dog = None
+g.dog = watchdog.watchdog()
 
 
 def allowed_file(filename, allowed_file):
@@ -196,8 +195,8 @@ def poke_watchdog_status():
     loop = 50
     for i in range(loop):
         try:
-            time.sleep(0.1)
-            dog_status = bulitins.dog.isAlive()
+            time.sleep(0.2)
+            dog_status = g.dog.isAlive()
             break
         except NameError:
             if i == loop-1:
@@ -205,23 +204,21 @@ def poke_watchdog_status():
     return dog_status
 
 def isin_watchdogOn(Flux):
-    # dog_status = poke_watchdog_status()
-    # if dog_status:
-    if app.config['DOG_STATUS']:
+    dog_status = poke_watchdog_status()
+    if dog_status:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
     else:
-        builtins.dog = watchdog.watchdog()
-        builtins.dog.start()
+        # g.dog = watchdog.watchdog()
+        g.dog.start()
         app.config['DOG_STATUS'] = True
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     return message
 
 
 def isin_watchdogOff(Flux):
-    # dog_status = poke_watchdog_status()
-    # if dog_status:
-    if app.config['DOG_STATUS']:
-        builtins.dog.monitor = False
+    dog_status = poke_watchdog_status()
+    if dog_status:
+        g.dog.monitor = False
         app.config['DOG_STATUS'] = False
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
@@ -230,9 +227,8 @@ def isin_watchdogOff(Flux):
 
 
 def isin_watchdog(Flux):
-    # dog_status = poke_watchdog_status()
-    # if dog_status:
-    if app.config['DOG_STATUS']:
+    dog_status = poke_watchdog_status()
+    if dog_status:
         message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
