@@ -224,6 +224,7 @@ def isin_watchdogOff(Flux):
     if dog_status:
         try:
             app.config['DOG'].monitor = False
+            del app.config['DOG']
         except:
             requests.get(os.environ['WEB_URL'] + '/dogoff')
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
@@ -340,6 +341,7 @@ def dog_status():
 def dogoff():
     if request.method == 'GET':
         app.config['DOG'].monitor = False
+        del app.config['DOG']
         return 'ok'
 
 
