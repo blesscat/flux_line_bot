@@ -5,6 +5,7 @@ import socket
 import math
 import time
 import threading
+import builtins
 from flask import render_template, request
 from werkzeug import secure_filename
 from app import app, line, watchdog
@@ -87,7 +88,7 @@ flux_command_list = ["110 - status",
                      "240 - abort",
                      "250 - quit"]
 
-
+builtins.dog = None
 
 
 for command in flux_command_list:
@@ -196,7 +197,7 @@ def poke_watchdog_status():
     for i in range(loop):
         try:
             time.sleep(0.1)
-            dog_status = DOG.isAlive()
+            dog_status = bulitins.dog.isAlive()
             break
         except NameError:
             if i == loop-1:
@@ -208,9 +209,8 @@ def isin_watchdogOn(Flux):
     if dog_status:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
     else:
-        global DOG
-        DOG = watchdog.watchdog()
-        DOG.start()
+        builtins.dog = watchdog.watchdog()
+        builtins.dog.start()
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     return message
 
@@ -218,7 +218,7 @@ def isin_watchdogOn(Flux):
 def isin_watchdogOff(Flux):
     dog_status = poke_watchdog_status()
     if dog_status:
-        DOG.monitor = False
+        builtins.dog.monitor = False
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -306,9 +306,9 @@ def isin_list_files(Flux):
 
 # @app.before_first_request
 # def init_the_watchdog():
-#     global DOG
-#     DOG = watchdog.watchdog()
-#     DOG.start() 
+#     global bulitins.dog
+#     bulitins.dog = watchdog.watchdog()
+#     bulitins.dog.start() 
 
 
 @app.route("/", methods=['GET'])
@@ -320,7 +320,7 @@ def index():
 @app.route("/dog_status", methods=['GET'])
 def dog_status():
     if request.method == 'GET':
-        result = DOG.isAlive()
+        result = builtins.dog.isAlive()
         return str(result)
 
 
