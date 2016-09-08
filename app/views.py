@@ -329,9 +329,9 @@ def index():
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
     if request.method == 'POST':
-        print(request.data)
+        print(request.form)
         print(os.environ['password'])
-        if request.data == bytes(os.environ['password']):
+        if request.data == os.environ['password']:
             print('pass')
             try:
                 result = app.config['DOG'].isAlive()
