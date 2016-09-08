@@ -73,6 +73,7 @@ quit_set = {'250',
             '終止',
             '結束'}
 
+load_filament_set = {'260'}
 
 FLUX_COMMANDS = ""
 flux_command_list = ["110 - status",
@@ -313,6 +314,11 @@ def isin_quit(Flux):
     return message
 
 
+def isin_load_filament(Flux):
+    maintain = robot.maintain()
+    maintain.load_filament(process_callback=upload_callback)
+
+
 def isin_list_files(Flux):
     _list = str(Flux.list_files('/SD'))
     message = '{}'.format(_list)
@@ -380,10 +386,11 @@ def upload_file():
                 Flux.upload_file(file_path, '/SD/Recent/webUpload.fc',
                                  process_callback=upload_callback)
                 Flux.select_file('/SD/Recent/webUpload.fc')
-                Flux.quit_play()
                 Flux.start_play()
                 Flux.close()
                 os.environ['passed'] = "False"
+                while os.environ['passed'] != "False":
+                    time.sleep(0.1)
                 return 'success'
             else:
                 return "File type must is fc."
@@ -393,7 +400,8 @@ def upload_file():
             if password != os.environ['password']:
                 return "password is different from FLUX's."
             os.environ['passed'] = "True"
-            time.sleep(5)
+            while os.environ['passed'] != "True":
+                time.sleep(0.1)
             return 'passed'
 
 
@@ -464,6 +472,9 @@ def callback():
 
             elif isin(message, quit_set):
                 message = isin_quit(Flux)
+
+            elif isin(message, load_filament_set):
+                message = isin_load_filament(Flux)
 
             else:
                 message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
