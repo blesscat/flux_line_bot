@@ -99,7 +99,6 @@ LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 os.environ['init_watchdog'] = "False"
 builtins.dog = None
-DOG_STATUS = False
 
 
 def allowed_file(filename, allowed_file):
@@ -208,12 +207,12 @@ def poke_watchdog_status():
 def isin_watchdogOn(Flux):
     # dog_status = poke_watchdog_status()
     # if dog_status:
-    if DOG_STATUS:
+    if app.config['DOG_STATUS']:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
     else:
         builtins.dog = watchdog.watchdog()
         builtins.dog.start()
-        DOG_STATUS = True
+        app.config['DOG_STATUS'] = True
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     return message
 
@@ -221,9 +220,9 @@ def isin_watchdogOn(Flux):
 def isin_watchdogOff(Flux):
     # dog_status = poke_watchdog_status()
     # if dog_status:
-    if DOG_STATUS:
+    if app.config['DOG_STATUS']:
         builtins.dog.monitor = False
-        DOG_STATUS = False
+        app.config['DOG_STATUS'] = False
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -233,7 +232,7 @@ def isin_watchdogOff(Flux):
 def isin_watchdog(Flux):
     # dog_status = poke_watchdog_status()
     # if dog_status:
-    if DOG_STATUS:
+    if app.config['DOG_STATUS']:
         message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -326,7 +325,8 @@ def index():
 @app.route("/dog_status", methods=['GET'])
 def dog_status():
     if request.method == 'GET':
-        result = builtins.dog.isAlive()
+        # result = builtins.dog.isAlive()
+        result = app.config['DOG_STATUS']
         return str(result)
 
 

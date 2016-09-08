@@ -16,6 +16,7 @@ app.config['SECRET_KEY'] = 'blesscat-Web-Console-SecretKey'
 app.config['FC_UPLOAD_FOLDER'] = basedir
 app.config['FC_ALLOWED_EXTENSIONS'] = set(['fc'])
 
+app.config['DOG_STATUS'] = False
 # app.debug = True
 
 # ===================LoginManager=====================================================
