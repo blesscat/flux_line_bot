@@ -200,7 +200,7 @@ def poke_watchdog_status():
             if dog_status:
                 break
         except KeyError:
-            r = requests.post(os.environ['WEB_URL'] + '/dog_status', data=os.environ['password'])
+            r = requests.post(os.environ['WEB_URL'] + '/dog_status', json={'password': os.environ['password']})
             if r._content != b'None':
                 dog_status = True if r._content ==b'True' else False
                 break
@@ -329,7 +329,7 @@ def index():
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
     if request.method == 'POST':
-        print(request.form)
+        print(request.json)
         print(os.environ['password'])
         if request.data == os.environ['password']:
             print('pass')
