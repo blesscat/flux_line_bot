@@ -88,8 +88,6 @@ flux_command_list = ["110 - status",
                      "240 - abort",
                      "250 - quit"]
 
-builtins.dog = None
-
 
 for command in flux_command_list:
     FLUX_COMMANDS += command + '\n'
@@ -100,6 +98,8 @@ NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 os.environ['init_watchdog'] = "False"
+DOG_STATUS = False
+
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -205,20 +205,24 @@ def poke_watchdog_status():
     return dog_status
 
 def isin_watchdogOn(Flux):
-    dog_status = poke_watchdog_status()
-    if dog_status:
+    # dog_status = poke_watchdog_status()
+    # if dog_status:
+    if DOG_STATUS:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
     else:
         builtins.dog = watchdog.watchdog()
         builtins.dog.start()
+        DOG_STATUS = True
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     return message
 
 
 def isin_watchdogOff(Flux):
-    dog_status = poke_watchdog_status()
-    if dog_status:
+    # dog_status = poke_watchdog_status()
+    # if dog_status:
+    if DOG_STATUS:
         builtins.dog.monitor = False
+        DOG_STATUS = False
         message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
@@ -226,8 +230,9 @@ def isin_watchdogOff(Flux):
 
 
 def isin_watchdog(Flux):
-    dog_status = poke_watchdog_status()
-    if dog_status:
+    # dog_status = poke_watchdog_status()
+    # if dog_status:
+    if DOG_STATUS:
         message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
     else:
         message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
