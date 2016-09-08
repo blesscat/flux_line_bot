@@ -329,13 +329,14 @@ def index():
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
     if request.method == 'POST':
-        print(request.data)
-        try:
-            result = app.config['DOG'].isAlive()
-        except KeyError:
-            result = None
-            pass
-        return str(result)
+        if str(request.data) == os.environ['password']:
+            print('pass')
+            try:
+                result = app.config['DOG'].isAlive()
+            except KeyError:
+                result = None
+                pass
+            return str(result)
 
 
 @app.route("/dogoff", methods=['GET'])
