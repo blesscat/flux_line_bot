@@ -30,6 +30,8 @@ class load_filament_backend(threading.Thread):
         main.load_filament(process_callback=callback)
         for i in range(20):
             main.quit()
+            message = '{}\nFLUX{}'.format(MANTRA, i)
+            line.send_message(_id, message)
             print(i)
             time.sleep(1)
 
