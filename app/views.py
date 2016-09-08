@@ -196,8 +196,10 @@ def poke_watchdog_status():
         try:
             time.sleep(1)
             dog_status = app.config['DOG'].isAlive()
+            print(dog_status)
             break
         except KeyError:
+            print('KeyError')
             if i == loop-1:
                 dog_status = False
     return dog_status
