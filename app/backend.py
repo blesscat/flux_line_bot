@@ -16,7 +16,7 @@ class load_filament_backend(threading.Thread):
 
 class unload_filament_backend(threading.Thread):
     def __init__(self, Flux):
-        super(load_filament_backend, self).__init__()
+        super(unload_filament_backend, self).__init__()
         self.Flux = Flux
 
     def run(self):
