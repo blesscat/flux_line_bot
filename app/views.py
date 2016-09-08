@@ -331,7 +331,7 @@ def dog_status():
     if request.method == 'POST':
         print(request.data)
         print(os.environ['password'])
-        if str(request.data) == os.environ['password']:
+        if request.data == os.environ['password']:
             print('pass')
             try:
                 result = app.config['DOG'].isAlive()
