@@ -88,6 +88,9 @@ flux_command_list = ["110 - status",
                      "250 - quit"]
 
 
+DOG = watchdog.watchdog()
+
+
 for command in flux_command_list:
     FLUX_COMMANDS += command + '\n'
 
@@ -97,7 +100,6 @@ NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 os.environ['init_watchdog'] = "False"
-global DOG
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -301,6 +303,12 @@ def isin_list_files(Flux):
     _list = str(Flux.list_files('/SD'))
     message = '{}'.format(_list)
     return message
+
+
+@app.before_first_request
+def init_the_watchdog():
+   DOG.start() 
+
 
 @app.route("/", methods=['GET'])
 def index():
