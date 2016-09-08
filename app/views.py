@@ -204,7 +204,7 @@ def poke_watchdog_status():
             json = {'password': os.environ['password']}
             r = requests.post(web, json=json)
             if r._content != b'None':
-                dog_status = True if r._content ==b'True' else False
+                dog_status = True if r._content == b'True' else False
                 break
             if i == loop-1:
                 dog_status = False
@@ -351,6 +351,7 @@ def dogoff():
             try:
                 app.config['DOG'].monitor = False
                 del app.config['DOG']
+                result = 'ok'
             except KeyError:
                 result = None
             return str(result)
