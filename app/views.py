@@ -98,6 +98,7 @@ NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 os.environ['init_watchdog'] = "False"
+builtins.dog = None
 DOG_STATUS = False
 
 
