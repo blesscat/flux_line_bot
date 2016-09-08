@@ -4,7 +4,6 @@ Cython==0.24
 decorator==4.0.10
 ecdsa==0.13
 Flask==0.11.1
-fluxclient==1.0b1
 gunicorn==19.6.0
 ipython==5.0.0
 ipython-genutils==0.1.0
