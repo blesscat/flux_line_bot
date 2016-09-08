@@ -197,12 +197,13 @@ def poke_watchdog_status():
         try:
             time.sleep(1)
             dog_status = app.config['DOG'].isAlive()
-            #dog_status = True if r._content == b'True' else False
             if dog_status:
                 break
         except KeyError:
             r = requests.get(os.environ['WEB_URL'] + '/dog_status')
-            print(r._content)
+            if r._content != b'None':
+                dog_status = True if r._content ==b'True' else False
+                break
             if i == loop-1:
                 dog_status = False
     return dog_status
@@ -324,7 +325,11 @@ def index():
 @app.route("/dog_status", methods=['GET'])
 def dog_status():
     if request.method == 'GET':
-        result = app.config['DOG'].isAlive()
+        try:
+            result = app.config['DOG'].isAlive()
+        except KeyError:
+            result = None
+            pass
         return str(result)
 
 
