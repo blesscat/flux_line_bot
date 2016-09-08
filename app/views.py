@@ -192,10 +192,10 @@ def isin_status(Flux):
 
 
 def poke_watchdog_status():
-    loop = 5
+    loop = 50
     for i in range(loop):
         try:
-            time.sleep(1)
+            time.sleep(0.1)
             dog_status = DOG.isAlive()
             break
         except NameError:
@@ -304,11 +304,11 @@ def isin_list_files(Flux):
     return message
 
 
-@app.before_first_request
-def init_the_watchdog():
-    global DOG
-    DOG = watchdog.watchdog()
-    DOG.start() 
+# @app.before_first_request
+# def init_the_watchdog():
+#     global DOG
+#     DOG = watchdog.watchdog()
+#     DOG.start() 
 
 
 @app.route("/", methods=['GET'])
