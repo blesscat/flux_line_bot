@@ -157,6 +157,7 @@ def get_flux_status(robot):
 
 
 def get_message(js):
+    print(js)
     _id = [js['result'][0]['content']['from']]
     message = js['result'][0]['content']['text']
     contentType = js['result'][0]['content']['contentType']
