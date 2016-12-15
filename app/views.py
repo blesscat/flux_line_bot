@@ -158,9 +158,9 @@ def get_flux_status(robot):
 
 def get_message(js):
     print(js)
-    _id = [js['result'][0]['content']['from']]
-    message = js['result'][0]['content']['text']
-    contentType = js['result'][0]['content']['contentType']
+    _id = [js['events'][0]['source']['iserId']]
+    message = js['events'][0]['message']['text']
+    contentType = js['events'][0]['message']['type']
 
     return _id, message, contentType
 
@@ -416,7 +416,7 @@ def callback():
     if request.method == 'POST':
         js = request.get_json()
         _id, message, contentType = get_message(js)
-        if contentType != 1:
+        if contentType != 'text':
             line.send_picture(_id)
             return "ok"
 
