@@ -453,7 +453,8 @@ def callback1():
 
 @handler.add(MessageEvent, message=TextMessage)
 def message_text(event):
-    print('id: {}'.format(event.source.userId))
+    print('text: {}'.format(dir(event)))
+    #print('id: {}'.format(event.source.userId))
     print('text: {}'.format(event.message.text))
     line_bot_api.reply_message(
         event.reply_token,
