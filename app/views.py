@@ -460,11 +460,11 @@ def message_text(event):
         return "ok"
 
     if message == '罐罐':
-        #message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
-        #line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
-        #time.sleep(5)
-        message = '{}\n{}能做的工作如下喔!\n{}'.format(MANTRA, NAME, FLUX_COMMANDS)
+        message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
+        time.sleep(5)
+        message = '{}\n{}能做的工作如下喔!\n{}'.format(MANTRA, NAME, FLUX_COMMANDS)
+        line_bot_api.push_message(_id, TextSendMessage(text=message))
         return 'ok'
 
     magic_id = message[:5].lower()
