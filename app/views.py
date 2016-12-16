@@ -11,7 +11,7 @@ from flask import render_template
 from werkzeug import secure_filename
 from app import app, line, watchdog, backend
 
-from linebot import  LineBotApi, WebhookHandler
+from linebot import  LineBotApi, WebhookHandler, WebhookParser
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
