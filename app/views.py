@@ -434,6 +434,7 @@ def callback1():
     try:
         events = parser.parse(body, signature)
     except InvalidSignatureError:
+        print('error')
         abort(400)
 
     for event in events:
