@@ -446,6 +446,7 @@ def message_text(event):
     #print('sender id: {}'.format(event.source.sender_id))
     #print('text: {}'.format(event.message.text))
     _id = event.source.user_id
+    message = event.message.text
 
     if _id != LINEID:
         message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
