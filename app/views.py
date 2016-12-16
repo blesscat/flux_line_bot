@@ -448,7 +448,8 @@ def message_text(event):
     print('group id: {}'.format(event.source.group_id))
     print('sender id: {}'.format(event.source.sender_id))
     print('text: {}'.format(event.message.text))
-    _id = event.source.user_id
+    #_id = event.source.user_id
+    _id = event.source.sender_id
     message = event.message.text
 
     if _id != LINEID:
