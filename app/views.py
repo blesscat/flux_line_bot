@@ -6,9 +6,14 @@ import math
 import time
 import threading
 import requests
-from flask import render_template, request
+from flask import Flask, request, abort
+from flask import render_template
 from werkzeug import secure_filename
 from app import app, line, watchdog, backend
+
+from linebot import  LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -101,7 +106,11 @@ NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
 os.environ['init_watchdog'] = "False"
+ChannelAccessToken = os.environ.get('ChannelAccessToken')
+ChannelSecret = os.environ.get('ChannelSecret')
 
+line_bot_api = LineBotApi(ChannelAccessToken)
+handler = WebhookHandler(ChannelSecret)
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -409,6 +418,31 @@ def upload_file():
             while os.environ['passed'] != "True":
                 time.sleep(0.1)
             return 'passed'
+
+
+@app.route("/callback1", methods=['POST'])
+def callback1():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+
+    # get request body as text
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+
+    # handle webhook body
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        abort(400)
+
+    return 'OK'
+
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text))
 
 
 @app.route("/callback", methods=['POST'])

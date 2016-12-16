@@ -4,11 +4,14 @@ Cython==0.24
 decorator==4.0.10
 ecdsa==0.13
 Flask==0.11.1
+fluxclient==1.0b1
+future==0.16.0
 gunicorn==19.6.0
 ipython==5.0.0
 ipython-genutils==0.1.0
 itsdangerous==0.24
 Jinja2==2.8
+line-bot-sdk==1.0.2
 lxml==3.6.0
 MarkupSafe==0.23
 msgpack-python==0.4.7
