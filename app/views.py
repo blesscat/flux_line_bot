@@ -421,8 +421,8 @@ def upload_file():
             return 'passed'
 
 
-@app.route("/callback1", methods=['POST'])
-def callback1():
+@app.route("/callback", methods=['POST'])
+def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
@@ -524,90 +524,3 @@ def message_text(event):
         message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         return 'ok'
-
-
-@app.route("/callback", methods=['POST'])
-def callback():
-    if request.method == 'POST':
-        js = request.get_json()
-        _id, message, contentType = get_message(js)
-        if contentType != 'text':
-            line.send_picture(_id)
-            return "ok"
-
-        if _id != LINEID:
-            message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
-                                                        MANTRA, NAME, _id[0])
-            line.send_message(_id, message)
-            return "ok"
-
-        if message == '罐罐':
-            message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
-            line.send_message(_id, message)
-            time.sleep(5)
-            message = '{}\n{}能做的工作如下喔!\n{}'.format(MANTRA, NAME, FLUX_COMMANDS)
-            line.send_message(_id, message)
-            return 'ok'
-
-        magic_id = message[:5].lower()
-        if magic_id == 'flux ' or magic_id == '8763 ':
-            try:
-                Flux = robot()
-            except:
-                message = '{}\n{}找不到FLUX喔～'.format(MANTRA, NAME)
-                line.send_message(_id, message)
-                return 'ok'
-
-            if isin(message, watchdogOn_set):
-                message = isin_watchdogOn(Flux)
-
-            elif isin(message, watchdogOff_set):
-                message = isin_watchdogOff(Flux)
-
-            elif isin(message, watchdog_set):
-                message = isin_watchdog(Flux)
-
-            elif isin(message, status_set):
-                message = isin_status(Flux)
-
-            elif isin(message, list_files_set):
-                message = isin_list_files(Flux)
-
-            elif isin(message, web_set):
-                message = isin_web(Flux)
-
-            elif isin(message, fs_set):
-                message = isin_fs(Flux)
-
-            elif isin(message, start_set):
-                message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
-
-            elif isin(message, pause_set):
-                message = isin_pause(Flux)
-
-            elif isin(message, resume_set):
-                message = isin_resume(Flux)
-
-            elif isin(message, abort_set):
-                message = isin_abort(Flux)
-
-            elif isin(message, quit_set):
-                message = isin_quit(Flux)
-
-            elif isin(message, load_filament_set):
-                message = isin_load_filament(Flux)
-
-            elif isin(message, unload_filament_set):
-                message = isin_unload_filament(Flux)
-
-            else:
-                message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
-
-            line.send_message(_id, message)
-            Flux.close()
-            return 'ok'
-
-        else:
-            message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
-            line.send_message(_id, message)
-            return 'ok'
