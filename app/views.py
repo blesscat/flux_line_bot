@@ -110,8 +110,8 @@ ChannelAccessToken = os.environ.get('ChannelAccessToken')
 ChannelSecret = os.environ.get('ChannelSecret')
 
 line_bot_api = LineBotApi(ChannelAccessToken)
-#handler = WebhookHandler(ChannelSecret)
-parser = WebhookParser(ChannelSecret)
+handler = WebhookHandler(ChannelSecret)
+#parser = WebhookParser(ChannelSecret)
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -432,32 +432,31 @@ def callback1():
 
     # handle webhook body
     try:
-        events = parser.parse(body, signature)
+        handler.handle(body, signature)
+        #events = parser.parse(body, signature)
     except InvalidSignatureError:
-        print('error')
         abort(400)
 
-    for event in events:
-        print(vars(event))
-        if not isinstance(event, MessageEvent):
-            continue
-        if not isinstance(event.message, TextMessage):
-            continue
-
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=event.message.text)
-        )
+#    for event in events:
+#        if not isinstance(event, MessageEvent):
+#            continue
+#        if not isinstance(event.message, TextMessage):
+#            continue
+#
+#        line_bot_api.reply_message(
+#            event.reply_token,
+#            TextSendMessage(text=event.message.text)
+#        )
 
     return 'OK'
 
 
-#@handler.add(MessageEvent, message=TextMessage)
-#def message_text(event):
-#    line_bot_api.reply_message(
-#        event.reply_token,
-#        TextSendMessage(text=event.message.text)
-#    )
+@handler.add(MessageEvent, message=TextMessage)
+def message_text(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text)
+    )
 
 
 @app.route("/callback", methods=['POST'])
