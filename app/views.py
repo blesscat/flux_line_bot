@@ -539,7 +539,7 @@ def callback():
             line.send_picture(_id)
             return "ok"
 
-        if _id[0] != LINEID:
+        if _id != LINEID:
             message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
                                                         MANTRA, NAME, _id[0])
             line.send_message(_id, message)
