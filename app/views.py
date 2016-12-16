@@ -425,7 +425,6 @@ def upload_file():
 def callback1():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
-    print(signature)
 
     # get request body as text
     body = request.get_data(as_text=True)
@@ -439,7 +438,7 @@ def callback1():
         abort(400)
 
     for event in events:
-        print('event: {}'.format(event))
+        print(vars(event))
         if not isinstance(event, MessageEvent):
             continue
         if not isinstance(event.message, TextMessage):
