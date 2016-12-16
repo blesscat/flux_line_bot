@@ -468,7 +468,7 @@ def message_text(event):
             Flux = robot()
         except:
             message = '{}\n{}找不到FLUX喔～'.format(MANTRA, NAME)
-            line.send_message(_id, message)
+            line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
             return 'ok'
 
         if isin(message, watchdogOn_set):
@@ -516,19 +516,14 @@ def message_text(event):
         else:
             message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
 
-        line.send_message(_id, message)
+        line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         Flux.close()
         return 'ok'
 
     else:
         message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
-        line.send_message(_id, message)
+        line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         return 'ok'
-
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=event.message.text)
-        )
 
 
 @app.route("/callback", methods=['POST'])
