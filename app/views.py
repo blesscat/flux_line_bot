@@ -360,6 +360,7 @@ def test():
     return 'ok'
 
 
+
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
     if request.method == 'POST':
@@ -433,6 +434,12 @@ def upload_file():
                 time.sleep(0.1)
             return 'passed'
 
+
+@app.route("/fb_callback", methods=['GET'])
+def fb_callback():
+    body = request.get_data(as_text=True)
+    print(body)
+    
 
 @app.route("/callback", methods=['POST'])
 def callback():
