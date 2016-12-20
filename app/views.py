@@ -349,7 +349,7 @@ def index():
     if request.method == 'GET':
         return 'main'
 
-@app.route("/test", method =['GET'])
+@app.route("/test", methods=['GET'])
 def test():
     q = Queue(connection=conn)
     result = q.enqueue(count_words_at_url, 'http://heroku.com')
