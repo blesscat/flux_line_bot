@@ -1,6 +1,9 @@
 import os
+import sys
 import time
 import socket
+
+sys.path.insert(0, os.path.abspath('.'))
 
 from flux import FLUX
 from app.views import line_bot_api, LINEID

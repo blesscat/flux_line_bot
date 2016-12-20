@@ -9,7 +9,7 @@ import requests
 from flask import Flask, request, abort
 from flask import render_template
 from werkzeug import secure_filename
-from app import app, watchdog, backend
+from app import app, backend
 from rq import Queue
 from app.utils import count_words_at_url
 
@@ -19,7 +19,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 sys.path.insert(0, os.path.abspath('..'))
 
-from worker import conn
+#from worker import conn
 from flux import FLUX
 from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
@@ -232,7 +232,7 @@ def isin_watchdogOn(Flux):
     if dog_status:
         message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
     else:
-        app.config['DOG'] = watchdog.watchdog()
+   #     app.config['DOG'] = watchdog.watchdog()
         app.config['DOG'].start()
         message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
     return message
