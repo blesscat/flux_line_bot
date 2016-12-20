@@ -353,10 +353,10 @@ def index():
 def test():
     q = Queue(connection=conn)
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
-    time.sleep(5)
-    print(vars(job))
-    print(dir(job))
-    print(job.result)
+    for i in range(10):
+        print(job.result)
+        print(job.status)
+        time.sleep(1)
     return 'ok'
 
 
