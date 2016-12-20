@@ -11,7 +11,7 @@ from flask import render_template
 from werkzeug import secure_filename
 from app import app, watchdog, backend
 from rq import Queue
-from utils import count_words_at_url
+from app.utils import count_words_at_url
 from ..worker import conn
 
 from linebot import  LineBotApi, WebhookHandler
