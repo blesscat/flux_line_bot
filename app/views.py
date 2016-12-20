@@ -352,9 +352,12 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     q = Queue(connection=conn)
-    result = q.enqueue(count_words_at_url, 'http://heroku.com')
-    time.sleep(1)
-    return result
+    job = q.enqueue(count_words_at_url, 'http://heroku.com')
+    time.sleep(5)
+    print(vars(job))
+    print(dir(job))
+    print(job.result)
+    return 'ok'
 
 
 @app.route("/dog_status", methods=['POST'])
