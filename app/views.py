@@ -436,12 +436,17 @@ def upload_file():
             return 'passed'
 
 
-@app.route("/fb_callback", methods=['GET'])
+@app.route("/fb_callback", methods=['GET', 'POST'])
 def fb_callback():
-    verify_token = request.args.get('hub.verify_token')
-    if verify_token == fb_token:
-        return request.args.get('hub.challenge')
-    return 'fail'
+    if request.method == 'GET':
+        verify_token = request.args.get('hub.verify_token')
+        if verify_token == fb_token:
+            return request.args.get('hub.challenge')
+        return 'fail'
+    if request.method == 'POST':
+        body = request.get_data(as_text=True)
+        print(body)
+        return 'ok'
     
 
 @app.route("/callback", methods=['POST'])
