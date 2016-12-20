@@ -12,7 +12,6 @@ from werkzeug import secure_filename
 from app import app, watchdog, backend
 from rq import Queue
 from app.utils import count_words_at_url
-from ..worker import conn
 
 from linebot import  LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -20,6 +19,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 sys.path.insert(0, os.path.abspath('..'))
 
+from worker import conn
 from flux import FLUX
 from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
