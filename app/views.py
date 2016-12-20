@@ -103,6 +103,7 @@ flux_command_list = ["110 - status",
 for command in flux_command_list:
     FLUX_COMMANDS += command + '\n'
 
+fb_token = 'blesscat'
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
@@ -437,8 +438,10 @@ def upload_file():
 
 @app.route("/fb_callback", methods=['GET'])
 def fb_callback():
-    print(request.args.get('hub.verify_token'))
-    return 'ok'
+    verify_token = request.args.get('hub.verify_token')
+    if verify_token == fb_token:
+        return request.args.get('hub.challenge')
+    return 'fail'
     
 
 @app.route("/callback", methods=['POST'])
