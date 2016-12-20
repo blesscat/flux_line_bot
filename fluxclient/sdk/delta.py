@@ -64,6 +64,8 @@ class Delta(object):
         self.blocking_flag = blocking
 
         self.head_status = [b'', -2, 0, {}]
+        self.serial_status = [b'', 0, 0]
+        self.serial_out = []
         self.open_udp_sock()
 
         self.connected = True
@@ -173,7 +175,7 @@ class Delta(object):
         # init udp socket: for state
         self.status = (1, 0)  # index, queue_left
         self.udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.udp_sock.bind((socket.gethostbyname(socket.gethostname()), 22111))
+        self.udp_sock.bind(('', 22111))
         buf = self.udp_sock.recv(4096)
         self.killthread = False
         self.queue_checker = threading.Thread(target=self.delta_status)
@@ -271,6 +273,10 @@ class Delta(object):
                             self.headerror_callback(self.head_error)
                         self.send_command([CMD_CLHE])
                     self.lock.release()
+                elif payload[0] == 2:
+                    self.lock.acquire()
+                    self.serial_status = payload[1:]
+                    self.lock.release()
 
     def send_command(self, command, recv_callback=False):
         self._command_index += 1
@@ -302,11 +308,11 @@ class Delta(object):
         """
         Sets each axis back to home.
 
-        :return: the coordinate where the toolhead originally is
-        :rtype: (float, float, float)
+        :return: command index and the coordinate where the toolhead originally is
+        :rtype: (int, (float, float, float))
 
         >>> f.home()
-        (20.0, 20.0, 20.0)
+        (0, (20.0, 20.0, 20.0))
         >>> f.get_position()
         (0, 0, 280)
         """
@@ -316,6 +322,7 @@ class Delta(object):
                 raise RuntimeError('command retrun error')
             else:
                 return tuple(ret[2])
+
         self.loose_flag = False
         command_index = self.send_command([CMD_G028], recv_callback=post_process)
         ret = self.get_result(command_index, wait=True)
@@ -415,8 +422,6 @@ class Delta(object):
                     raise SDKFatalError(self, "unsupported type({1}) for {0} coordinate".format(name, type(kargs[name])))
         if c > 1:
             raise SDKFatalError(self, "too many E command at once")
-        elif self.loose_flag and c != 0:  # this could be deleted if ticket #209 is done
-            raise SDKFatalError(self, 'motor need to home() before moving')
 
         # form the dict passing to delta
         command_dict = {}  # {F:int, X:float, Y:float, Z:float, E2:float, E3:float, E3:float}
@@ -584,7 +589,7 @@ class Delta(object):
         def callback(c, img):
             storage["img"] = img
 
-        self.camera.requrest_frame()
+        self.camera.require_frame()
         while not storage:
             self.camera.feed(callback)
 
@@ -592,15 +597,78 @@ class Delta(object):
 
     def serial_write(self, buf):
         """
-        [TODO]: support this in the future
-        """
-        pass
+        Writes buffer or string to extension port
 
-    def serial_read(self, buf_size):
+        :param str/bytes buf: data sent in extension port
+        :rtype: (int, None): (command_index, None)
+
+        >>> f.serial_write(b'PING')  # write bytes
+        (1, None)
+        >>> f.serial_write('Hello')  # write string
+        (2, None)
+
         """
-        [TODO]: support this in the future
+        if not isinstance(buf, (str, bytes)):
+            raise SDKFatalError(self, "Invalid buffer type: {}".format(type(buf)))
+
+        command_index = self.send_command([CMD_THRC, buf], False)
+        if self.blocking_flag:
+            return command_index, self.get_result(command_index, wait=True)
+        else:
+            return command_index, None
+
+    def atomic_serial_list(self, param='', mode='e'):
+        ret = None
+        if mode == 'e':
+            self.serial_out.extend(param[1])
+        elif mode == 'l':
+            self.lock.acquire()
+            ret = len(self.serial_out)
+            self.lock.release()
+        elif mode == 'p':
+            self.lock.acquire()
+            ret = self.serial_out.pop(0)
+            self.lock.release()
+        return ret
+
+    def serial_read(self, timeout=0):
         """
-        pass
+        Reads a chunck from extension port
+        Returns b'' if timeout happened
+
+        :param int timeout: timeout trying to read data, default 0
+        :rtype: bytes: a chunck read from extension port
+
+        >>> delta.serial_read(timeout=10)
+        b'PONG'
+        """
+
+        if not isinstance(timeout, (int, float)):
+            raise SDKFatalError(self, "Wrong timeout type: {}".format(type(timeout)))
+
+        t_s = time()
+
+        if self.atomic_serial_list(mode='l'):
+            return self.atomic_serial_list(mode='p')
+        else:
+            flag = False
+            if self.serial_status[2] != 0:
+                flag = True
+            else:
+                while time() - t_s < timeout:
+                    if self.serial_status[2] != 0:
+                        flag = True
+                        break
+            if flag:
+                command_index = self.send_command([CMD_THRR], self.atomic_serial_list)
+                if self.blocking_flag:
+                    while self.atomic_serial_list(mode='l') == 0:
+                        if time() - t_s > timeout:
+                            return b""
+
+                    return self.atomic_serial_list(mode='p')
+            else:
+                return b""
 
     def disable_motor(self, motor):
         """
@@ -638,17 +706,17 @@ class Delta(object):
         """
         Gets the basic toolhead info(immutable data).
 
-        :return: dict consist of toolhead's basic information
-        :rtype: dict
+        :return: command index and dict consist of toolhead's basic information
+        :rtype: (int, dict)
 
         >>> f.get_head_profile()  # no tool head connected
-        {"module": "N/A"}
+        (0, {"module": "N/A"})
 
         >>> f.get_head_profile()  # print head
-        {"version": "1.0.8", "module": "EXTRUDER", "id": "203236325346430100240001", "vendor": "FLUX .inc"}
+        (0, {"version": "1.0.8", "module": "EXTRUDER", "id": "203236325346430100240001", "vendor": "FLUX .inc"})
 
         >>> f.get_head_profile()  # laser head
-        {"version": "1.0.3", "module": "LASER", "id":"203236325346430100260004", "vendor": "FLUX .inc"}
+        (0, {"version": "1.0.3", "module": "LASER", "id":"203236325346430100260004", "vendor": "FLUX .inc"})
 
 
         .. note::
@@ -770,12 +838,12 @@ class Delta(object):
         Sets the tool head want to use
         :param str head_type: head_type, should be one of 'EXTRUDER', 'LASER', 'N/A'
         """
-        if head_type in ['EXTRUDER', 'LASER', 'N/A']:
+        if head_type in ['EXTRUDER', 'LASER', 'N/A'] or head_type.startswith('USER'):
             self.send_command([CMD_REQH, head_type], False)
             self.send_command([CMD_BSTH])
             time_s = time()
             while True:  # wait for head to be ready
-                if self.head_status[1] == 0:
+                if self.head_status[2] == 0:
                     return True
                 elif time() - time_s > 5:  # not ready for too long
                     return False
@@ -794,6 +862,51 @@ class Delta(object):
             self.headerror_callback = callback_function
         else:
             raise SDKFatalError(self, "Callback error: should be callable object")
+
+    def get_fsr(self):
+        """
+        Gets the current force sensor reading.
+
+        :return: command index and dict consist of each axis' currrent reading
+        :rtype: (int, dict)
+
+        >>> flux.get_fsr()
+        (0, {'X': 3889.15, 'Y': 3958.45, 'Z': 3715.9})
+
+        """
+        def post_process(ret):
+            return {i.decode(): ret[1][i] for i in ret[1]}
+        command_index = self.send_command([CMD_VALU, 1], post_process)
+        if self.blocking_flag:
+            return command_index, self.get_result(command_index, wait=True)
+        else:
+            return command_index, None
+
+    def get_value(self):
+        """
+        Gets some other sensor's reading.
+
+        :return: command index and dict consist of whether switch is triggered
+        :rtype: (int, dict)
+
+        F0: filament sensor 0
+
+        F1: filament sensor 1
+
+        MB: Mainboard Button
+
+        >>> flux.get_value()
+        (0, {'F0': True, 'MB': False, 'F1': True})
+
+        """
+
+        def post_process(ret):
+            return {i.decode(): ret[1][i] for i in ret[1]}
+        command_index = self.send_command([CMD_VALU, 2 | 4 | 8], post_process)
+        if self.blocking_flag:
+            return command_index, self.get_result(command_index, wait=True)
+        else:
+            return command_index, None
 
     def close(self):
         """

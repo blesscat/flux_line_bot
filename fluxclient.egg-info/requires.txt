@@ -1,9 +1,0 @@
-setuptools
-pycrypto
-pyserial
-pillow
-numpy
-scipy
-ecdsa
-lxml
-pyasn1

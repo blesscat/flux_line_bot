@@ -34,9 +34,6 @@ def num_to_XYZE(command):
 
 
 class FcodeToGcode(FcodeBase):
-    """
-    see here for fcode spec: https://github.com/flux3dp/fluxmonitor/wiki/Flux-Device-Control-Describe-File-V1
-    """
     def __init__(self, buf=''):
         super(FcodeToGcode, self).__init__()
         self.data = None
@@ -95,7 +92,7 @@ class FcodeToGcode(FcodeBase):
             index += 4
             return True
         except AssertionError as e:
-            raise RuntimeError(FILE_BROKEN, e.args[0] if e.args else "#")
+            return False
 
     def get_img(self):
         """

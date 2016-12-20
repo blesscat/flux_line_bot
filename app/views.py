@@ -9,7 +9,10 @@ import requests
 from flask import Flask, request, abort
 from flask import render_template
 from werkzeug import secure_filename
-from app import app, line, watchdog, backend
+from app import app, watchdog, backend
+from rq import Queue
+from utils import count_words_at_url
+from ..worker import conn
 
 from linebot import  LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -346,6 +349,13 @@ def index():
     if request.method == 'GET':
         return 'main'
 
+@app.route("/test", method =['GET'])
+def test():
+    q = Queue(connection=conn)
+    result = q.enqueue(count_words_at_url, 'http://heroku.com')
+    time.sleep(1)
+    return result
+
 
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
@@ -436,7 +446,6 @@ def callback():
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
-
 
     return 'OK'
 

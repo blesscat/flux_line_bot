@@ -16,7 +16,7 @@ class LaserBase(object):
     """base class for all laser usage calss"""
     def __init__(self):
         self.laser_on = False
-        self.focal_l = 4.7  # focal z coordinate
+        self.focal_l = 6.4  # focal z coordinate
 
         self.laser_speed = 300  # speed F= mm/minute
         self.travel_speed = 1000
@@ -64,8 +64,8 @@ class LaserBase(object):
         self.laser_on = True
         gcode += self.turnOff()
 
-        # setting
-        gcode += ["X3F3", "X3F2", "X3F1"]
+        # # setting
+        # gcode += ["X3F3", "X3F2", "X3F1"]
 
         # move to proper height
         gcode.append("G1 F5000 Z%.5f" % (self.focal_l + self.obj_height))

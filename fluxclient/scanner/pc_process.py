@@ -356,6 +356,27 @@ class PcProcess():
 
         self.clouds[name_out] = both_pc
 
+    def subset(self, name_base, name_out, mode):
+        if not mode in ['left', 'right', 'both']:
+            return "mode error:{}, should be 'left', 'right' or 'both'".format(mode)
+        if not name_base in self.clouds:
+            return "name error: {} not upload yet"
+        else:
+            logger.debug('generate subset from {} into {}'.format(name_base, name_out))
+            out_pc = []
+            if mode == 'left' or mode == 'both':
+                out_pc.append(self.clouds[name_base][0].clone())
+            else:
+                out_pc.append(_scanner.PointCloudXYZRGBObj())
+
+            if mode == 'right' or mode == 'both':
+                out_pc.append(self.clouds[name_base][1].clone())
+            else:
+                out_pc.append(_scanner.PointCloudXYZRGBObj())
+
+            self.clouds[name_out] = out_pc
+            return 'ok'
+
     def cone_bottom(self, name_in, name_out, z_value, thick=5):
         pass
 

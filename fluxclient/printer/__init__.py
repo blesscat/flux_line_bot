@@ -218,11 +218,13 @@ z_offset = -1
 flux_refill_empty = 0
 flux_first_layer = 0
 flux_raft = 0
-flux_floor = -1
+cut_bottom = -1
 detect_filament_runout = 1
 detect_head_shake = 1
 detect_head_tilt = 1
-flux_calibration = 1"""
+flux_calibration = 1
+pause_at_layers = 
+support_everywhere = 0"""
 
 ini_constraint = {
     'avoid_crossing_perimeters': [binary],
@@ -315,7 +317,7 @@ ini_constraint = {
     'seam_position': False,
     'skirt_distance': [float_range, 0],
     'skirt_height': [int_range, 0],
-    'skirts': [int_range, 0, 4],
+    'skirts': [int_range, 0, 20],
     'slowdown_below_layer_time': [int_range, 0],
     'small_perimeter_speed': False,
     'solid_infill_below_area': False,
@@ -326,6 +328,7 @@ ini_constraint = {
     'spiral_vase': [binary],
     'standby_temperature_delta': [int_range, -400, 400],
     'start_gcode': False,
+    'support_everywhere': [binary],
     'support_material': [binary],
     'support_material_angle': False,
     'support_material_contact_distance': [float_range, 0.0, 10],
@@ -358,9 +361,12 @@ ini_constraint = {
     'flux_refill_empty': [binary],
     'flux_first_layer': [binary],
     'flux_raft': [binary],
-    'flux_floor': [float_range, -1, 240],
+    'cut_bottom': [float_range, -1, 240],
     'detect_filament_runout': [binary],
     'detect_head_shake': [binary],
     'detect_head_tilt': [binary],
-    'flux_calibration': [binary]
+    'flux_calibration': [binary],
+    'pause_at_layers': False
 }
+
+ini_flux_params = ['cut_bottom' ,'flux_', 'detect_', 'pause_at_layers']

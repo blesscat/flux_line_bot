@@ -2,15 +2,15 @@
 from ipaddress import IPv4Interface, IPv4Address
 from getpass import getpass
 import argparse
-import logging
 import sys
 
-from fluxclient.commands.misc import get_or_create_default_key
-from fluxclient.usb.task import UsbTask, UsbTaskError
 from fluxclient.upnp.misc import parse_network_config
+from fluxclient.usb.task import UsbTask, UsbTaskError
+from .misc import get_or_create_default_key, setup_logger, network_config_helper
 
-logging.basicConfig(format="%(message)s", stream=sys.stdout)
-logger = logging.getLogger(__name__)
+PROG_DESCRIPTION = "Flux device usb configuration console."
+PROG_EPILOG = ""
+logger = None
 
 
 def do_auth(task):
@@ -25,7 +25,7 @@ def do_auth(task):
 
 
 def printhelp():
-    print("""Help:
+    logger.info("""Help:
     3 - Modify general settings
     4 - Modify network settings
     5 - Check current wifi SSID
@@ -40,38 +40,7 @@ def do_general_config(task):
 
 
 def do_network_config(task):
-    kw = {}
-    ret = input("Wifi Mode (0=host,1=client)[1]: ").strip("\n")
-    if ret == "0":
-        kw["wifi_mode"] = "host"
-    else:
-        kw["wifi_mode"] = "client"
-
-    kw["ssid"] = input("SSID: ").strip("\n")
-
-    ret = input("Wifi-Protection (0=None,1=WEP,2=WPA2-PSK)[2]: ").strip("\n")
-    if ret == "0":
-        kw["security"] = "None"
-    elif ret == "1":
-        kw["security"] = "WEP"
-        kw["wepkey"] = input("Wifi password: ").strip("\n")
-    else:
-        kw["security"] = "WPA2-PSK"
-        kw["psk"] = input("Wifi password: ").strip("\n")
-
-    ret = input("Use DHCP? (0=YES,1=NO)[0]: ").strip("\n")
-    if ret == "1":
-        kw["method"] = "static"
-        ipaddr = IPv4Interface(
-            input("IP Address (example: \"192.168.0.1/24\"): ").strip("\n"))
-        kw["ipaddr"] = str(ipaddr.ip)
-        kw["mask"] = int(ipaddr.with_prefixlen.split("/")[-1])
-        gw = IPv4Address(input("Gateway: ").strip("\n"))
-        kw["route"] = str(gw)
-        kw["ns"] = input("DNS: ").strip("\n")
-    else:
-        kw["method"] = "dhcp"
-
+    kw = network_config_helper.run()
     options = parse_network_config(**kw)
     task.config_network(options)
 
@@ -81,23 +50,23 @@ def do_set_password(task):
     if getpass("Confirm new password: ") != new_pwd:
         raise RuntimeError("New password not match")
 
-    print(task.set_password(new_pwd))
+    logger.info(task.set_password(new_pwd))
 
 
 def do_get_ssid(task):
-    print(task.get_ssid())
+    logger.info(task.get_ssid())
 
 
 def do_get_ipaddr(task):
-    print(task.get_ipaddr())
+    logger.info(task.get_ipaddr())
 
 
 def do_scan_wifi(task):
     ret = task.list_ssid()
-    print("%-30s %-4s %s" % ("SSID", "RSSI", "SECURITY"))
+    logger.info("%-30s %-4s %s" % ("SSID", "RSSI", "SECURITY"))
     for l in ret:
-        print("%-30s %-4s %s" % (l.get("ssid"), l.get("rssi"),
-                                 l.get("security")))
+        logger.info("%-30s %-4s %s" % (l.get("ssid"), l.get("rssi"),
+                                       l.get("security")))
 
 
 def cmdline(task):
@@ -119,26 +88,22 @@ def cmdline(task):
         elif cmd == "8":
             do_scan_wifi(task)
         else:
-            print("Unknow command id: %s" % cmd)
+            logger.info("Unknow command id: %s" % cmd)
 
 
 def main():
-    parser = argparse.ArgumentParser(description='flux usb tool')
-    parser.add_argument('-d', dest='debug', action='store_const',
-                        const=True, default=False, help='Print debug log')
-    parser.add_argument('-b', dest='baudrate', type=str, default=115200,
-                        help="Baudrate")
+    global logger
+    parser = argparse.ArgumentParser(description=PROG_DESCRIPTION,
+                                     epilog=PROG_EPILOG)
+    parser.add_argument('--verbose', dest='verbose', action='store_const',
+                        const=True, default=False, help='Verbose output')
     parser.add_argument(dest='serial', type=str,
                         help="Device serial port")
 
     options = parser.parse_args()
-    if options.debug:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
+    logger = setup_logger(__name__, debug=options.verbose)
 
-    task = UsbTask(options.serial, get_or_create_default_key(),
-                   options.baudrate)
+    task = UsbTask(options.serial, get_or_create_default_key())
     logger.info("""Device:
     Nickname: %(name)s
     Serial: %(serial)s
