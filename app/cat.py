@@ -3,7 +3,7 @@ import time
 import socket
 
 from flux import FLUX
-from .views import line_bot_api, LINEID
+from app.views import line_bot_api, LINEID
 
 from linebot.models import TextSendMessage
 
