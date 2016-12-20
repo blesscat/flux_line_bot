@@ -437,10 +437,7 @@ def upload_file():
 
 @app.route("/fb_callback", methods=['GET'])
 def fb_callback():
-    body = request.get_data(as_text=True)
-    print(request.args)
-    print(request.args.get('hub'))
-    print(body)
+    print(request.args.get('hub.verify_token'))
     return 'ok'
     
 
