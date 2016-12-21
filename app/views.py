@@ -355,9 +355,9 @@ def index():
 def test():
     q = Queue(connection=conn)
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
-    for i in range(10):
-        print(job.result)
-        print('{} ,{}'.format(job.status, type(job.status)))
+    for i in range(30):
+        if job.status == 'finished':
+            break
         time.sleep(1)
     return '{}'.format(job.result), 200
 
