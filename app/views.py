@@ -469,6 +469,7 @@ def fb_callback():
                                 "text": message_text
                             }
                         })
+                        print('data: {}'.format(data))
                         r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
                         print(r)
 
