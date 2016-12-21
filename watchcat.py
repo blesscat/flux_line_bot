@@ -10,16 +10,17 @@ from rq import Worker, Queue, Connection
 
 sys.path.insert(0, os.path.abspath('.'))
 
+from app import MANTRA, LINEID, line_bot_api
 from flux import FLUX
-from linebot import  LineBotApi
+#from linebot import  LineBotApi
 from linebot.models import TextSendMessage
-
-ChannelAccessToken = os.environ.get('ChannelAccessToken')
-ChannelSecret = os.environ.get('ChannelSecret')
-line_bot_api = LineBotApi(ChannelAccessToken)
-
-MANTRA = os.environ['mantra']
-LINEID = os.environ.get('LineID', 'test')
+#
+#ChannelAccessToken = os.environ.get('ChannelAccessToken')
+#ChannelSecret = os.environ.get('ChannelSecret')
+#line_bot_api = LineBotApi(ChannelAccessToken)
+#
+#MANTRA = os.environ['mantra']
+#LINEID = os.environ.get('LineID', 'test')
 
 class watchcat(threading.Thread):
     def __init__(self):
