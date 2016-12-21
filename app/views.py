@@ -117,6 +117,7 @@ ChannelSecret = os.environ.get('ChannelSecret')
 line_bot_api = LineBotApi(ChannelAccessToken)
 handler = WebhookHandler(ChannelSecret)
 #parser = WebhookParser(ChannelSecret)
+q = Queue(connection=conn)
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -353,7 +354,6 @@ def index():
 
 @app.route("/test", methods=['GET'])
 def test():
-    q = Queue(connection=conn)
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
     print(dir(job))
     #for i in range(30):
@@ -365,8 +365,7 @@ def test():
 
 @app.route("/test1", methods=['GET'])
 def test1():
-    q = Queue(connection=conn)
-    job = q.enqueue_cell(count_words_at_url)
+    job = q.jobs
     print(job)
     return 'ok', 200
 
