@@ -1,2 +1,2 @@
 web: gunicorn run:app --log-file -
-cat: python app/watchcat.py
+watchcat: python app/watchcat.py
