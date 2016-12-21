@@ -20,14 +20,15 @@ class watchcat(threading.Thread):
         self.monitor = True
         self.flux_is_running = False
         self.request_count = 0
+        self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 
     def run(self):
         while True:
-            Flux = FLUX((FLUX_ipaddr, 1901))
+            Flux = FLUX((self.FLUX_ipaddr, 1901))
             message = '{}'.format(Flux.status)
             print(message)
             #line_bot_api.push_message(LINEID, TextSendMessage(text=message))
-            time.sleep(600)
+            time.sleep(10)
 
 cat = watchcat()
 cat.daemon = True
@@ -39,7 +40,6 @@ redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
 
 conn = redis.from_url(redis_url)
 
-FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 #while True:
 #    Flux = FLUX((FLUX_ipaddr, 1901))
 #    message = '{}'.format(Flux.status)
