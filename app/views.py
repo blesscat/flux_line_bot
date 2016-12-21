@@ -521,13 +521,6 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def message_text(event):
-    #print('event: {}'.format(dir(event)))
-    #print('source: {}'.format(dir(event.source)))
-    #print('user id: {}'.format(event.source.user_id))
-    #print('group id: {}'.format(event.source.group_id))
-    #print('sender id: {}'.format(event.source.sender_id))
-    #print('text: {}'.format(event.message.text))
-    #_id = event.source.user_id
     _id = event.source.sender_id
     message = event.message.text
 
