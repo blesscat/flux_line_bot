@@ -11,7 +11,7 @@ from rq import Worker, Queue, Connection
 sys.path.insert(0, os.path.abspath('.'))
 
 from flux import FLUX
-from app.views import  LINEID, MANTRA
+from app.views import LINEID, MANTRA
 from linebot import  LineBotApi
 from linebot.models import TextSendMessage
 
