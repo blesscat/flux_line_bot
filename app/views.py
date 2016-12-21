@@ -357,9 +357,9 @@ def test():
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
     for i in range(10):
         print(job.result)
-        print(job.status)
+        print('{} ,{}'.format(job.status, type(job.status)))
         time.sleep(1)
-    return job.result, 200
+    return '{}'.format(job.result), 200
 
 
 @app.route("/dog_status", methods=['POST'])
