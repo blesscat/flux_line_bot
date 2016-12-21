@@ -32,7 +32,8 @@ class watchcat(threading.Thread):
         self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 
     def run(self):
-        while self.monitor:
+        #while self.monitor:
+        while True:
             try:
                 self.monitor_flux_status()
             except:
@@ -88,7 +89,7 @@ class watchcat(threading.Thread):
                     break
             self.request_count = 0
 
-    def start(self):
+    def _start(self):
         self.monitor = True
 
     def stop(self):
