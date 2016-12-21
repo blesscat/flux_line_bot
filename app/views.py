@@ -470,8 +470,7 @@ def fb_callback():
                             }
                         })
                         print('data: {}'.format(data))
-                        #r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-                        r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, data=data)
+                        r = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token={}".format(os.environ['PAGE_ACCESS_TOKEN']), headers=headers, data=data)
                         print(r)
 
                     if messaging_event.get("delivery"):  # delivery confirmation
