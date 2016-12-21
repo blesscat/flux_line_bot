@@ -355,7 +355,7 @@ def index():
 def test():
     q = Queue(connection=conn)
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
-    print(job.id)
+    print(dir(job))
     #for i in range(30):
     #    if job.status == 'finished':
     #        break
@@ -366,7 +366,7 @@ def test():
 @app.route("/test1", methods=['GET'])
 def test1():
     job = get_current_job()
-    print(vars(job))
+    print(job)
     return 'ok', 200
 
 
