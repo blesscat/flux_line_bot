@@ -479,7 +479,7 @@ def fb_callback():
                         pass
                     if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
                         pass
-        return 'ok'
+        return "ok", 200           
     
 
 @app.route("/callback", methods=['POST'])
