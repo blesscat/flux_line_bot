@@ -446,6 +446,7 @@ def fb_callback():
         return 'fail'
     if request.method == 'POST':
         data = request.get_json()
+        print(data)
         if data["object"] == "page":
             for entry in data["entry"]:
                 for messaging_event in entry["messaging"]:
