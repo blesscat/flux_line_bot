@@ -366,12 +366,8 @@ def test():
 @app.route("/test1", methods=['GET'])
 def test1():
     result = conn.get('abc')
-    print(result)
-    #job = q.enqueue_call(
-    #                     func=count_words_at_url,
-    #                     args=('http://heroku.com',),
-    #                     job_id='test')
-    #print(job.get_id())
+    #conn.save()
+    print('{} ,{}'.format(result, type(result)))
     return 'ok', 200
 
 

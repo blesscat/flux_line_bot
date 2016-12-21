@@ -30,7 +30,7 @@ class watchcat(threading.Thread):
                 self.monitor_flux_status()
             except:
                 continue
-            self.make_heroku_wakeup()
+            #self.make_heroku_wakeup()
             time.sleep(1)
 
 
