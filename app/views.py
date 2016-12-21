@@ -471,7 +471,10 @@ def fb_callback():
                         })
                         print('data: {}'.format(data))
                         r = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token={}".format(os.environ['PAGE_ACCESS_TOKEN']), headers=headers, data=data)
-                        print(r)
+                        if r.status_code != 200:
+                            print(r.status_code)
+                            print(r.text)
+
 
                     if messaging_event.get("delivery"):  # delivery confirmation
                         pass
@@ -479,7 +482,7 @@ def fb_callback():
                         pass
                     if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
                         pass
-        return "ok", 200           
+        return 'ok', 200           
     
 
 @app.route("/callback", methods=['POST'])
