@@ -10,7 +10,7 @@ from flask import Flask, request, abort
 from flask import render_template
 from werkzeug import secure_filename
 from app import app, backend
-from rq import Queue
+from rq import Queue, get_current_job
 import json
 from app.utils import count_words_at_url
 
@@ -354,7 +354,6 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     q = Queue(connection=conn)
-    global job
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
     #for i in range(30):
     #    if job.status == 'finished':
@@ -365,11 +364,9 @@ def test():
 
 @app.route("/test1", methods=['GET'])
 def test1():
-    for i in range(30):
-        if job.status == 'finished':
-            break
-        time.sleep(1)
-    return '{}'.format(job.result), 200
+    job = get_current_job()
+    print(dir(job))
+    return 'ok', 200
 
 
 @app.route("/dog_status", methods=['POST'])
