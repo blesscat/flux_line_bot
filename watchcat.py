@@ -45,6 +45,7 @@ class watchcat(threading.Thread):
         FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
         self.Flux = FLUX((FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
+        print(self.status)
         self.error = self.Flux.status.get('error_label', '')
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
