@@ -362,7 +362,6 @@ def index():
 #    return 'ok'
 
 
-
 @app.route("/dog_status", methods=['POST'])
 def dog_status():
     if request.method == 'POST':
