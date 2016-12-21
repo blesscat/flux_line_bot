@@ -356,6 +356,7 @@ def test():
     q = Queue(connection=conn)
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
     while job.status is not 'finished':
+        print('wait')
         time.sleep(1)
     return job.result, 200
 
