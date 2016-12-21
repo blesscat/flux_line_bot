@@ -29,4 +29,4 @@ app.config['FC_ALLOWED_EXTENSIONS'] = set(['fc'])
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/app.db'
 # db = SQLAlchemy(app)
 
-from app import views, watchcat
+from app import views
