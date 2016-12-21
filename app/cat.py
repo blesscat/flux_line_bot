@@ -15,5 +15,5 @@ FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 while True:
     Flux = FLUX((FLUX_ipaddr, 1901))
     message = '{}'.format(Flux.status)
-    line_bot_api.push_message(LINEID, TextSendMessage(text=message))
+    #line_bot_api.push_message(LINEID, TextSendMessage(text=message))
     time.sleep(600)
