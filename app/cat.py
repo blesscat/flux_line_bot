@@ -20,11 +20,11 @@ redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
 conn = redis.from_url(redis_url)
 
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
-#while True:
-#    Flux = FLUX((FLUX_ipaddr, 1901))
-#    message = '{}'.format(Flux.status)
-#    #line_bot_api.push_message(LINEID, TextSendMessage(text=message))
-#    time.sleep(600)
+while True:
+    Flux = FLUX((FLUX_ipaddr, 1901))
+    message = '{}'.format(Flux.status)
+    #line_bot_api.push_message(LINEID, TextSendMessage(text=message))
+    time.sleep(600)
 if __name__ == '__main__':
     with Connection(conn):
         worker = Worker(map(Queue, listen))
