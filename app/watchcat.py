@@ -39,7 +39,6 @@ class watchcat(threading.Thread):
         self.Flux = FLUX((FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
         self.error = self.Flux.status.get('error_label', '')
-        print(self.status)
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
                 self.flux_is_running = True
@@ -81,7 +80,7 @@ class watchcat(threading.Thread):
                     break
             self.request_count = 0
 
-    def _start(self):
+    def start(self):
         self.monitor = True
 
     def stop(self):
@@ -90,13 +89,10 @@ class watchcat(threading.Thread):
     def status(self):
         return self.monitor
 
-
 cat = watchcat().start()
 
 listen = ['high', 'default', 'low']
-
 redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
-
 conn = redis.from_url(redis_url)
 
 if __name__ == '__main__':
