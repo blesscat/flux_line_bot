@@ -25,3 +25,7 @@ FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 #    message = '{}'.format(Flux.status)
 #    #line_bot_api.push_message(LINEID, TextSendMessage(text=message))
 #    time.sleep(600)
+if __name__ == '__main__':
+    with Connection(conn):
+        worker = Worker(map(Queue, listen))
+        worker.work()
