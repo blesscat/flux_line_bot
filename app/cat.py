@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import socket
+import threading
 import redis
 from rq import Worker, Queue, Connection
 
@@ -24,6 +25,7 @@ class watchcat(threading.Thread):
         while True:
             Flux = FLUX((FLUX_ipaddr, 1901))
             message = '{}'.format(Flux.status)
+            print(message)
             #line_bot_api.push_message(LINEID, TextSendMessage(text=message))
             time.sleep(600)
 
