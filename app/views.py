@@ -354,7 +354,17 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     q = Queue(connection=conn)
+    global job
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
+    #for i in range(30):
+    #    if job.status == 'finished':
+    #        break
+    #    time.sleep(1)
+    #return '{}'.format(job.result), 200
+    return 'ok', 200
+
+@app.route("/test1", methods=['GET'])
+def test1():
     for i in range(30):
         if job.status == 'finished':
             break
