@@ -11,6 +11,7 @@ from flask import render_template
 from werkzeug import secure_filename
 from app import app, backend
 from rq import Queue, get_current_job
+from rq.job import Job
 import json
 from app.utils import count_words_at_url
 
@@ -355,7 +356,7 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     job = q.enqueue(count_words_at_url, 'http://heroku.com')
-    print(dir(job))
+    print(job.getid())
     #for i in range(30):
     #    if job.status == 'finished':
     #        break
@@ -363,13 +364,15 @@ def test():
     #return '{}'.format(job.result), 200
     return 'ok', 200
 
-@app.route("/test1", methods=['GET'])
-def test1():
-    job = get_current_job(conn)
-    print(job)
-    con = q.get_connection()
-    print(con)
-    return 'ok', 200
+
+@app.route("/results/<job_key>", methods=['GET'])
+def get_results(job_key):
+    job = Job.fetch(job_key, cnnection=conn)
+
+    if job.is_finished:
+        return str(job.result), 200
+    else:
+        return "Nay!", 202
 
 
 @app.route("/dog_status", methods=['POST'])
