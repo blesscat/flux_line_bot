@@ -89,7 +89,8 @@ class watchcat(threading.Thread):
     def status(self):
         return self.monitor
 
-cat = watchcat().start()
+cat = watchcat()
+cat.start()
 
 listen = ['high', 'default', 'low']
 redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
