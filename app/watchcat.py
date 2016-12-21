@@ -11,7 +11,6 @@ from rq import Worker, Queue, Connection
 sys.path.insert(0, os.path.abspath('.'))
 
 from flux import FLUX
-from app import views
 from linebot import  LineBotApi
 from linebot.models import TextSendMessage
 
@@ -19,8 +18,8 @@ ChannelAccessToken = os.environ.get('ChannelAccessToken')
 ChannelSecret = os.environ.get('ChannelSecret')
 line_bot_api = LineBotApi(ChannelAccessToken)
 
-LINEID = views.LINEID
-MANTRA = views.MANTRA
+MANTRA = os.environ['mantra']
+LINEID = os.environ.get('LineID', 'test')
 
 class watchcat(threading.Thread):
     def __init__(self):
@@ -32,6 +31,8 @@ class watchcat(threading.Thread):
         self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 
     def run(self):
+        message = 'test'
+        line_bot_api.push_message(LINEID, TextSendMessage(text=message))
         while self.monitor:
             try:
                 self.monitor_flux_status()
