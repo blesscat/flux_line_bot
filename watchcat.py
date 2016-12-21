@@ -32,8 +32,6 @@ class watchcat(threading.Thread):
         self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 
     def run(self):
-        message = 'test'
-        line_bot_api.push_message(LINEID, TextSendMessage(text=message))
         while self.monitor:
             try:
                 self.monitor_flux_status()
@@ -98,7 +96,8 @@ class watchcat(threading.Thread):
     def status(self):
         return self.monitor
 
-cat = watchcat().start()
+cat = watchcat()
+cat.start()
 
 listen = ['high', 'default', 'low']
 redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
