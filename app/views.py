@@ -6,14 +6,14 @@ import math
 import time
 import threading
 import requests
-from flask import Flask, request, abort
+import json
+from flask import request, abort
 from flask import render_template
 from werkzeug import secure_filename
-from app import app, backend
-from rq import Queue, get_current_job
-from rq.job import Job
-import json
+from app import app
 from app.utils import count_words_at_url
+from rq import Queue
+from rq.job import Job
 
 from linebot import  LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -21,7 +21,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 sys.path.insert(0, os.path.abspath('..'))
 
-from worker import conn
+from watchcat import conn
 from flux import FLUX
 from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
@@ -111,7 +111,6 @@ MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
 os.environ['passed'] = "False"
-os.environ['init_watchdog'] = "False"
 ChannelAccessToken = os.environ.get('ChannelAccessToken')
 ChannelSecret = os.environ.get('ChannelSecret')
 
@@ -334,13 +333,13 @@ def isin_quit(Flux):
     return message
 
 
-def isin_load_filament(Flux):
-    maintain = backend.load_filament_backend(Flux)
-    maintain.start()
-
-def isin_unload_filament(Flux):
-    maintain = backend.unload_filament_backend(Flux)
-    maintain.start()
+#def isin_load_filament(Flux):
+#    maintain = backend.load_filament_backend(Flux)
+#    maintain.start()
+#
+#def isin_unload_filament(Flux):
+#    maintain = backend.unload_filament_backend(Flux)
+#    maintain.start()
 
 def isin_list_files(Flux):
     _list = str(Flux.list_files('/SD'))
@@ -468,7 +467,7 @@ def fb_callback():
                 for messaging_event in entry["messaging"]:
                     if messaging_event.get("message"):  # someone sent us a message
                         sender_id = messaging_event["sender"]["id"]
-                        recipient_id = messaging_event["recipient"]["id"]
+                        #recipient_id = messaging_event["recipient"]["id"]
                         message_text = messaging_event["message"]["text"]
                         params = {
                         "access_token": os.environ["PAGE_ACCESS_TOKEN"]
@@ -507,7 +506,6 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    print(body)
     app.logger.info("Request body: " + body)
 
     # handle webhook body
@@ -583,11 +581,11 @@ def message_text(event):
         elif isin(message, quit_set):
             message = isin_quit(Flux)
 
-        elif isin(message, load_filament_set):
-            message = isin_load_filament(Flux)
-
-        elif isin(message, unload_filament_set):
-            message = isin_unload_filament(Flux)
+#        elif isin(message, load_filament_set):
+#            message = isin_load_filament(Flux)
+#
+#        elif isin(message, unload_filament_set):
+#            message = isin_unload_filament(Flux)
 
         else:
             message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
