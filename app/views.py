@@ -357,7 +357,7 @@ def index():
 def test():
     job = q.enqueue_call(
                          func=count_words_at_url,
-                         args='http://heroku.com',
+                         args=('http://heroku.com',),
                          job_id='test')
     print(job.get_id())
     #for i in range(30):
