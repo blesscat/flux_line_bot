@@ -470,7 +470,7 @@ def fb_callback():
                             }
                         })
                         print('data: {}'.format(data))
-                        r = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token={}".format(os.environ['PAGE_ACCESS_TOKEN']), headers=headers, data=data)
+                        r = requests.post("https://graph.facebook.com/v2.6/me/messages",params=params, headers=headers, data=data)
                         if r.status_code != 200:
                             print(r.status_code)
                             print(r.text)
