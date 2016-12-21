@@ -12,15 +12,8 @@ sys.path.insert(0, os.path.abspath('.'))
 
 from app.views import MANTRA, LINEID, line_bot_api
 from flux import FLUX
-#from linebot import  LineBotApi
 from linebot.models import TextSendMessage
-#
-#ChannelAccessToken = os.environ.get('ChannelAccessToken')
-#ChannelSecret = os.environ.get('ChannelSecret')
-#line_bot_api = LineBotApi(ChannelAccessToken)
-#
-#MANTRA = os.environ['mantra']
-#LINEID = os.environ.get('LineID', 'test')
+
 
 class watchcat(threading.Thread):
     def __init__(self):
@@ -32,8 +25,7 @@ class watchcat(threading.Thread):
         self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 
     def run(self):
-        #while self.monitor:
-        while True:
+        while self.monitor:
             try:
                 self.monitor_flux_status()
             except:
@@ -46,7 +38,6 @@ class watchcat(threading.Thread):
         FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
         self.Flux = FLUX((FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
-        print(self.status)
         self.error = self.Flux.status.get('error_label', '')
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
@@ -98,8 +89,7 @@ class watchcat(threading.Thread):
     def status(self):
         return self.monitor
 
-cat = watchcat()
-cat.start()
+cat = watchcat().start()
 
 listen = ['high', 'default', 'low']
 redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
