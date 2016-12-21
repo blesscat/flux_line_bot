@@ -351,15 +351,15 @@ def index():
     if request.method == 'GET':
         return 'main'
 
-#@app.route("/test", methods=['GET'])
-#def test():
-#    q = Queue(connection=conn)
-#    job = q.enqueue(count_words_at_url, 'http://heroku.com')
-#    for i in range(10):
-#        print(job.result)
-#        print(job.status)
-#        time.sleep(1)
-#    return 'ok'
+@app.route("/test", methods=['GET'])
+def test():
+    q = Queue(connection=conn)
+    job = q.enqueue(count_words_at_url, 'http://heroku.com')
+    for i in range(10):
+        print(job.result)
+        print(job.status)
+        time.sleep(1)
+    return 'ok'
 
 
 @app.route("/dog_status", methods=['POST'])
