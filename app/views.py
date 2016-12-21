@@ -354,7 +354,7 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     q = Queue(connection=conn)
-    job = q.enqueue_call(count_words_at_url, 'http://heroku.com')
+    job = q.enqueue(count_words_at_url, 'http://heroku.com')
     print(dir(job))
     #for i in range(30):
     #    if job.status == 'finished':
@@ -365,7 +365,8 @@ def test():
 
 @app.route("/test1", methods=['GET'])
 def test1():
-    job = get_current_job()
+    q = Queue(connection=conn)
+    job = q.enqueue_cell(count_words_at_url)
     print(job)
     return 'ok', 200
 
