@@ -355,7 +355,10 @@ def index():
 
 @app.route("/test", methods=['GET'])
 def test():
-    job = q.enqueue(count_words_at_url, 'http://heroku.com')
+    job = q.enqueue_call(
+                         func=count_words_at_url,
+                         args='http://heroku.com',
+                         job_id='test')
     print(job.get_id())
     #for i in range(30):
     #    if job.status == 'finished':
