@@ -354,16 +354,24 @@ def index():
 
 @app.route("/test", methods=['GET'])
 def test():
-    job = q.enqueue_call(
-                         func=count_words_at_url,
-                         args=('http://heroku.com',),
-                         job_id='test')
-    print(job.get_id())
-    #for i in range(30):
-    #    if job.status == 'finished':
-    #        break
-    #    time.sleep(1)
-    #return '{}'.format(job.result), 200
+    conn.set('abc',123)
+    #job = q.enqueue_call(
+    #                     func=count_words_at_url,
+    #                     args=('http://heroku.com',),
+    #                     job_id='test')
+    #print(job.get_id())
+    return 'ok', 200
+
+
+@app.route("/test1", methods=['GET'])
+def test1():
+    result = conn.get('abc')
+    print(result)
+    #job = q.enqueue_call(
+    #                     func=count_words_at_url,
+    #                     args=('http://heroku.com',),
+    #                     job_id='test')
+    #print(job.get_id())
     return 'ok', 200
 
 
