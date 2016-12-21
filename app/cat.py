@@ -28,7 +28,7 @@ class watchcat(threading.Thread):
             message = '{}'.format(Flux.status)
             print(message)
             #line_bot_api.push_message(LINEID, TextSendMessage(text=message))
-            time.sleep(10)
+            time.sleep(5)
 
 cat = watchcat()
 cat.daemon = True
