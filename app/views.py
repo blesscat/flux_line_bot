@@ -365,8 +365,10 @@ def test():
 
 @app.route("/test1", methods=['GET'])
 def test1():
-    job = q.jobs
+    job = get_current_job(conn)
     print(job)
+    con = q.get_connection()
+    print(con)
     return 'ok', 200
 
 
