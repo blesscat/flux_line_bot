@@ -11,6 +11,7 @@ from flask import render_template
 from werkzeug import secure_filename
 from app import app, backend
 from rq import Queue
+import json
 from app.utils import count_words_at_url
 
 from linebot import  LineBotApi, WebhookHandler
@@ -444,8 +445,36 @@ def fb_callback():
             return request.args.get('hub.challenge')
         return 'fail'
     if request.method == 'POST':
-        body = request.get_data(as_text=True)
-        print(body)
+        data = request.get_json()
+        if data["object"] == "page":
+            for entry in data["entry"]:
+                for messaging_event in entry["messaging"]:
+                    if messaging_event.get("message"):  # someone sent us a message
+                        sender_id = messaging_event["sender"]["id"]
+                        recipient_id = messaging_event["recipient"]["id"]
+                        message_text = messaging_event["message"]["text"]
+                        params = {
+                        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
+                        }
+                        headers = {
+                            "Content-Type": "application/json"
+                        }
+                        data = json.dumps({
+                            "recipient": {
+                                "id": recipient_id
+                            },
+                            "message": {
+                                "text": message_text
+                            }
+                        })
+                        r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
+
+                    if messaging_event.get("delivery"):  # delivery confirmation
+                        pass
+                    if messaging_event.get("optin"):  # optin confirmation
+                        pass
+                    if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
+                        pass
         return 'ok'
     
 
