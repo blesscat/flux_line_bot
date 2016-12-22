@@ -125,7 +125,7 @@ lang_dir_path = os.path.join(app.static_folder, 'lang')
 with open(os.path.join(lang_dir_path, lang_file)) as f:
     LANG = json.load(f)
 
-print(str(LANG['status']['IDLE']).format(MANTRA))
+print(str(LANG['status']['IDLE']))
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
