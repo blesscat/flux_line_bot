@@ -195,7 +195,7 @@ def isin_status(Flux):
                    MANTRA, label, prog, leftTime)
     elif status == 'IDLE':
         #message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
-        message = repr(LANG['status']['IDLE']).format(MANTRA)
+        message = LANG['status']['IDLE'].format(MANTRA)
     elif status == 'COMPLETED':
         message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
     elif status == 'WAITING_HEAD':
