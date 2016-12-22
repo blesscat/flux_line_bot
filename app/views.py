@@ -82,11 +82,8 @@ unload_filament_set = {'261'}
 
 
 fb_token = 'blesscat'
-#FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
-#LINEID = os.environ.get('LineID', 'test')
-#os.environ['passed'] = "False"
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -164,62 +161,43 @@ def isin_status(Flux, assist):
     return message
 
 
-def poke_watchdog_status():
-    loop = 4
-    for i in range(loop):
-        try:
-            time.sleep(0.5)
-            dog_status = app.config['DOG'].isAlive()
-            if dog_status:
-                break
-        except KeyError:
-            web = os.environ['WEB_URL'] + '/dog_status'
-            json = {'password': os.environ['password']}
-            r = requests.post(web, json=json)
-            if r._content != b'None':
-                dog_status = True if r._content == b'True' else False
-                break
-            if i == loop-1:
-                dog_status = False
-    return dog_status
-
-def isin_watchdogOn(Flux):
-    dog_status = poke_watchdog_status()
-    if dog_status:
-        message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
-    else:
-   #     app.config['DOG'] = watchdog.watchdog()
-        app.config['DOG'].start()
-        message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
-    return message
-
-
-def isin_watchdogOff(Flux):
-    dog_status = poke_watchdog_status()
-    if dog_status:
-        try:
-            app.config['DOG'].monitor = False
-            del app.config['DOG']
-        except:
-            web = os.environ['WEB_URL'] + '/dogoff'
-            json = {'password': os.environ['password']}
-            r = requests.post(web, json=json)
-            if r._content == b'None':
-                return 'please try again'
-
-        message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
-    else:
-        message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
-    return message
-
-
-def isin_watchdog(Flux):
-    dog_status = poke_watchdog_status()
-    if dog_status:
-        message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
-    else:
-        message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
-    return message
+#def isin_watchdogOn(Flux):
+#    dog_status = poke_watchdog_status()
+#    if dog_status:
+#        message = '{}\n{}已經在監測FLUX了!'.format(MANTRA, NAME)
+#    else:
+#   #     app.config['DOG'] = watchdog.watchdog()
+#        app.config['DOG'].start()
+#        message = '{}\n{}開始監測FLUX工作了!'.format(MANTRA, NAME)
+#    return message
+#
+#
+#def isin_watchdogOff(Flux):
+#    dog_status = poke_watchdog_status()
+#    if dog_status:
+#        try:
+#            app.config['DOG'].monitor = False
+#            del app.config['DOG']
+#        except:
+#            web = os.environ['WEB_URL'] + '/dogoff'
+#            json = {'password': os.environ['password']}
+#            r = requests.post(web, json=json)
+#            if r._content == b'None':
+#                return 'please try again'
+#
+#        message = '{}\n{}不再監測FLUX工作了...呼～'.format(MANTRA, NAME)
+#    else:
+#        message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
+#    return message
+#
+#
+#def isin_watchdog(Flux):
+#    dog_status = poke_watchdog_status()
+#    if dog_status:
+#        message = '{}\n{}正在監測FLUX喔'.format(MANTRA, NAME)
+#    else:
+#        message = '{}\n{}並沒有在監測FLUX喔'.format(MANTRA, NAME)
+#    return message
 
 
 def isin_web(Flux):
@@ -332,30 +310,6 @@ def get_results(job_key):
         return str(job.result), 200
     else:
         return "Nay!", 202
-
-
-@app.route("/dog_status", methods=['POST'])
-def dog_status():
-    if request.method == 'POST':
-        if request.json['password'] == os.environ['password']:
-            try:
-                result = app.config['DOG'].isAlive()
-            except KeyError:
-                result = None
-            return str(result)
-
-
-@app.route("/dogoff", methods=['POST'])
-def dogoff():
-    if request.method == 'POST':
-        if request.json['password'] == os.environ['password']:
-            try:
-                app.config['DOG'].monitor = False
-                del app.config['DOG']
-                result = 'ok'
-            except KeyError:
-                result = None
-            return str(result)
 
 
 @app.route("/thread", methods=['GET'])
@@ -490,13 +444,13 @@ def assistAction(assist):
 
     Flux = robot(assist.FLUX_ipaddr)
 
-    if isin(assist.message, watchdogOn_set):
-        message = isin_watchdogOn(Flux)
-    elif isin(assist.message, watchdogOff_set):
-        message = isin_watchdogOff(Flux)
-    elif isin(assist.message, watchdog_set):
-        message = isin_watchdog(Flux)
-    elif isin(assist.message, LANG['flux']['status_list']):
+#    if isin(assist.message, watchdogOn_set):
+#        message = isin_watchdogOn(Flux)
+#    elif isin(assist.message, watchdogOff_set):
+#        message = isin_watchdogOff(Flux)
+#    elif isin(assist.message, watchdog_set):
+#        message = isin_watchdog(Flux)
+    if isin(assist.message, LANG['flux']['status_list']):
         message = isin_status(Flux, assist)
     elif isin(assist.message, list_files_set):
         message = isin_list_files(Flux)

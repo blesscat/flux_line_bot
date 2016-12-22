@@ -8,7 +8,7 @@ from rq import Worker, Queue, Connection
 
 sys.path.insert(0, os.path.abspath('.'))
 
-from app.utils import assistant, line_bot_api, conn, listen
+from app.utils import assistant, line_bot_api, conn, listen, LANG
 from flux import FLUX
 from linebot.models import TextSendMessage
 
@@ -36,6 +36,7 @@ class watchcat(threading.Thread):
         self.Flux = FLUX((self.assist.FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
         self.error = self.Flux.status.get('error_label', '')
+        print(self.status)
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
                 self.flux_is_running = True
