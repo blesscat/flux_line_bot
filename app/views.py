@@ -12,6 +12,7 @@ from flask import render_template
 from werkzeug import secure_filename
 from app import app
 from app.utils import count_words_at_url, assistant
+from app.exceptions import AssistReply
 from rq import Queue
 from rq.job import Job
 
@@ -494,10 +495,17 @@ def message_text(event):
     _id = event.source.sender_id
     message = event.message.text
     assist = assistant(_id, message)
+    try:
+        if _id != assist.LineID:
+            raise AssistReply(LANG['id_not_found'].format(assist=assist))
 
-    if _id != assist.LineID:
-        message = LANG['flux']['id_not_found'].format(assist=assist)
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+        if not len(message.split()) > 1:
+            raise AssistReply(LANG['illegal_comm'].format(assist=assist))
+
+        magic_id, assist.command= message.split(' ', 1)
+            
+    except AssistReply as msg:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=msg))
         return "ok"
 
     if message == LANG['flux']['help']['key']:
@@ -508,12 +516,6 @@ def message_text(event):
         line_bot_api.push_message(_id, TextSendMessage(text=message))
         return 'ok'
 
-    if len(message.split()) > 1:
-        magic_id, assist.command= message.split(' ', 1)
-    else :
-        message = LANG['flux']['no_command'].format(assist=assist)
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
-        return'ok'
 
     if magic_id.lower() in LANG['flux']['magic_id']:
         try:

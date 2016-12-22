@@ -1,4 +1,6 @@
 {
+    "id_not_found": "{assist.mantra}\n請先在Heroku網頁新增{assist.name}的LineID喔\n\n{assist._id}",
+    "illegal_comm": "{assist.name}知道什麼是'{assist.message}'，但是{assist.name}不說",
     "flux":{
         "magic_id" : [
             "flux",
@@ -21,7 +23,6 @@
             "PAUSED": "{assist.mantra}\nFLUX已經停止。\n停止的原因是: {assist.error}",
             "others": "{assist.mantra}\n目前狀態{status}"
         },
-        "id_not_found": "{assist.mantra}\n請先在Heroku網頁新增{assist.name}的LineID喔\n\n{assist._id}",
         "dev_not_found": "{assist.mantra}\n{assist.name}找不到FLUX喔～",
         "illegal_comm": "{assist.mantra}\n{assist.name}不知道'{assist.command}'是什麼啦！",
         "no_command": "{assist.mantra}\n{assist.name}不知道要做什麼...",
@@ -30,6 +31,5 @@
             "init": "{assist.name}要吃罐罐！！\n{assist.name}要吃罐罐！！\n給{assist.name}吃！！",
             "main": "{assist.mantra}\n{assist.name}能做的工作如下喔!\n{assist.command_list}"
         }
-    },
-    "illegal_comm": "{assist.name}知道什麼是'{assist.message}'，但是{assist.name}不說"
+    }
 }
