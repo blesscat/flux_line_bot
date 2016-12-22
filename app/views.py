@@ -83,17 +83,16 @@ unload_filament_set = {'261'}
 
 
 fb_token = 'blesscat'
-FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
+#FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
-LINEID = os.environ.get('LineID', 'test')
+#LINEID = os.environ.get('LineID', 'test')
 #os.environ['passed'] = "False"
 ChannelAccessToken = os.environ.get('ChannelAccessToken')
 ChannelSecret = os.environ.get('ChannelSecret')
 
 line_bot_api = LineBotApi(ChannelAccessToken)
 handler = WebhookHandler(ChannelSecret)
-#parser = WebhookParser(ChannelSecret)
 q = Queue(connection=conn)
 
 lang_file = 'zh_tw.json'
@@ -123,13 +122,12 @@ def upload_callback(robot_connection, sent, size):
     print('size: {}'.format(size))
 
 
-def robot():
-    FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
+def robot(FLUX_ipaddr):
     client_key = get_or_create_default_key("./sdk_connection.pem")
     try:
         robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     except errors.RobotSessionError:
-        add_rsa()
+        add_rsa(FLUX_ipaddr)
         robot = FluxRobot((FLUX_ipaddr, 23811), client_key)
     return robot
 
@@ -156,7 +154,7 @@ def get_flux_status(robot):
     return label, prog, error, leftTime
 
 
-def add_rsa():
+def add_rsa(FLUX_ipaddr):
     Flux = FLUX((FLUX_ipaddr, 1901))
     result = Flux.add_rsa()
     return result
@@ -504,7 +502,7 @@ def assistAction(assist):
     if magic_id.lower() not in LANG['flux']['magic_id']:
         raise AssistReply(LANG['illegal_comm'].format(assist=assist))
 
-    Flux = robot()
+    Flux = robot(assist.FLUX_ipaddr)
 
     if isin(assist.message, watchdogOn_set):
         message = isin_watchdogOn(Flux)
@@ -547,7 +545,6 @@ def message_text(event):
     try:
         if _id != assist.LineID:
             raise AssistReply(LANG['id_not_found'].format(assist=assist))
-
         message = assistAction(assist)
 
     except AssistReply as assist:
