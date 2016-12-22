@@ -119,6 +119,14 @@ handler = WebhookHandler(ChannelSecret)
 #parser = WebhookParser(ChannelSecret)
 q = Queue(connection=conn)
 
+lang_file = 'zh_tw.json'
+lang_dir_path = os.path.join(app.static_folder, 'lang')
+
+with open(os.path.join(lang_dir_path, lang_file)) as f:
+    LANG = json.load(f)
+
+print(LANG)
+
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
         allowed_extensions = app.config['FC_ALLOWED_EXTENSIONS']
@@ -170,15 +178,6 @@ def get_flux_status(robot):
         leftTime = 'FLUX不告訴我啦！'
 
     return label, prog, error, leftTime
-
-
-def get_message(js):
-    print(js)
-    _id = [js['events'][0]['source']['iserId']]
-    message = js['events'][0]['message']['text']
-    contentType = js['events'][0]['message']['type']
-
-    return _id, message, contentType
 
 
 def add_rsa():
