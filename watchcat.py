@@ -20,7 +20,7 @@ class watchcat(threading.Thread):
         self.monitor = True
         self.flux_is_running = False
         self.request_count = 0
-        self.assist = assistant
+        self.assist = assistant()
 
     def run(self):
         while self.monitor:
