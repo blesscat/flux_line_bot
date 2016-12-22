@@ -59,8 +59,11 @@ class watchcat(threading.Thread):
                 message = '{}\nFLUX暫停囉～'.format(self.assist.mantra)
 
         elif self.status == 'ST_COMPLETED' or self.status == 'ST_IDLE' or \
-                        self.status == 'ST_COMPLETEING':
+                        self.status == 'ST_COMPLETING':
             message = '{}\n工作已經完成了喔!'.format(self.assist.mantra)
+
+        elif self.status == 'ST_ABORTED':
+           message = '{}\nFLUX被終止了!'.format(self.assist.mantra)
         
         else:
            message = '{}\nFLUX因為 {} 停止了!'.format(self.assist.mantra, self.error)
