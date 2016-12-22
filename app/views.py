@@ -16,7 +16,7 @@ from app.exceptions import AssistReply
 from rq import Queue
 from rq.job import Job
 
-from app.util import line_bot_api, handler
+from app.utils import line_bot_api, handler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
