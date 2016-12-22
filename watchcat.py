@@ -28,7 +28,7 @@ class watchcat(threading.Thread):
                 self.monitor_flux_status()
             except:
                 continue
-            #self.make_heroku_wakeup()
+            self.make_heroku_wakeup()
             time.sleep(1)
 
 
@@ -36,6 +36,7 @@ class watchcat(threading.Thread):
         self.Flux = FLUX((self.assist.FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
         self.error = self.Flux.status.get('error_label', '')
+        print(self.status)
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
                 self.flux_is_running = True
