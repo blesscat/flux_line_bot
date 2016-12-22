@@ -525,7 +525,7 @@ def message_text(event):
     _id = event.source.sender_id
     message = event.message.text
     assist = assistant(_id, message)
-    print(dir(assist))
+    print(dir(assist.name))
 
     if _id != assist.LINEID:
         message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
@@ -601,6 +601,7 @@ def message_text(event):
 
     else:
         #message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
-        message = LANG['illegal_comm'].format(assist)
+        message = LANG['illegal_comm'].format(assist=assist)
+        print(message)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         return 'ok'
