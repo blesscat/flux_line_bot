@@ -501,8 +501,10 @@ def assistAction(assist):
 
     magic_id, assist.command= assist.message.split(' ', 1)
         
-    if magic_id.lower() in LANG['flux']['magic_id']:
-        Flux = robot()
+    if magic_id.lower() not in LANG['flux']['magic_id']:
+        raise AssistReply(LANG['illegal_comm'].format(assist=assist))
+
+    Flux = robot()
 
     if isin(assist.message, watchdogOn_set):
         message = isin_watchdogOn(Flux)
@@ -532,6 +534,7 @@ def assistAction(assist):
 #            message = isin_load_filament(Flux)
 #        elif isin(message, unload_filament_set):
 #            message = isin_unload_filament(Flux)
+    Flux.close()
     return message
 
 
@@ -555,5 +558,4 @@ def message_text(event):
 
     finally:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
-        Flux.close()
         return "ok"
