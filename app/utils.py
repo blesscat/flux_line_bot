@@ -2,8 +2,11 @@ import os
 import socket
 import requests
 import json
+
+from watchcat import conn
 from app import app
 from linebot import  LineBotApi, WebhookHandler
+from rq import Queue
 
 ChannelAccessToken = os.environ.get('ChannelAccessToken')
 ChannelSecret = os.environ.get('ChannelSecret')
@@ -16,6 +19,8 @@ lang_dir_path = os.path.join(app.static_folder, 'lang')
 
 with open(os.path.join(lang_dir_path, lang_file)) as f:
     LANG = json.load(f)
+
+backjob = Queue(connection=conn)
 
 flux_command_list = ["110 - status",
                      "120 - list_files",

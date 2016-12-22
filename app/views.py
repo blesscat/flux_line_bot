@@ -13,16 +13,15 @@ from werkzeug import secure_filename
 from app import app
 from app.utils import assistant, LANG
 from app.exceptions import AssistReply
-from rq import Queue
 from rq.job import Job
+from watchcat import conn
 
-from app.utils import line_bot_api, handler
+from app.utils import line_bot_api, handler#, backjob
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 sys.path.insert(0, os.path.abspath('..'))
 
-from watchcat import conn
 from flux import FLUX
 from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
@@ -88,7 +87,6 @@ MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 #LINEID = os.environ.get('LineID', 'test')
 #os.environ['passed'] = "False"
-q = Queue(connection=conn)
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -310,7 +308,7 @@ def index():
 @app.route("/test", methods=['GET'])
 def test():
     conn.set('abc',123)
-    #job = q.enqueue_call(
+    #job = backjob.enqueue_call(
     #                     func=count_words_at_url,
     #                     args=('http://heroku.com',),
     #                     job_id='test')
