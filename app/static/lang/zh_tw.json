@@ -1,5 +1,6 @@
 {
     "status" : {
-        "IDLE": "{}\nFLUX目前閒置中喔"
-    }
+        "IDLE": "{assist.mantra}\nFLUX目前閒置中喔"
+    },
+    "illegal_comm": "{assist.name}知道什麼是'{assist.message}'，但是{assist.name}不說"
 }

@@ -11,7 +11,7 @@ from flask import request, abort
 from flask import render_template
 from werkzeug import secure_filename
 from app import app
-from app.utils import count_words_at_url
+from app.utils import count_words_at_url, assistant
 from rq import Queue
 from rq.job import Job
 
@@ -110,7 +110,7 @@ FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 LINEID = os.environ.get('LineID', 'test')
-os.environ['passed'] = "False"
+#os.environ['passed'] = "False"
 ChannelAccessToken = os.environ.get('ChannelAccessToken')
 ChannelSecret = os.environ.get('ChannelSecret')
 
@@ -524,8 +524,9 @@ def callback():
 def message_text(event):
     _id = event.source.sender_id
     message = event.message.text
+    assist = assistant(_id, message)
 
-    if _id != LINEID:
+    if _id != assist.LINEID:
         message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
                                                     MANTRA, NAME, _id)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
@@ -598,6 +599,7 @@ def message_text(event):
         return 'ok'
 
     else:
-        message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
+        #message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
+        message = LANG['illegal_comm'].format(assist)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         return 'ok'
