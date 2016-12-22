@@ -525,6 +525,7 @@ def message_text(event):
     _id = event.source.sender_id
     message = event.message.text
     assist = assistant(_id, message)
+    print(dir(assist))
 
     if _id != assist.LINEID:
         message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
