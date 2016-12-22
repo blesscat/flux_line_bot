@@ -2,8 +2,9 @@ import os
 import socket
 import requests
 import json
+import redis
 
-from watchcat import conn
+#from watchcat import conn
 from app import app
 from linebot import  LineBotApi, WebhookHandler
 from rq import Queue
@@ -19,6 +20,10 @@ lang_dir_path = os.path.join(app.static_folder, 'lang')
 
 with open(os.path.join(lang_dir_path, lang_file)) as f:
     LANG = json.load(f)
+
+listen = ['high', 'default', 'low']
+redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
+conn = redis.from_url(redis_url)
 
 backjob = Queue(connection=conn)
 

@@ -2,14 +2,13 @@ import os
 import sys
 import time
 import threading
-import redis
 import requests
 
 from rq import Worker, Queue, Connection
 
 sys.path.insert(0, os.path.abspath('.'))
 
-from app.utils import assistant, line_bot_api
+from app.utils import assistant, line_bot_api, conn, listen
 from flux import FLUX
 from linebot.models import TextSendMessage
 
@@ -90,9 +89,6 @@ class watchcat(threading.Thread):
 cat = watchcat()
 cat.start()
 
-listen = ['high', 'default', 'low']
-redis_url = os.getenv('REDISTOGO_URL', 'redis://172.17.0.2:6379')
-conn = redis.from_url(redis_url)
 
 if __name__ == '__main__':
     with Connection(conn):
