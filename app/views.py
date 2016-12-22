@@ -178,7 +178,7 @@ def isin_status(Flux, assist):
                    MANTRA, label, prog, leftTime)
     elif status == 'IDLE':
         #message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
-        message = LANG['status']['IDLE'].format(assist=assist)
+        message = LANG['flux']['status']['IDLE'].format(assist=assist)
     elif status == 'COMPLETED':
         message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
     elif status == 'WAITING_HEAD':
@@ -510,24 +510,24 @@ def message_text(event):
     assist = assistant(_id, message)
 
     if _id != assist.LineID:
-        message = LANG['id_not_found'].format(assist=assist)
+        message = LANG['flux']['id_not_found'].format(assist=assist)
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
         return "ok"
 
-    if message == LANG['help']['key']:
-        message = LANG['help']['init'].format(assist=assist)
+    if message == LANG['flux']['help']['key']:
+        message = LANG['flux']['help']['init'].format(assist=assist)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         time.sleep(5)
-        message = LANG['help']['main'].format(assist=assist)
+        message = LANG['flux']['help']['main'].format(assist=assist)
         line_bot_api.push_message(_id, TextSendMessage(text=message))
         return 'ok'
 
     magic_id = message[:5].lower()
-    if magic_id == 'flux ' or magic_id == '8763 ':
+    if magic_id in LANG['flux']['magic_id']:
         try:
             Flux = robot()
         except:
-            message = '{}\n{}找不到FLUX喔～'.format(MANTRA, NAME)
+            message = LANG['flux']['dev_not_found'].format(assist=assist)
             line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
             return 'ok'
 
@@ -574,14 +574,13 @@ def message_text(event):
 #            message = isin_unload_filament(Flux)
 
         else:
-            message = '{}\n{}不知道"{}"是什麼啦！'.format(MANTRA, NAME, message[5:])
+            message = LANG['flux']['illegal_comm'].format(assist=assist)
 
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         Flux.close()
         return 'ok'
 
     else:
-        #message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
         message = LANG['illegal_comm'].format(assist=assist)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         return 'ok'
