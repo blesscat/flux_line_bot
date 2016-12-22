@@ -26,13 +26,6 @@ from flux import FLUX
 from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
 
-status_set = {'110',
-              'status',
-              'STATUS',
-              '狀態',
-              '狀況',
-              '進度'}
-
 list_files_set = {'120',
                   'list',
                   'LIST',
@@ -539,7 +532,7 @@ def message_text(event):
         elif isin(message, watchdog_set):
             message = isin_watchdog(Flux)
 
-        elif isin(message, status_set):
+        elif isin(message, LANG['status_list']):
             message = isin_status(Flux, assist)
 
         elif isin(message, list_files_set):

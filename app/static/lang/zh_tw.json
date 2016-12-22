@@ -4,6 +4,14 @@
             "flux",
             "8763"
         ],
+        "status_list" :[
+            "110",
+            "status",
+            "STATUS",
+            "狀態",
+            "狀況",
+            "進度"
+        ],
         "status" : {
             "RUNNING": "{assist.mantra}\n目前狀態: {label}\n目前進度: {prog}\n剩餘時間: {leftTime}",
             "IDLE": "{assist.mantra}\nFLUX目前閒置中喔",
