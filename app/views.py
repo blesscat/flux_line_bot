@@ -125,7 +125,6 @@ lang_dir_path = os.path.join(app.static_folder, 'lang')
 with open(os.path.join(lang_dir_path, lang_file)) as f:
     LANG = json.load(f)
 
-print(repr(LANG['status']['IDLE']).format(MANTRA=MANTRA))
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -195,7 +194,8 @@ def isin_status(Flux):
         message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
                    MANTRA, label, prog, leftTime)
     elif status == 'IDLE':
-        message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
+        #message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
+        message = repr(LANG['status']['IDLE']).format(MANTRA)
     elif status == 'COMPLETED':
         message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
     elif status == 'WAITING_HEAD':
