@@ -87,23 +87,6 @@ load_filament_set = {'260'}
 
 unload_filament_set = {'261'}
 
-FLUX_COMMANDS = ""
-flux_command_list = ["110 - status",
-                     "120 - list_files",
-                     "130 - watchdog",
-                     "131 - watchdogon",
-                     "132 - watchdogoff",
-                     "210 - start",
-                     "211 - startweb",
-                     "212 - startfs",
-                     "220 - pause",
-                     "230 - resume",
-                     "240 - abort",
-                     "250 - quit"]
-
-
-for command in flux_command_list:
-    FLUX_COMMANDS += command + '\n'
 
 fb_token = 'blesscat'
 FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
@@ -525,19 +508,17 @@ def message_text(event):
     _id = event.source.sender_id
     message = event.message.text
     assist = assistant(_id, message)
-    print(dir(assist.name))
 
-    if _id != assist.LINEID:
-        message = '{}\n請先在Heroku網頁新增{}的LineID喔\n\n{}'.format(
-                                                    MANTRA, NAME, _id)
-        line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
+    if _id != assist.LineID:
+        message = LANG['id_not_found'].format(assist=assist)
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
         return "ok"
 
-    if message == '罐罐':
-        message = '{0}要吃罐罐！！\n{0}要吃罐罐！！\n給{0}吃！！'.format(NAME)
+    if message == LANG['help']['key']:
+        message = LANG['help']['init'].format(assist=assist)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         time.sleep(5)
-        message = '{}\n{}能做的工作如下喔!\n{}'.format(MANTRA, NAME, FLUX_COMMANDS)
+        message = LANG['help']['main'].format(assist=assist)
         line_bot_api.push_message(_id, TextSendMessage(text=message))
         return 'ok'
 
