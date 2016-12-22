@@ -36,12 +36,11 @@ class watchcat(threading.Thread):
         self.Flux = FLUX((self.assist.FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
         self.error = self.Flux.status.get('error_label', '')
-        print(self.status)
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
                 self.flux_is_running = True
                 message = '{}\nFLUX開始工作了喔～～'.format(self.assist.mantra)
-                line_bot_api.push_message(self.LINEID, TextSendMessage(text=message))
+                line_bot_api.push_message(self.assist.LineID, TextSendMessage(text=message))
 
         elif self.status == 'none':
             pass
@@ -89,7 +88,6 @@ class watchcat(threading.Thread):
 
 cat = watchcat()
 cat.start()
-
 
 if __name__ == '__main__':
     with Connection(conn):

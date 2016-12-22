@@ -14,7 +14,6 @@ from app import app
 from app.utils import assistant, LANG
 from app.exceptions import AssistReply
 from rq.job import Job
-#from watchcat import conn
 
 from app.utils import line_bot_api, handler, conn#, backjob
 from linebot.exceptions import InvalidSignatureError
