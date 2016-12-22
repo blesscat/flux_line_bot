@@ -496,37 +496,37 @@ def assistAction(assist):
         time.sleep(5)
         raise AssistReply(LANG['flux']['help']['main'].format(assist=assist))
 
-    if not len(message.split()) > 1:
+    if not len(assist.message.split()) > 1:
         raise AssistReply(LANG['illegal_comm'].format(assist=assist))
 
-    magic_id, assist.command= message.split(' ', 1)
+    magic_id, assist.command= assist.message.split(' ', 1)
         
     if magic_id.lower() in LANG['flux']['magic_id']:
         Flux = robot()
 
-    if isin(message, watchdogOn_set):
+    if isin(assist.message, watchdogOn_set):
         message = isin_watchdogOn(Flux)
-    elif isin(message, watchdogOff_set):
+    elif isin(assist.message, watchdogOff_set):
         message = isin_watchdogOff(Flux)
-    elif isin(message, watchdog_set):
+    elif isin(assist.message, watchdog_set):
         message = isin_watchdog(Flux)
-    elif isin(message, LANG['flux']['status_list']):
+    elif isin(assist.message, LANG['flux']['status_list']):
         message = isin_status(Flux, assist)
-    elif isin(message, list_files_set):
+    elif isin(assist.message, list_files_set):
         message = isin_list_files(Flux)
-    elif isin(message, web_set):
+    elif isin(assist.message, web_set):
         message = isin_web(Flux)
-    elif isin(message, fs_set):
+    elif isin(assist.message, fs_set):
         message = isin_fs(Flux)
-    elif isin(message, start_set):
+    elif isin(assist.message, start_set):
         message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
-    elif isin(message, pause_set):
+    elif isin(assist.message, pause_set):
         message = isin_pause(Flux)
-    elif isin(message, resume_set):
+    elif isin(assist.message, resume_set):
         message = isin_resume(Flux)
-    elif isin(message, abort_set):
+    elif isin(assist.message, abort_set):
         message = isin_abort(Flux)
-    elif isin(message, quit_set):
+    elif isin(assist.message, quit_set):
         message = isin_quit(Flux)
 #        elif isin(message, load_filament_set):
 #            message = isin_load_filament(Flux)
