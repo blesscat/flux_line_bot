@@ -519,6 +519,8 @@ def message_text(event):
     if len(magic_id) is 2:
         magic_id, command = magic_id
         assist.command = command
+    else :
+        magic_id = magic_id[0]
 
     if magic_id.lower() in LANG['flux']['magic_id']:
         try:
