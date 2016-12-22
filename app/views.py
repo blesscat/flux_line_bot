@@ -532,7 +532,7 @@ def message_text(event):
         elif isin(message, watchdog_set):
             message = isin_watchdog(Flux)
 
-        elif isin(message, LANG['status_list']):
+        elif isin(message, LANG['flux']['status_list']):
             message = isin_status(Flux, assist)
 
         elif isin(message, list_files_set):
