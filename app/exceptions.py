@@ -8,5 +8,5 @@ class AssistReply(Exception):
 if __name__ == '__main__':
     try:
         raise AssistReply('error has raised')
-    except AssistReply as err:
-        print(err)
+    except AssistReply as msg:
+        print('{} ,{}'.format(msg.message, type(msg.message)))
