@@ -171,24 +171,17 @@ def add_rsa():
 def isin_status(Flux, assist):
     report = Flux.report_play()
     status = report['st_label']
-    error = report.get('error', '[]')
+    assist.error = report.get('error', '[]')
+    status_set = {'IDLE', 'COMPLETED', 'WAITING_HEAD', "PAUSING", "PAUSED"}
+
     if status == 'RUNNING':
         label, prog, error, leftTime = get_flux_status(Flux)
-        message = '{}\n目前狀態: {}\n目前進度: {}\n剩餘時間: {}'.format(
-                   MANTRA, label, prog, leftTime)
-    elif status == 'IDLE':
-        #message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
-        message = LANG['flux']['status']['IDLE'].format(assist=assist)
-    elif status == 'COMPLETED':
-        message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
-    elif status == 'WAITING_HEAD':
-        message = '{}\nFLUX正在校正中呢，等他一下喔～'.format(MANTRA)
-    elif status == 'PAUSING':
-        message = '{}\nFLUX停止了！\n停止的原因是: {}'.format(MANTRA, error)
-    elif status == 'PAUSED':
-        message = '{}\nFLUX已經停止。\n停止的原因是: {}'.format(MANTRA, error)
+        message = LANG['flux']['status']['RUNNING'].format(
+                   assist=assist, lable=label, prog=prog, leftTime=leftTime)
+    elif status in status_set:
+        message = LANG['flux']['status'][status].format(assist=assist)
     else:
-        message = '{}\n目前狀態{}'.format(MANTRA, status)
+        message = LANG['flux']['status']['others'].format(assist=assist, status=status)
 
     return message
 
@@ -522,8 +515,11 @@ def message_text(event):
         line_bot_api.push_message(_id, TextSendMessage(text=message))
         return 'ok'
 
-    magic_id, command = message.split(' ', 1)
-    assist.command = command
+    magic_id = message.split(' ', 1)
+    if len(magic_id) is 2:
+        magic_id, command = magic_id
+        assist.command = command
+
     if magic_id.lower() in LANG['flux']['magic_id']:
         try:
             Flux = robot()

@@ -5,7 +5,13 @@
             "8763"
         ],
         "status" : {
-            "IDLE": "{assist.mantra}\nFLUX目前閒置中喔"
+            "RUNNING": "{assist.mantra}\n目前狀態: {label}\n目前進度: {prog}\n剩餘時間: {leftTime}",
+            "IDLE": "{assist.mantra}\nFLUX目前閒置中喔",
+            "COMPLETED": "{assist.mantra}\nFLUX工作已經完成了呢！！",
+            "WAITING_HEAD": "{assist.mantra}\nFLUX正在校正中呢，等他一下喔～",
+            "PAUSING": "{assist.mantra}\nFLUX停止了！\n停止的原因是: {assist.error}",
+            "PAUSED": "{assist.mantra}\nFLUX已經停止。\n停止的原因是: {assist.error}",
+            "others": "{assist.mantra}\n目前狀態{status}"
         },
         "id_not_found": "{assist.mantra}\n請先在Heroku網頁新增{assist.name}的LineID喔\n\n{assist._id}",
         "dev_not_found": "{assist.mantra}\n{assist.name}找不到FLUX喔～",
