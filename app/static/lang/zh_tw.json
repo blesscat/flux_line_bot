@@ -23,6 +23,9 @@
             "PAUSED": "{assist.mantra}\nFLUX已經停止。\n停止的原因是: {assist.error}",
             "others": "{assist.mantra}\n目前狀態{status}"
         },
+        "watchcat" :{
+            "ST_RUNNING" :"{assist.mantra}\nFLUX開始工作了喔～～"
+        },
         "dev_not_found": "{assist.mantra}\n{assist.name}找不到FLUX喔～",
         "illegal_comm": "{assist.mantra}\n{assist.name}不知道'{assist.command}'是什麼啦！",
         "no_command": "{assist.mantra}\n{assist.name}不知道要做什麼...",

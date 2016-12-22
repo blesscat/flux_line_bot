@@ -11,11 +11,11 @@ from flask import request, abort
 from flask import render_template
 from werkzeug import secure_filename
 from app import app
-from app.utils import assistant, LANG
+from app.utils import count_words_at_url, assistant, LANG
 from app.exceptions import AssistReply
 from rq.job import Job
 
-from app.utils import line_bot_api, handler, conn#, backjob
+from app.utils import line_bot_api, handler, conn, backjob
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
@@ -80,7 +80,6 @@ load_filament_set = {'260'}
 unload_filament_set = {'261'}
 
 
-fb_token = 'blesscat'
 MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 
@@ -284,12 +283,12 @@ def index():
 
 @app.route("/test", methods=['GET'])
 def test():
-    conn.set('abc',123)
-    #job = backjob.enqueue_call(
-    #                     func=count_words_at_url,
-    #                     args=('http://heroku.com',),
-    #                     job_id='test')
-    #print(job.get_id())
+    #conn.set('abc',123)
+    job = backjob.enqueue_call(
+                         func=count_words_at_url,
+                         args=('http://heroku.com',),
+                         job_id='test')
+    print(job.get_id())
     return 'ok', 200
 
 
@@ -363,9 +362,10 @@ def upload_file():
 
 @app.route("/fb_callback", methods=['GET', 'POST'])
 def fb_callback():
+    assist = assistant()
     if request.method == 'GET':
         verify_token = request.args.get('hub.verify_token')
-        if verify_token == fb_token:
+        if verify_token == assist.fb_token:
             return request.args.get('hub.challenge')
         return 'fail'
     if request.method == 'POST':

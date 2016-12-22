@@ -39,7 +39,7 @@ class watchcat(threading.Thread):
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
                 self.flux_is_running = True
-                message = '{}\nFLUX開始工作了喔～～'.format(self.assist.mantra)
+                message = LANG['flux']['watchcat'][self.status].format(assist=self.assist)
                 line_bot_api.push_message(self.assist.LineID, TextSendMessage(text=message))
 
         elif self.status == 'none':
