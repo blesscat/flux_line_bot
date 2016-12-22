@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import socket
 import threading
 import redis
 import requests
@@ -10,8 +9,7 @@ from rq import Worker, Queue, Connection
 
 sys.path.insert(0, os.path.abspath('.'))
 
-from app.views import line_bot_api
-from app.utils import assistant
+from app.utils import assistant, line_bot_api
 from flux import FLUX
 from linebot.models import TextSendMessage
 
@@ -36,8 +34,7 @@ class watchcat(threading.Thread):
 
 
     def monitor_flux_status(self):
-        FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
-        self.Flux = FLUX((FLUX_ipaddr, 1901))
+        self.Flux = FLUX((self.assist.FLUX_ipaddr, 1901))
         self.status = self.Flux.status.get('st_label', 'none')
         self.error = self.Flux.status.get('error_label', '')
         if self.status == 'ST_RUNNING':

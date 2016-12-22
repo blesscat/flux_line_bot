@@ -1,6 +1,14 @@
 import os
 import socket
 import requests
+from linebot import  LineBotApi, WebhookHandler
+
+ChannelAccessToken = os.environ.get('ChannelAccessToken')
+ChannelSecret = os.environ.get('ChannelSecret')
+
+line_bot_api = LineBotApi(ChannelAccessToken)
+handler = WebhookHandler(ChannelSecret)
+
 flux_command_list = ["110 - status",
                      "120 - list_files",
                      "130 - watchdog",
@@ -20,7 +28,6 @@ def count_words_at_url(url):
     return len(resp.text.split())
 
 class assistant(object):
-
     def __init__(self, _id='', message=''):
         self.fb_token = 'blesscat'
         self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])

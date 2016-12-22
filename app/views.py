@@ -11,18 +11,18 @@ from flask import request, abort
 from flask import render_template
 from werkzeug import secure_filename
 from app import app
-from app.utils import count_words_at_url, assistant
+from app.utils import assistant
 from app.exceptions import AssistReply
 from rq import Queue
 from rq.job import Job
 
-from linebot import  LineBotApi, WebhookHandler
+from app.util import line_bot_api, handler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 sys.path.insert(0, os.path.abspath('..'))
 
-from worker import conn
+from watchcat import conn
 from flux import FLUX
 from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
@@ -88,11 +88,6 @@ MANTRA = os.environ['mantra']
 NAME = os.environ['name']
 #LINEID = os.environ.get('LineID', 'test')
 #os.environ['passed'] = "False"
-ChannelAccessToken = os.environ.get('ChannelAccessToken')
-ChannelSecret = os.environ.get('ChannelSecret')
-
-line_bot_api = LineBotApi(ChannelAccessToken)
-handler = WebhookHandler(ChannelSecret)
 q = Queue(connection=conn)
 
 lang_file = 'zh_tw.json'
