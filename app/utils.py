@@ -1,6 +1,8 @@
 import os
 import socket
 import requests
+import json
+from app import app
 from linebot import  LineBotApi, WebhookHandler
 
 ChannelAccessToken = os.environ.get('ChannelAccessToken')
@@ -8,6 +10,12 @@ ChannelSecret = os.environ.get('ChannelSecret')
 
 line_bot_api = LineBotApi(ChannelAccessToken)
 handler = WebhookHandler(ChannelSecret)
+
+lang_file = 'zh_tw.json'
+lang_dir_path = os.path.join(app.static_folder, 'lang')
+
+with open(os.path.join(lang_dir_path, lang_file)) as f:
+    LANG = json.load(f)
 
 flux_command_list = ["110 - status",
                      "120 - list_files",

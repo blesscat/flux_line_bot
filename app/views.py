@@ -11,7 +11,7 @@ from flask import request, abort
 from flask import render_template
 from werkzeug import secure_filename
 from app import app
-from app.utils import assistant
+from app.utils import assistant, LANG
 from app.exceptions import AssistReply
 from rq import Queue
 from rq.job import Job
@@ -89,13 +89,6 @@ NAME = os.environ['name']
 #LINEID = os.environ.get('LineID', 'test')
 #os.environ['passed'] = "False"
 q = Queue(connection=conn)
-
-lang_file = 'zh_tw.json'
-lang_dir_path = os.path.join(app.static_folder, 'lang')
-
-with open(os.path.join(lang_dir_path, lang_file)) as f:
-    LANG = json.load(f)
-
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
