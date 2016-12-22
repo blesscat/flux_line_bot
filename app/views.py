@@ -505,6 +505,7 @@ def message_text(event):
         magic_id, assist.command= message.split(' ', 1)
             
     except AssistReply as msg:
+        print('{} ,{}'.format(msg, type(msg)))
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text=msg))
         return "ok"
 
