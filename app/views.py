@@ -522,8 +522,9 @@ def message_text(event):
         line_bot_api.push_message(_id, TextSendMessage(text=message))
         return 'ok'
 
-    magic_id = message[:5].lower()
-    if magic_id in LANG['flux']['magic_id']:
+    magic_id, command = message.split(' ', 1)
+    assist.command = command
+    if magic_id.lower() in LANG['flux']['magic_id']:
         try:
             Flux = robot()
         except:
