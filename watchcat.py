@@ -10,7 +10,8 @@ from rq import Worker, Queue, Connection
 
 sys.path.insert(0, os.path.abspath('.'))
 
-from app.views import MANTRA, LINEID, line_bot_api
+from app.views import line_bot_api
+from app.utils import assistant
 from flux import FLUX
 from linebot.models import TextSendMessage
 
@@ -22,7 +23,7 @@ class watchcat(threading.Thread):
         self.monitor = True
         self.flux_is_running = False
         self.request_count = 0
-        self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
+        self.assist = assistant
 
     def run(self):
         while self.monitor:
@@ -42,8 +43,8 @@ class watchcat(threading.Thread):
         if self.status == 'ST_RUNNING':
             if not self.flux_is_running:
                 self.flux_is_running = True
-                message = '{}\nFLUX開始工作了喔～～'.format(MANTRA)
-                line_bot_api.push_message(LINEID, TextSendMessage(text=message))
+                message = '{}\nFLUX開始工作了喔～～'.format(self.assist.mantra)
+                line_bot_api.push_message(self.LINEID, TextSendMessage(text=message))
 
         elif self.status == 'none':
             pass
@@ -52,21 +53,21 @@ class watchcat(threading.Thread):
             if self.flux_is_running:
                 self.flux_is_running = False
                 message = self.flux_stop_analysis()
-                line_bot_api.push_message(LINEID, TextSendMessage(text=message))
+                line_bot_api.push_message(self.assist.LineID, TextSendMessage(text=message))
 
     def flux_stop_analysis(self):
         if self.status == 'ST_PAUSED' or self.status == 'ST_PAUSING':
             if self.error != '':
-                message = '{}\nFLUX停止了!\n停止原因: {}'.format(MANTRA, self.error)
+                message = '{}\nFLUX停止了!\n停止原因: {}'.format(self.assist.mantra, self.error)
             elif self.error == '':
-                message = '{}\nFLUX暫停囉～'.format(MANTRA)
+                message = '{}\nFLUX暫停囉～'.format(self.assist.mantra)
 
         elif self.status == 'ST_COMPLETED' or self.status == 'ST_IDLE' or \
                         self.status == 'ST_COMPLETEING':
-            message = '{}\n工作已經完成了喔!'.format(MANTRA)
+            message = '{}\n工作已經完成了喔!'.format(self.assist.mantra)
         
         else:
-           message = '{}\nFLUX因為 {} 停止了!'.format(MANTRA, self.error)
+           message = '{}\nFLUX因為 {} 停止了!'.format(self.assist.mantra, self.error)
         return message
 
 
