@@ -518,14 +518,16 @@ def message_text(event):
     if len(message.split()) > 1:
         magic_id, assist.command= message.split(' ', 1)
     else :
-        magic_id = message
+        message = LANG['flux']['no_command'].format(assist=assist)
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+        return'ok'
 
     if magic_id.lower() in LANG['flux']['magic_id']:
         try:
             Flux = robot()
         except:
             message = LANG['flux']['dev_not_found'].format(assist=assist)
-            line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
             return 'ok'
 
         if isin(message, watchdogOn_set):

@@ -16,6 +16,7 @@
         "id_not_found": "{assist.mantra}\n請先在Heroku網頁新增{assist.name}的LineID喔\n\n{assist._id}",
         "dev_not_found": "{assist.mantra}\n{assist.name}找不到FLUX喔～",
         "illegal_comm": "{assist.mantra}\n{assist.name}不知道'{assist.command}'是什麼啦！",
+        "no_command": "{assist.mantra}\n{assist.name}不知道要做什麼...",
         "help": {
             "key": "罐罐",
             "init": "{assist.name}要吃罐罐！！\n{assist.name}要吃罐罐！！\n給{assist.name}吃！！",
