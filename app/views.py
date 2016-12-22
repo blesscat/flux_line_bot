@@ -515,12 +515,10 @@ def message_text(event):
         line_bot_api.push_message(_id, TextSendMessage(text=message))
         return 'ok'
 
-    magic_id = message.split(' ', 1)
-    if len(magic_id) is 2:
-        magic_id, command = magic_id
-        assist.command = command
+    if len(message.split()) > 1:
+        magic_id, assist.command= message.split(' ', 1)
     else :
-        magic_id = magic_id[0]
+        magic_id = message
 
     if magic_id.lower() in LANG['flux']['magic_id']:
         try:
