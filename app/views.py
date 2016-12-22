@@ -185,7 +185,7 @@ def add_rsa():
     return result
 
 
-def isin_status(Flux):
+def isin_status(Flux, assist):
     report = Flux.report_play()
     status = report['st_label']
     error = report.get('error', '[]')
@@ -195,7 +195,7 @@ def isin_status(Flux):
                    MANTRA, label, prog, leftTime)
     elif status == 'IDLE':
         #message = '{}\nFLUX目前閒置中喔'.format(MANTRA)
-        message = LANG['status']['IDLE'].format(MANTRA)
+        message = LANG['status']['IDLE'].format(assist=assist)
     elif status == 'COMPLETED':
         message = '{}\nFLUX工作已經完成了呢！！'.format(MANTRA)
     elif status == 'WAITING_HEAD':
@@ -560,7 +560,7 @@ def message_text(event):
             message = isin_watchdog(Flux)
 
         elif isin(message, status_set):
-            message = isin_status(Flux)
+            message = isin_status(Flux, assist)
 
         elif isin(message, list_files_set):
             message = isin_list_files(Flux)
@@ -602,6 +602,5 @@ def message_text(event):
     else:
         #message = '{0}知道什麼是"{1}"，但是{0}不說'.format(NAME, message)
         message = LANG['illegal_comm'].format(assist=assist)
-        print(message)
         line_bot_api.reply_message( event.reply_token, TextSendMessage(text=message))
         return 'ok'
