@@ -305,8 +305,8 @@ def msgAnalysis(Flux, assist, _set, func):
 def assistAction(assist):
     if assist.message == LANG['flux']['help']['key']:
         message = LANG['flux']['help']['init'].format(assist=assist)
-        line_bot_api.push_message(assist._id, TextSendMessage(text=message))
-        time.sleep(5)
+        #line_bot_api.push_message(assist._id, TextSendMessage(text=message))
+        #time.sleep(5)
         raise AssistReply(LANG['flux']['help']['main'].format(assist=assist))
 
     if not len(assist.message.split()) > 1:
@@ -364,7 +364,6 @@ def fb_callback():
         return 'fail'
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
 
         if data["object"] == "page":
             for entry in data["entry"]:
@@ -436,7 +435,6 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def message_text(event):
-    print('in')
     _id = event.source.sender_id
     message = event.message.text
     assist = assistant(_id, message)
