@@ -312,7 +312,6 @@ def assistAction(assist):
     if not len(assist.message.split()) > 1:
         raise AssistReply(LANG['illegal_comm'].format(assist=assist))
 
-    print(assist.message)
     magic_id, assist.command= assist.message.split(' ', 1)
         
     if magic_id.lower() not in LANG['flux']['magic_id']:
@@ -373,7 +372,7 @@ def fb_callback():
 
                         assist._id = messaging_event["sender"]["id"]
                         assist.message = messaging_event["message"]["text"]
-                        print(dir(assist))
+                        print("_id :{}, msg :{}".format(assist._id, assist.messgae))
 
                         try:
                             #if _id != assist.LineID:
