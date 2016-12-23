@@ -48,6 +48,7 @@ def count_words_at_url(url):
 class assistant(object):
     def __init__(self, _id='', message=''):
         self.fb_token = 'blesscat'
+        self.fb_page_access_token = os.environ["PAGE_ACCESS_TOKEN"]
         self.FLUX_ipaddr = socket.gethostbyname(os.environ['FLUX_ipaddr'])
         self.mantra = os.environ['mantra']
         self.name = os.environ['name']

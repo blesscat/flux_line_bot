@@ -295,71 +295,6 @@ def upload_file():
             return 'passed'
 
 
-@app.route("/fb_callback", methods=['GET', 'POST'])
-def fb_callback():
-    assist = assistant()
-    if request.method == 'GET':
-        verify_token = request.args.get('hub.verify_token')
-        if verify_token == assist.fb_token:
-            return request.args.get('hub.challenge')
-        return 'fail'
-    if request.method == 'POST':
-        data = request.get_json()
-        print(data)
-
-        if data["object"] == "page":
-            for entry in data["entry"]:
-                for messaging_event in entry["messaging"]:
-                    if messaging_event.get("message"):  # someone sent us a message
-                        sender_id = messaging_event["sender"]["id"]
-                        #recipient_id = messaging_event["recipient"]["id"]
-                        message_text = messaging_event["message"]["text"]
-                        params = {
-                        "access_token": os.environ["PAGE_ACCESS_TOKEN"]
-                        }
-                        headers = {
-                            "Content-Type": "application/json"
-                        }
-                        data = json.dumps({
-                            "recipient": {
-                                "id": sender_id
-                            },
-                            "message": {
-                                "text": message_text
-                            }
-                        })
-                        print('data: {}'.format(data))
-                        r = requests.post("https://graph.facebook.com/v2.6/me/messages",params=params, headers=headers, data=data)
-                        if r.status_code != 200:
-                            print(r.status_code)
-                            print(r.text)
-
-
-                    if messaging_event.get("delivery"):  # delivery confirmation
-                        pass
-                    if messaging_event.get("optin"):  # optin confirmation
-                        pass
-                    if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
-                        pass
-        return 'ok', 200           
-    
-
-@app.route("/callback", methods=['POST'])
-def callback():
-    # get X-Line-Signature header value
-    signature = request.headers['X-Line-Signature']
-
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # handle webhook body
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError:
-        abort(400)
-
-    return 'OK'
 
 def msgAnalysis(Flux, assist, _set, func):
     if isin(assist.message, _set):
@@ -417,6 +352,85 @@ def assistAction(assist):
 #            message = isin_load_filament(Flux)
 #        elif isin(message, unload_filament_set):
 #            message = isin_unload_filament(Flux)
+
+
+@app.route("/fb_callback", methods=['GET', 'POST'])
+def fb_callback():
+    assist = assistant()
+    if request.method == 'GET':
+        verify_token = request.args.get('hub.verify_token')
+        if verify_token == assist.fb_token:
+            return request.args.get('hub.challenge')
+        return 'fail'
+    if request.method == 'POST':
+        data = request.get_json()
+
+        if data["object"] == "page":
+            for entry in data["entry"]:
+                for messaging_event in entry["messaging"]:
+                    if messaging_event.get("message"):  # someone sent us a message
+
+                        assist._id = messaging_event["sender"]["id"]
+                        assist.message = messaging_event["message"]["text"]
+
+                        try:
+                            #if _id != assist.LineID:
+                            #    raise AssistReply(LANG['id_not_found'].format(assist=assist))
+                            message = assistAction(assist)
+
+                        except AssistReply as assist:
+                            message = assist.message
+
+                        except socket.timeout:
+                            message = LANG['flux']['dev_not_found'].format(assist=assist)
+
+                        finally:
+
+                            params = {
+                            "access_token": assist.fb_page_access_token
+                            }
+                            headers = {
+                                "Content-Type": "application/json"
+                            }
+                            data = json.dumps({
+                                "recipient": {
+                                    "id": assist._id
+                                },
+                                "message": {
+                                    "text": message
+                                }
+                            })
+                            r = requests.post("https://graph.facebook.com/v2.6/me/messages",params=params, headers=headers, data=data)
+                            if r.status_code != 200:
+                                print(r.status_code)
+                                print(r.text)
+
+
+                    if messaging_event.get("delivery"):  # delivery confirmation
+                        pass
+                    if messaging_event.get("optin"):  # optin confirmation
+                        pass
+                    if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
+                        pass
+        return 'ok', 200           
+    
+
+@app.route("/callback", methods=['POST'])
+def callback():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+
+    # get request body as text
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
+
+    # handle webhook body
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        abort(400)
+
+    return 'OK'
 
 
 @handler.add(MessageEvent, message=TextMessage)
