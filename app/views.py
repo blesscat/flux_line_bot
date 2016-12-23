@@ -371,7 +371,8 @@ def fb_callback():
                 for messaging_event in entry["messaging"]:
                     if messaging_event.get("message"):  # someone sent us a message
 
-                        assist._id = messaging_event["sender"]["id"]
+                        #assist._id = messaging_event["sender"]["id"]
+                        assist._id = messaging_event["recipient"]["id"]
                         assist.message = messaging_event["message"]["text"]
                         print("_id :{}, msg :{}".format(assist._id, assist.message))
 
