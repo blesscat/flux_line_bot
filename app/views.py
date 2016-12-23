@@ -428,7 +428,6 @@ def callback():
 
 def msgAnalysis(Flux, assist, _set, func):
     if isin(assist.message, _set):
-        print('in')
         message = func(Flux, assist)
     else:
         message = assist.message
@@ -452,7 +451,7 @@ def assistAction(assist):
 
     Flux = robot(assist.FLUX_ipaddr)
 
-    msgAnalysis(Flux, assist, LANG['flux']['status_list'], isin_status)
+    message = msgAnalysis(Flux, assist, LANG['flux']['status_list'], isin_status)
 #    if isin(assist.message, watchdogOn_set):
 #        message = isin_watchdogOn(Flux)
 #    elif isin(assist.message, watchdogOff_set):
@@ -477,8 +476,8 @@ def assistAction(assist):
         message = isin_abort(Flux)
     elif isin(assist.message, quit_set):
         message = isin_quit(Flux)
-    else:
-        message = LANG['flux']['no_command'].format(assist=assist)
+    #else:
+    #    message = LANG['flux']['no_command'].format(assist=assist)
 #        elif isin(message, load_filament_set):
 #            message = isin_load_filament(Flux)
 #        elif isin(message, unload_filament_set):
