@@ -376,38 +376,38 @@ def fb_callback():
                         assist.message = messaging_event["message"]["text"]
                         print("_id :{}, msg :{}".format(assist._id, assist.message))
 
-                        try:
-                            #if _id != assist.LineID:
-                            #    raise AssistReply(LANG['id_not_found'].format(assist=assist))
-                            pass
-                            #message = assistAction(assist)
+#                        try:
+#                            #if _id != assist.LineID:
+#                            #    raise AssistReply(LANG['id_not_found'].format(assist=assist))
+#                            pass
+#                            #message = assistAction(assist)
+#
+#                        except AssistReply as ass:
+#                            message = ass.message
+#
+#                        except socket.timeout:
+#                            message = LANG['flux']['dev_not_found'].format(assist=ass)
+#
+#                        finally:
 
-                        except AssistReply as ass:
-                            message = ass.message
-
-                        except socket.timeout:
-                            message = LANG['flux']['dev_not_found'].format(assist=ass)
-
-                        finally:
-
-                            params = {
-                            "access_token": assist.fb_page_access_token
+                        params = {
+                        "access_token": assist.fb_page_access_token
+                        }
+                        headers = {
+                            "Content-Type": "application/json"
+                        }
+                        data = json.dumps({
+                            "recipient": {
+                                "id": assist._id
+                            },
+                            "message": {
+                                "text": assist.message
                             }
-                            headers = {
-                                "Content-Type": "application/json"
-                            }
-                            data = json.dumps({
-                                "recipient": {
-                                    "id": assist._id
-                                },
-                                "message": {
-                                    "text": assist.message
-                                }
-                            })
-                            r = requests.post("https://graph.facebook.com/v2.6/me/messages",params=params, headers=headers, data=data)
-                            if r.status_code != 200:
-                                print(r.status_code)
-                                print(r.text)
+                        })
+                        r = requests.post("https://graph.facebook.com/v2.6/me/messages",params=params, headers=headers, data=data)
+                        if r.status_code != 200:
+                            print(r.status_code)
+                            print(r.text)
 
 
                     if messaging_event.get("delivery"):  # delivery confirmation
