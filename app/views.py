@@ -399,7 +399,7 @@ def fb_callback():
                                     "id": assist._id
                                 },
                                 "message": {
-                                    "text": message
+                                    "text": assist.message
                                 }
                             })
                             r = requests.post("https://graph.facebook.com/v2.6/me/messages",params=params, headers=headers, data=data)
