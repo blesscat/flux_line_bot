@@ -14,7 +14,74 @@
             "狀況",
             "進度"
         ],
-        "status" : {
+        "files_list" :[
+            "120",
+            "list",
+            "LIST",
+            "檔案"
+        ],
+        "watchdogOn_list" :[
+            "131",
+            "watchdogon"
+        ],
+        "watchdogOff_list" :[
+            "132",
+            "watchdogoff"
+        ],
+        "watchdog_list" :[
+            "130",
+            "watchdog"
+        ],
+        "web_list" :[
+            "211",
+            "startweb",
+            "STARTWEB"
+        ],
+        "fs_list" :[
+            "212",
+            "startfs",
+            "STARTFS"
+        ],
+        "start_list" :[
+            "210",
+            "start",
+            "START",
+            "開始"
+        ],
+        "pause_list" :[
+            "220",
+            "pause",
+            "PAUSE",
+            "暫停"
+        ],
+        "resume_list" :[
+            "230",
+            "resume",
+            "RESUME",
+            "繼續"
+        ],
+        "abort_list" :[
+            "240",
+            "abort",
+            "ABORT",
+            "stop",
+            "STOP",
+            "停止"
+        ],
+        "quit_list" :[
+            "250",
+            "quit",
+            "QUIT",
+            "終止",
+            "結束"
+        ],
+        "load_filament_list" :[
+            "260"
+        ],
+        "unload_filament_list" :[
+            "261"
+        ],
+        "status" :{
             "RUNNING": "{assist.mantra}\n目前狀態: {label}\n目前進度: {prog}\n剩餘時間: {leftTime}",
             "IDLE": "{assist.mantra}\nFLUX目前閒置中喔",
             "COMPLETED": "{assist.mantra}\nFLUX工作已經完成了呢！！",
@@ -22,6 +89,30 @@
             "PAUSING": "{assist.mantra}\nFLUX停止了！\n停止的原因是: {assist.error}",
             "PAUSED": "{assist.mantra}\nFLUX已經停止。\n停止的原因是: {assist.error}",
             "others": "{assist.mantra}\n目前狀態{status}"
+        },
+        "web" :{
+            "success": "{assist.mantra}\n開始印上次網頁上傳的檔案了～",
+            "fail": "{assist,mantra}\n無法開始，可能已經開始了\n或需要先停止任務喔"
+        },
+        "fs" :{
+            "success": "{assist.mantra}\n開始印上次FLUX STUDIO匯入的檔案了～",
+            "fail": "{assist,mantra}\n無法開始，可能已經開始了\n或需要先停止任務喔"
+        },
+        "pause" :{
+            "success": "{assist.mantra}\n已經暫停了喔",
+            "fail": "{assist,mantra}\n無法暫停，可能已經停止了"
+        },
+        "resume" :{
+            "success": "{assist.mantra}\n已經繼續啟動了呢",
+            "fail": "{assist,mantra}\n無法繼續，可能已經停止了\n或者請確認機台狀態喔"
+        },
+        "abort" :{
+            "success": "{assist.mantra}\n已經停止囉",
+            "fail": "{assist,mantra}\n無法停止，可能早就已經停止了呢"
+        },
+        "quit" :{
+            "success": "{assist.mantra}\n已經終止任務囉",
+            "fail": "{assist,mantra}\n無法終止，可能早就已經終止了呢"
         },
         "watchcat" :{
             "ST_RUNNING" :"{assist.mantra}\nFLUX開始工作了喔～～"

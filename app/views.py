@@ -25,63 +25,6 @@ from flux import FLUX
 from fluxclient.robot import FluxRobot, errors
 from fluxclient.commands.misc import get_or_create_default_key
 
-list_files_set = {'120',
-                  'list',
-                  'LIST',
-                  '檔案'}
-
-watchdogOn_set = {'131',
-                'watchdogon'}
-
-watchdogOff_set = {'132',
-                'watchdogoff'}
-
-watchdog_set = {'130',
-                'watchdog'}
-
-web_set = {'211',
-           'startweb',
-           'STARTWEB'}
-
-fs_set = {'212',
-          'startfs',
-          'STARTFS'}
-
-start_set = {'210',
-             'start',
-             'START',
-             '開始'}
-
-pause_set = {'220',
-             'pause',
-             'PAUSE',
-             '暫停'}
-
-resume_set = {'230',
-              'resume',
-              'RESUME',
-              '繼續'}
-
-abort_set = {'240',
-             'abort',
-             'ABORT',
-             'stop',
-             'STOP',
-             '停止'}
-
-quit_set = {'250',
-            'quit',
-            'QUIT',
-            '終止',
-            '結束'}
-
-load_filament_set = {'260'}
-
-unload_filament_set = {'261'}
-
-
-MANTRA = os.environ['mantra']
-NAME = os.environ['name']
 
 def allowed_file(filename, allowed_file):
     if allowed_file is "fc":
@@ -129,8 +72,7 @@ def get_flux_status(robot):
         leftTime = '{} hours {} mins'.format(hours, mins)
         prog = format(prog, '.2%')
     except ValueError:
-        prog = 'unknow'
-        leftTime = 'FLUX不告訴我啦！'
+        leftTime = prog = 'unknow'
 
     return label, prog, error, leftTime
 
@@ -198,67 +140,67 @@ def isin_status(Flux, assist):
 #    return message
 
 
-def isin_web(Flux):
+def isin_web(Flux, assist):
     try:
         Flux.select_file('/SD/Recent/webUpload.fc')
         Flux.start_play()
-        message = '{}\n開始印上次網頁上傳的檔案了～'.format(MANTRA)
+        message = LANG['flux']['web']['success'].format(assist=assist)
     except:
-        message = '{}\n無法開始，可能已經開始了\n或需要先停止任務喔'.format(MANTRA)
+        message = LANG['flux']['web']['fail'].format(assist=assist)
     return message
 
 
-def isin_fs(Flux):
+def isin_fs(Flux, assist):
     try:
         Flux.select_file('/SD/Recent/recent-1.fc')
         Flux.start_play()
-        message = '{}\n開始印上次FLUX STUDIO匯入的檔案了～'.format(MANTRA)
+        message = LANG['flux']['fs']['success'].format(assist=assist)
     except:
-        message = '{}\n無法開始，可能已經開始了\n或需要先停止任務喔'.format(MANTRA)
+        message = LANG['flux']['fs']['fail'].format(assist=assist)
     return message
 
 
-def isin_pause(Flux):
+def isin_pause(Flux, assist):
     try:
         Flux.pause_play()
-        message = '{}\n已經暫停了喔'.format(MANTRA)
+        message = LANG['flux']['pause']['success'].format(assist=assist)
     except:
-        message = '{}\n無法暫停，可能已經停止了'.format(MANTRA)
+        message = LANG['flux']['pause']['fail'].format(assist=assist)
     return message
 
 
-def isin_resume(Flux):
+def isin_resume(Flux, assist):
     try:
         loop = 20
         Flux.resume_play()
         for i in range(loop):
             time.sleep(1)
             if Flux.report_play()['st_label'] == 'RUNNING':
-                message = '{}\n已經繼續啟動了呢'.format(MANTRA)
+                message = LANG['flux']['resume']['success'].format(assist=assist)
                 break
             else:
                 if i == loop-1:
                     raise OSError
     except:
-        message = '{}\n無法繼續，可能已經停止了\n或者請確認機台狀態喔'.format(MANTRA)
+        message = LANG['flux']['resume']['fail'].format(assist=assist)
     return message
 
 
-def isin_abort(Flux):
+def isin_abort(Flux, assist):
     try:
         Flux.abort_play()
-        message = '{}\n已經停止囉'.format(MANTRA)
+        message = LANG['flux']['abort']['success'].format(assist=assist)
     except:
-        message = '{}\n無法停止，可能早就已經停止了呢'.format(MANTRA)
+        message = LANG['flux']['abort']['fail'].format(assist=assist)
     return message
 
 
-def isin_quit(Flux):
+def isin_quit(Flux, assist):
     try:
         Flux.kick()
-        message = '{}\n已經終止任務囉'.format(MANTRA)
+        message = LANG['flux']['quit']['success'].format(assist=assist)
     except:
-        message = '{}\n無法終止，可能早就已經終止了呢'.format(MANTRA)
+        message = LANG['flux']['quit']['fail'].format(assist=assist)
     return message
 
 
@@ -270,7 +212,7 @@ def isin_quit(Flux):
 #    maintain = backend.unload_filament_backend(Flux)
 #    maintain.start()
 
-def isin_list_files(Flux):
+def isin_list_files(Flux, assist):
     _list = str(Flux.list_files('/SD'))
     message = '{}'.format(_list)
     return message
@@ -308,13 +250,6 @@ def get_results(job_key):
         return str(job.result), 200
     else:
         return "Nay!", 202
-
-
-@app.route("/thread", methods=['GET'])
-def thread():
-    if request.method == 'GET':
-        result = threading.activeCount()
-        return str(result)
 
 
 @app.route("/upload_file", methods=['GET', 'POST'])
@@ -429,9 +364,7 @@ def callback():
 def msgAnalysis(Flux, assist, _set, func):
     if isin(assist.message, _set):
         message = func(Flux, assist)
-    else:
-        message = assist.message
-    return message
+        return message
     
     
 def assistAction(assist):
@@ -449,41 +382,41 @@ def assistAction(assist):
     if magic_id.lower() not in LANG['flux']['magic_id']:
         raise AssistReply(LANG['illegal_comm'].format(assist=assist))
 
-    Flux = robot(assist.FLUX_ipaddr)
 
-    message = msgAnalysis(Flux, assist, LANG['flux']['status_list'], isin_status)
+    Flux = robot(assist.FLUX_ipaddr)
+    
+    commands = [
+                ("status_list", isin_status),
+                ("files_list", isin_list_files),
+                ("web_list", isin_web),
+                ("fs_list", isin_fs),
+                #("start_list", isin_start),
+                ("pause_list", isin_pause),
+                ("resume_list", isin_resume),
+                ("abort_list", isin_abort),
+                ("quit_list", isin_quit),
+            ]
+    for comm, func in commands:
+        message = msgAnalysis(Flux, assist, LANG['flux'][comm], func)
+        if message is not None: break
+
+    message = LANG['flux']['no_command'].format(assist=assist) if message is None else message
+
+    Flux.close()
+    return message
 #    if isin(assist.message, watchdogOn_set):
 #        message = isin_watchdogOn(Flux)
 #    elif isin(assist.message, watchdogOff_set):
 #        message = isin_watchdogOff(Flux)
 #    elif isin(assist.message, watchdog_set):
 #        message = isin_watchdog(Flux)
-    #if isin(assist.message, LANG['flux']['status_list']):
-    #    message = isin_status(Flux, assist)
-    if isin(assist.message, list_files_set):
-        message = isin_list_files(Flux)
-    elif isin(assist.message, web_set):
-        message = isin_web(Flux)
-    elif isin(assist.message, fs_set):
-        message = isin_fs(Flux)
-    elif isin(assist.message, start_set):
-        message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
-    elif isin(assist.message, pause_set):
-        message = isin_pause(Flux)
-    elif isin(assist.message, resume_set):
-        message = isin_resume(Flux)
-    elif isin(assist.message, abort_set):
-        message = isin_abort(Flux)
-    elif isin(assist.message, quit_set):
-        message = isin_quit(Flux)
+#    elif isin(assist.message, start_set):
+#        message = '{}\n請指定要開始什麼喔～\n211 - web\n212 - fs'.format(MANTRA)
     #else:
-    #    message = LANG['flux']['no_command'].format(assist=assist)
 #        elif isin(message, load_filament_set):
 #            message = isin_load_filament(Flux)
 #        elif isin(message, unload_filament_set):
 #            message = isin_unload_filament(Flux)
-    Flux.close()
-    return message
 
 
 @handler.add(MessageEvent, message=TextMessage)
