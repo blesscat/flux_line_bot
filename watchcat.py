@@ -72,7 +72,7 @@ class watchcat(threading.Thread):
 
     def make_heroku_wakeup(self):
         self.request_count += 1
-        if self.request_count >= 6000:
+        if self.request_count >= 1200:
             while True:
                 r = requests.get(os.environ['WEB_URL'])
                 time.sleep(1)

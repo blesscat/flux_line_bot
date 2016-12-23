@@ -467,6 +467,8 @@ def assistAction(assist):
         message = isin_abort(Flux)
     elif isin(assist.message, quit_set):
         message = isin_quit(Flux)
+    else:
+        message = "i don't know the command"
 #        elif isin(message, load_filament_set):
 #            message = isin_load_filament(Flux)
 #        elif isin(message, unload_filament_set):
