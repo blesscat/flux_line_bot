@@ -364,6 +364,7 @@ def fb_callback():
         return 'fail'
     if request.method == 'POST':
         data = request.get_json()
+        print(vars(data))
 
         if data["object"] == "page":
             for entry in data["entry"]:
@@ -436,6 +437,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def message_text(event):
+    print('in')
     _id = event.source.sender_id
     message = event.message.text
     assist = assistant(_id, message)
