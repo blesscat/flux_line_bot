@@ -5,7 +5,7 @@ import json
 import redis
 
 #from watchcat import conn
-from app import app
+from app import static_folder
 from linebot import  LineBotApi, WebhookHandler
 from rq import Queue
 
@@ -16,7 +16,7 @@ line_bot_api = LineBotApi(ChannelAccessToken)
 handler = WebhookHandler(ChannelSecret)
 
 lang_file = 'zh_tw.json'
-lang_dir_path = os.path.join(app.static_folder, 'lang')
+lang_dir_path = os.path.join(static_folder, 'lang')
 
 with open(os.path.join(lang_dir_path, lang_file)) as f:
     LANG = json.load(f)
