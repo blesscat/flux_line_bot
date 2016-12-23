@@ -428,6 +428,7 @@ def callback():
 
 def msgAnalysis(Flux, assist, _set, func):
     if isin(assist.message, _set):
+        print('in')
         message = func(Flux, assist)
     else:
         message = assist.message
@@ -477,7 +478,7 @@ def assistAction(assist):
     elif isin(assist.message, quit_set):
         message = isin_quit(Flux)
     else:
-        message = LANG['flux']['np_command'].format(assist=assist)
+        message = LANG['flux']['no_command'].format(assist=assist)
 #        elif isin(message, load_filament_set):
 #            message = isin_load_filament(Flux)
 #        elif isin(message, unload_filament_set):
