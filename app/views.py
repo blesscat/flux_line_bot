@@ -426,6 +426,14 @@ def callback():
 
     return 'OK'
 
+def msgAnalysis(Flux, assist, _set, func):
+    if isin(assist.message, _set):
+        message = func(Flux, assist)
+    else:
+        message = assist.message
+    return message
+    
+    
 def assistAction(assist):
     if assist.message == LANG['flux']['help']['key']:
         message = LANG['flux']['help']['init'].format(assist=assist)
@@ -443,15 +451,16 @@ def assistAction(assist):
 
     Flux = robot(assist.FLUX_ipaddr)
 
+    msgAnalysis(Flux, assist, LANG['flux']['status_list'], isin_status)
 #    if isin(assist.message, watchdogOn_set):
 #        message = isin_watchdogOn(Flux)
 #    elif isin(assist.message, watchdogOff_set):
 #        message = isin_watchdogOff(Flux)
 #    elif isin(assist.message, watchdog_set):
 #        message = isin_watchdog(Flux)
-    if isin(assist.message, LANG['flux']['status_list']):
-        message = isin_status(Flux, assist)
-    elif isin(assist.message, list_files_set):
+    #if isin(assist.message, LANG['flux']['status_list']):
+    #    message = isin_status(Flux, assist)
+    if isin(assist.message, list_files_set):
         message = isin_list_files(Flux)
     elif isin(assist.message, web_set):
         message = isin_web(Flux)
@@ -468,7 +477,7 @@ def assistAction(assist):
     elif isin(assist.message, quit_set):
         message = isin_quit(Flux)
     else:
-        message = "i don't know the command"
+        message = LANG['flux']['np_command'].format(assist=assist)
 #        elif isin(message, load_filament_set):
 #            message = isin_load_filament(Flux)
 #        elif isin(message, unload_filament_set):
