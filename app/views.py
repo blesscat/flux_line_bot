@@ -312,6 +312,7 @@ def assistAction(assist):
     if not len(assist.message.split()) > 1:
         raise AssistReply(LANG['illegal_comm'].format(assist=assist))
 
+    print(assist.message)
     magic_id, assist.command= assist.message.split(' ', 1)
         
     if magic_id.lower() not in LANG['flux']['magic_id']:
