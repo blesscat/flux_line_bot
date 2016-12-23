@@ -376,19 +376,16 @@ def fb_callback():
                         assist.message = messaging_event["message"]["text"]
                         print("_id :{}, msg :{}".format(assist._id, assist.message))
 
-#                        try:
-#                            #if _id != assist.LineID:
-#                            #    raise AssistReply(LANG['id_not_found'].format(assist=assist))
-#                            pass
-#                            #message = assistAction(assist)
-#
-#                        except AssistReply as ass:
-#                            message = ass.message
-#
-#                        except socket.timeout:
-#                            message = LANG['flux']['dev_not_found'].format(assist=ass)
-#
-#                        finally:
+                        try:
+                            #if _id != assist.LineID:
+                            #    raise AssistReply(LANG['id_not_found'].format(assist=assist))
+                            message = assistAction(assist)
+
+                        except AssistReply as ass:
+                            message = ass.message
+
+                        except socket.timeout:
+                            message = LANG['flux']['dev_not_found'].format(assist=ass)
 
                         params = {
                         "access_token": assist.fb_page_access_token
@@ -401,7 +398,7 @@ def fb_callback():
                                 "id": assist._id
                             },
                             "message": {
-                                "text": assist.message
+                                "text": message
                             }
                         })
                         r = requests.post("https://graph.facebook.com/v2.6/me/messages",params=params, headers=headers, data=data)
