@@ -372,6 +372,7 @@ def fb_callback():
 
                         assist._id = messaging_event["sender"]["id"]
                         assist.message = messaging_event["message"]["text"]
+                        print(dir(assist))
 
                         try:
                             #if _id != assist.LineID:
