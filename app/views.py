@@ -354,7 +354,7 @@ def assistAction(assist):
 #            message = isin_unload_filament(Flux)
 
 
-@app.route("/fb_callback", methods=['GET', 'POST'])
+@app.route("/f_callback", methods=['GET', 'POST'])
 def fb_callback():
     assist = assistant()
     if request.method == 'GET':
