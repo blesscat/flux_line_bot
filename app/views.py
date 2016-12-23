@@ -379,11 +379,11 @@ def fb_callback():
                             #    raise AssistReply(LANG['id_not_found'].format(assist=assist))
                             message = assistAction(assist)
 
-                        except AssistReply as assist:
-                            message = assist.message
+                        except AssistReply as ass:
+                            message = ass.message
 
                         except socket.timeout:
-                            message = LANG['flux']['dev_not_found'].format(assist=assist)
+                            message = LANG['flux']['dev_not_found'].format(assist=ass)
 
                         finally:
 
