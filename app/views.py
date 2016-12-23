@@ -379,7 +379,8 @@ def fb_callback():
                         try:
                             #if _id != assist.LineID:
                             #    raise AssistReply(LANG['id_not_found'].format(assist=assist))
-                            message = assistAction(assist)
+                            pass
+                            #message = assistAction(assist)
 
                         except AssistReply as ass:
                             message = ass.message
