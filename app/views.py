@@ -334,6 +334,7 @@ def assistAction(assist):
             ]
     for comm, func in commands:
         message = msgAnalysis(Flux, assist, LANG['flux'][comm], func)
+        print(message)
         if message is not None: break
 
     message = LANG['flux']['no_command'].format(assist=assist) if message is None else message
