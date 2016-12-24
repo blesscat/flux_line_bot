@@ -91,6 +91,7 @@ def isin_status(Flux, assist):
 
     if status == 'RUNNING':
         label, prog, error, leftTime = get_flux_status(Flux)
+        print(label, prog, error, leftTime)
         message = LANG['flux']['status']['RUNNING'].format(
                    assist=assist, lable=label, prog=prog, leftTime=leftTime)
     elif status in status_set:
